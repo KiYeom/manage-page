@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -16,7 +16,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { emailLogin } from '../../../apis/auth'
-import { setTokenInfo } from '../../../storages/storages'
+import { getRefreshToken, setTokenInfo } from '../../../storages/storages'
 
 const Login = () => {
   const [loading, setLoading] = React.useState(false)
@@ -41,6 +41,13 @@ const Login = () => {
         setLoading(false)
       })
   }
+
+  useEffect(() => {
+    //토큰이 있으면 대시보드 페이지로 이동
+    if (getRefreshToken()) {
+      window.location.href = '/dashboard'
+    }
+  }, [])
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
