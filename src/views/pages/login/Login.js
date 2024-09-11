@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CButton,
@@ -15,64 +15,111 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import { emailLogin } from '../../../apis/auth'
+import { getRefreshToken, setTokenInfo } from '../../../storages/storages'
 
 const Login = () => {
+  const [loading, setLoading] = React.useState(false)
+  const [email, setEmail] = React.useState('')
+  const [emailError, setEmailError] = React.useState('')
+  const [password, setPassword] = React.useState('')
+
+  const handleLogin = () => {
+    //버튼 비활성화
+    setLoading(true)
+    //로그인 요청
+    emailLogin(email, password)
+      .then((res) => {
+        //성공하면 토큰 저장하고 대시보드 페이지로 이동
+        setTokenInfo(res.accessToken, res.refreshToken)
+      })
+      .catch((error) => {
+        alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.')
+      })
+      .finally(() => {
+        //버튼 활성화
+        setLoading(false)
+      })
+  }
+
+  useEffect(() => {
+    //토큰이 있으면 대시보드 페이지로 이동
+    if (getRefreshToken()) {
+      window.location.href = '/dashboard'
+    }
+  }, [])
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value
+    setEmail(value)
+    if (!validateEmail(value)) {
+      setEmailError('유효한 이메일 주소를 입력하세요.')
+    } else {
+      setEmailError('')
+    }
+  }
+
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>
+              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+                <CCardBody className="text-center">
+                  <div>
+                    <h2>reMIND 관리자 페이지</h2>
+                    <p>reMIND 관리자 페이지에 오신 것을 환영합니다.</p>
+                  </div>
+                </CCardBody>
+              </CCard>
               <CCard className="p-4">
                 <CCardBody>
                   <CForm>
-                    <h1>Login</h1>
-                    <p className="text-body-secondary">Sign In to your account</p>
+                    <h1>로그인</h1>
+                    <p className="text-body-secondary">이메일을 통해 로그인하기</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        placeholder="이메일"
+                        autoComplete="username"
+                        value={email}
+                        onChange={handleEmailChange}
+                      />
                     </CInputGroup>
+                    {emailError && <div style={{ color: 'red' }}>{emailError}</div>}
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
                         type="password"
-                        placeholder="Password"
+                        placeholder="비밀번호"
                         autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
-                          Login
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
+                        <CButton
+                          color="primary"
+                          className="px-4"
+                          onClick={handleLogin}
+                          disabled={loading || !email || !password || emailError}
+                        >
+                          로그인하기
                         </CButton>
                       </CCol>
                     </CRow>
                   </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
                 </CCardBody>
               </CCard>
             </CCardGroup>

@@ -53,8 +53,12 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
+import 'react-date-range/dist/styles.css' // main css file
+import 'react-date-range/dist/theme/default.css' // theme css file
+import { Calendar } from 'react-date-range'
 
-const Customers = () => {
+const Daily = () => {
+  const [date, setDate] = React.useState(new Date())
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
     { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
@@ -224,8 +228,15 @@ const Customers = () => {
     },
   ]
 
+  const handleSelect = (date) => {
+    console.log(date)
+    setDate(date)
+  }
+
   return (
     <>
+      <Calendar date={date} onChange={handleSelect} />
+      <br />
       <CTable align="middle" className="mb-0 border" hover responsive>
         <CTableHead className="text-nowrap">
           <CTableRow>
@@ -478,4 +489,4 @@ const Customers = () => {
   )
 }
 
-export default Customers
+export default Daily

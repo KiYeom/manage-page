@@ -3,6 +3,7 @@ import classNames from 'classnames'
 
 import {
   CAvatar,
+  CBadge,
   CButton,
   CButtonGroup,
   CCard,
@@ -176,8 +177,103 @@ const Dashboard = () => {
     },
   ]
 
+  const userTable = [
+    {
+      user: {
+        name: 'Yiorgos Avraamu',
+        new: true,
+        registered: 'Jan 1, 2023',
+      },
+      usage: {
+        value: 50,
+        color: 'success',
+      },
+      emotions: ['a', 'b', 'c'],
+      activity: '10 sec ago',
+    },
+    {
+      user: {
+        name: 'Avram Tarasios',
+        new: false,
+        registered: 'Jan 1, 2023',
+      },
+      usage: {
+        value: 22,
+        color: 'info',
+      },
+      emotions: ['a', 'b', 'c'],
+      activity: '5 minutes ago',
+    },
+    {
+      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
+      usage: {
+        value: 74,
+        color: 'warning',
+      },
+      emotions: ['a', 'b', 'c'],
+      activity: '1 hour ago',
+    },
+    {
+      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
+      usage: {
+        value: 98,
+        period: 'Jun 11, 2023 - Jul 10, 2023',
+        color: 'danger',
+      },
+      emotions: ['a', 'b', 'c'],
+      activity: 'Last month',
+    },
+  ]
+
   return (
     <>
+      <CTable align="middle" className="mb-0 border" hover responsive>
+        <CTableHead className="text-nowrap">
+          <CTableRow>
+            <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">위험신호 감지</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">최근 감정 분석</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">최근 활동</CTableHeaderCell>
+          </CTableRow>
+        </CTableHead>
+        <CTableBody>
+          {userTable.map((item, index) => (
+            <CTableRow v-for="item in tableItems" key={index}>
+              <CTableDataCell>
+                <div>{item.user.name}</div>
+                <div className="small text-body-secondary text-nowrap">
+                  상담 시작 시간: {item.user.registered}
+                </div>
+              </CTableDataCell>
+
+              <CTableDataCell>
+                <div className="d-flex justify-content-between text-nowrap">
+                  <div className="fw-semibold">{item.usage.value}%</div>
+                </div>
+                <CProgress thin color={item.usage.color} value={item.usage.value} />
+              </CTableDataCell>
+
+              <CTableDataCell>
+                <div style={{ display: 'flex' }}>
+                  {item.emotions.map((emotion, index) => (
+                    <CBadge key={index} textBgColor="info">
+                      {emotion}
+                    </CBadge>
+                  ))}
+                </div>
+              </CTableDataCell>
+
+              <CTableDataCell>
+                <div className="small text-body-secondary text-nowrap">최근 대화 시간</div>
+                <div className="fw-semibold text-nowrap">{item.activity}</div>
+              </CTableDataCell>
+            </CTableRow>
+          ))}
+        </CTableBody>
+      </CTable>
+      <br />
+      <h1>아래부터 예제입니다.</h1>
+      <br />
       <WidgetsDropdown className="mb-4" />
       <CCard className="mb-4">
         <CCardBody>

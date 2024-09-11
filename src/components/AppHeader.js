@@ -58,10 +58,19 @@ const AppHeader = () => {
             </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Users</CNavLink>
+            <CNavLink to="/customers" as={NavLink}>
+              내담자 관리
+            </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Settings</CNavLink>
+            <CNavLink to="/daily-analysis" as={NavLink}>
+              일일 분석
+            </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink to="/period-analysis" as={NavLink}>
+              기간 분석
+            </CNavLink>
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-auto">

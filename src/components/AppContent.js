@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { CContainer, CSpinner } from '@coreui/react'
+import Authorization from '../components/authorization'
 
 // routes config
 import routes from '../routes'
@@ -18,12 +19,17 @@ const AppContent = () => {
                   path={route.path}
                   exact={route.exact}
                   name={route.name}
-                  element={<route.element />}
+                  element={
+                    <Authorization redirectTo="/login">
+                      {React.createElement(route.element)}
+                    </Authorization>
+                  }
                 />
               )
             )
           })}
-          <Route path="/" element={<Navigate to="dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
       </Suspense>
     </CContainer>
