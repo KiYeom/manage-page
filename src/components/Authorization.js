@@ -9,7 +9,7 @@ const Authorization = ({ redirectTo, children }) => {
   if (isAuthenticated) {
     return <>{children}</>
   } else {
-    return <Navigate to={redirectTo} replace />
+    return <Navigate to={redirectTo} />
   }
 }
 

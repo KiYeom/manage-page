@@ -19,12 +19,16 @@ const AppContent = () => {
                   path={route.path}
                   exact={route.exact}
                   name={route.name}
-                  element={<Authorization redirectTo="/login">{route.element}</Authorization>}
+                  element={
+                    <Authorization redirectTo="/login">
+                      {React.createElement(route.element)}
+                    </Authorization>
+                  }
                 />
               )
             )
           })}
-          <Route path="/" element={<Navigate to="dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/404" />} />
         </Routes>
       </Suspense>
