@@ -271,7 +271,7 @@ const Customers = () => {
         </CTableBody>
       </CTable>
       <br />
-      <h1>아래부터 예제입니다.</h1>
+      <h1>아래부터 예제입니다리</h1>
       <br />
       <WidgetsDropdown className="mb-4" />
       <CCard className="mb-4">

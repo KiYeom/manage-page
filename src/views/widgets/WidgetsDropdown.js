@@ -223,7 +223,7 @@ const WidgetsDropdown = (props) => {
           color="warning"
           value={
             <>
-              2.49%{' '}
+              2.5%{' '}
               <span className="fs-6 fw-normal">
                 (84.7% <CIcon icon={cilArrowTop} />)
               </span>
@@ -268,10 +268,18 @@ const WidgetsDropdown = (props) => {
                 maintainAspectRatio: false,
                 scales: {
                   x: {
-                    display: false,
+                    ticks: {
+                      callback: function (value, index, ticks) {
+                        // 처음과 마지막 라벨만 표시
+                        if (index === 0 || index === ticks.length - 1) {
+                          return this.getLabelForValue(value)
+                        }
+                        return ''
+                      },
+                    },
                   },
                   y: {
-                    display: false,
+                    display: true,
                   },
                 },
                 elements: {

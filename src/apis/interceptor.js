@@ -57,7 +57,7 @@ function setInterceptor(instance) {
 
 function createInstance() {
   const instance = axios.create({
-    baseURL: `http://localhost:8000`,
+    baseURL: `https:/api.remind4u.co.kr/`,
   })
 
   return setInterceptor(instance)
@@ -67,7 +67,7 @@ function createInstance() {
 export const reissueAccessToken = async (refreshToken, isAppStart = false) => {
   try {
     deleteAccessToken()
-    const res = await axios.patch('http://localhost:8000/v1/auth/refresh', {
+    const res = await axios.patch('https:/api.remind4u.co.kr/v1/auth/refresh', {
       deviceId: getWebId(),
       appVersion: '1',
       deviceOs: 'web',

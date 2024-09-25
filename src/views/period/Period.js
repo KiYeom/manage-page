@@ -1,6 +1,16 @@
 import React from 'react'
 import classNames from 'classnames'
-
+import { curveCardinal } from 'd3-shape'
+import { CChartLine } from '@coreui/react-chartjs'
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts'
 import {
   CAvatar,
   CBadge,
@@ -54,7 +64,60 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 
+const charts = [
+  {
+    category: 'anger',
+    chart: [
+      { date: '2024-06-19', value: 34 },
+      { date: '2024-06-27', value: 63 },
+      { date: '2024-07-17', value: 21 },
+    ],
+  },
+  {
+    category: 'sadness',
+    chart: [
+      { date: '2024-06-19', value: 10 },
+      { date: '2024-06-27', value: 60 },
+      { date: '2024-07-17', value: 30 },
+    ],
+  },
+]
+
+// 두 개의 감정 데이터를 날짜별로 병합하는 함수
+const mergeData = () => {
+  // 각 감정의 데이터를 날짜별로 병합
+  const angerData = charts[0].chart
+  const sadnessData = charts[1].chart
+
+  // 병합된 데이터를 반환
+  return angerData.map((angerItem, index) => ({
+    date: angerItem.date,
+    anger: angerItem.value,
+    sadness: sadnessData[index].value,
+  }))
+}
+
+const cardinal = curveCardinal.tension(0.2)
+
+// 데이터 전처리 함수
+const preprocessData = (charts) => {
+  const labels = charts[0].chart.map((item) => item.date)
+  const datasets = charts.map((category) => ({
+    label: category.category,
+    backgroundColor: 'rgba(255,255,255,.2)',
+    borderColor: 'rgba(255,255,255,.55)',
+    data: category.chart.map((item) => item.value),
+    fill: true,
+  }))
+
+  return { labels, datasets }
+}
+
+// 전처리한 데이터
+const { labels, datasets } = preprocessData(charts)
+
 const Period = () => {
+  const data = mergeData()
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
     { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
@@ -271,8 +334,43 @@ const Period = () => {
         </CTableBody>
       </CTable>
       <br />
-      <h1>아래부터 예제입니다.</h1>
+      <h1>아래부터 예제입니다람이</h1>
       <br />
+
+      <div>
+        <ResponsiveContainer width={500} height={500}>
+          <AreaChart
+            width={500}
+            height={500}
+            data={data}
+            margin={{
+              top: 10,
+              right: 30,
+              left: 0,
+              bottom: 0,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" ticks={['2024-06-19', '2024-07-17']} />
+            <YAxis />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="anger"
+              stroke="#8884d8"
+              fill="#8884d8"
+              fillOpacity={0.3}
+            />
+            <Area
+              type="monotone"
+              dataKey="sadness"
+              stroke="#8884d8"
+              fill="#8884d8"
+              fillOpacity={0.3}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
       <WidgetsDropdown className="mb-4" />
       <CCard className="mb-4">
         <CCardBody>
