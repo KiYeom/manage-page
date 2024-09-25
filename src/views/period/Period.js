@@ -334,9 +334,9 @@ const Period = () => {
         </CTableBody>
       </CTable>
       <br />
-      <h1>아래부터 예제입니다람이</h1>
+      <h1>아래부터 예제입니다람이닮은 기간분석</h1>
       <br />
-
+      <h2>감정 변화 추이</h2>
       <div>
         <ResponsiveContainer width={500} height={500}>
           <AreaChart
@@ -371,6 +371,8 @@ const Period = () => {
           </AreaChart>
         </ResponsiveContainer>
       </div>
+      <h2>나의 기간 토픽</h2>
+      <br />
       <WidgetsDropdown className="mb-4" />
       <CCard className="mb-4">
         <CCardBody>

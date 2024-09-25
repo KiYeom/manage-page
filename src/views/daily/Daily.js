@@ -45,7 +45,7 @@ import {
   cilUser,
   cilUserFemale,
 } from '@coreui/icons'
-
+import EmotionContainer from '../emotion/EmotionContainer'
 import avatar1 from 'src/assets/images/avatars/1.jpg'
 import avatar2 from 'src/assets/images/avatars/2.jpg'
 import avatar3 from 'src/assets/images/avatars/3.jpg'
@@ -58,10 +58,31 @@ import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
 import { Calendar } from 'react-date-range'
-
+import EmotionChip from '../emotion/EmotionChip'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { curveCardinal } from 'd3-shape'
+import KeywordChip from '../keyword/KeywordChip'
+//일일 키워드
+const dailyEmotion = [
+  {
+    keyword: '격분한',
+    group: 'angry',
+  },
+  {
+    keyword: '굴욕적인',
+    group: 'sad',
+  },
+  {
+    keyword: '기쁜',
+    group: 'happy',
+  },
+  {
+    keyword: '차분한',
+    group: 'calm',
+  },
+]
 
+//파이 그래프 데이터
 const datas = [
   {
     label: '분노하는',
@@ -88,6 +109,9 @@ const datas = [
     percent: 3,
   },
 ]
+
+//일일키워드
+const dailyKeyword = ['친구 관계 문제', '소외감 표현', '불만 표출']
 
 // 데이터 전처리 함수
 const preprocessDoughnutData = (datas) => {
@@ -343,7 +367,8 @@ const Daily = () => {
         </CTableBody>
       </CTable>
       <br />
-      <h1>아래부터 예제입니당.</h1>
+      <h1>아래부터 예제입니다람쥐 일일분석.</h1>
+      <h2>감정 데이터</h2>
       <div style={{ height: '500px', width: '500px' }}>
         <CChartDoughnut
           data={{
@@ -357,6 +382,15 @@ const Daily = () => {
           }}
         />
       </div>
+      <h2>기록한 감정</h2>
+      <EmotionContainer>
+        {dailyEmotion.map((item, index) => (
+          <EmotionChip text={item.keyword} group={item.group} key={index} />
+        ))}
+      </EmotionContainer>
+      <h2>일상 키워드</h2>
+      <KeywordChip />
+
       <br />
     </>
   )

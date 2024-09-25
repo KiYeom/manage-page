@@ -24,6 +24,7 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
+    'react/no-unknown-property': ['error', { ignore: ['css'] }],
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },
