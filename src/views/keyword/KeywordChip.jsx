@@ -1,27 +1,55 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import Icon from '../../components/icon/icons'
+import PropTypes from 'prop-types'
+
 const Container = styled.div`
   display: flex;
   flex-direction: row;
   background-color: white;
   width: 300px;
+  padding: 10px;
+  border-radius: 10px;
+  gap: 10px;
 `
 const Title = styled.span`
-  font-size: 20px;
+  font-size: 30px;
   color: red;
 `
-const Desc = styled.span`
-  font-size: 10px;
-  color: blue;
+const TextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 `
-const KeywordChip = () => {
+
+const Circle = styled.div((props) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '100px',
+  height: '100px',
+  borderRadius: '50%',
+  backgroundColor: props.bg,
+}))
+
+const KeywordChip = ({ bg, object, text }) => {
   return (
     <Container>
-      <div>
-        <Title>제목입니당</Title>
-        <Desc>설명입니당</Desc>
-      </div>
+      <Circle bg={bg}>
+        <Icon name="clover" fill={object} width={60} height={60} />
+      </Circle>
+      <TextContainer>
+        <Title>{text}</Title>
+      </TextContainer>
     </Container>
   )
 }
 export default KeywordChip
+
+KeywordChip.propTypes = {
+  bg: PropTypes.string,
+  object: PropTypes.string,
+  text: PropTypes.string,
+}

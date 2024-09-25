@@ -62,6 +62,7 @@ import EmotionChip from '../emotion/EmotionChip'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { curveCardinal } from 'd3-shape'
 import KeywordChip from '../keyword/KeywordChip'
+import Icon from '../../components/icon/icons'
 //일일 키워드
 const dailyEmotion = [
   {
@@ -112,6 +113,11 @@ const datas = [
 
 //일일키워드
 const dailyKeyword = ['친구 관계 문제', '소외감 표현', '불만 표출']
+const colors = [
+  { bg: '#E5F8F3', object: '#31B28E' },
+  { bg: '#FDF9D8', object: '#FFB800' },
+  { bg: '#EFECFF', object: '#A395F1' },
+]
 
 // 데이터 전처리 함수
 const preprocessDoughnutData = (datas) => {
@@ -389,8 +395,16 @@ const Daily = () => {
         ))}
       </EmotionContainer>
       <h2>일상 키워드</h2>
-      <KeywordChip />
-
+      <EmotionContainer>
+        {dailyKeyword.map((item, index) => (
+          <KeywordChip
+            key={index}
+            bg={colors[index].bg}
+            object={colors[index].object}
+            text={item}
+          />
+        ))}
+      </EmotionContainer>
       <br />
     </>
   )
