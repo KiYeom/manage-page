@@ -274,13 +274,12 @@ const Dashboard = () => {
       <br />
       <h1>아래부터 예제입니다람쥐</h1>
       <br />
-      <WidgetsDropdown className="mb-4" />
       <CCard className="mb-4">
         <CCardBody>
           <CRow>
             <CCol sm={5}>
               <h4 id="traffic" className="card-title mb-0">
-                Traffic
+                Traffic?
               </h4>
               <div className="small text-body-secondary">January - July 2023</div>
             </CCol>
@@ -289,7 +288,7 @@ const Dashboard = () => {
                 <CIcon icon={cilCloudDownload} />
               </CButton>
               <CButtonGroup className="float-end me-3">
-                {['Day', 'Month', 'Year'].map((value) => (
+                {['Day', 'Month', 'Year!'].map((value) => (
                   <CButton
                     color="outline-secondary"
                     key={value}
@@ -329,6 +328,7 @@ const Dashboard = () => {
           </CRow>
         </CCardFooter>
       </CCard>
+      <WidgetsDropdown className="mb-4" />
       <WidgetsBrand className="mb-4" withCharts />
       <CRow>
         <CCol xs>

@@ -32,7 +32,7 @@ const MainChart = () => {
     <>
       <CChartLine
         ref={chartRef}
-        style={{ height: '300px', marginTop: '40px' }}
+        style={{ height: '500px', marginTop: '40px' }}
         data={{
           labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
           datasets: [
@@ -43,13 +43,13 @@ const MainChart = () => {
               pointHoverBackgroundColor: getStyle('--cui-info'),
               borderWidth: 2,
               data: [
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
               ],
               fill: true,
             },
@@ -60,13 +60,13 @@ const MainChart = () => {
               pointHoverBackgroundColor: getStyle('--cui-success'),
               borderWidth: 2,
               data: [
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
+                random(50, 100),
               ],
             },
             {
@@ -105,11 +105,11 @@ const MainChart = () => {
               grid: {
                 color: getStyle('--cui-border-color-translucent'),
               },
-              max: 250,
+              max: 100,
               ticks: {
                 color: getStyle('--cui-body-color'),
                 maxTicksLimit: 5,
-                stepSize: Math.ceil(250 / 5),
+                stepSize: Math.ceil(100 / 5),
               },
             },
           },

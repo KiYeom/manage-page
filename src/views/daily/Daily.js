@@ -397,12 +397,7 @@ const Daily = () => {
       <h2>일상 키워드</h2>
       <EmotionContainer>
         {dailyKeyword.map((item, index) => (
-          <KeywordChip
-            key={index}
-            bg={colors[index].bg}
-            object={colors[index].object}
-            text={item}
-          />
+          <KeywordChip key={index} color={colors[index]} text={item} />
         ))}
       </EmotionContainer>
       <br />

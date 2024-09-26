@@ -34,12 +34,14 @@ const Circle = styled.div((props) => ({
   backgroundColor: props.bg,
 }))
 
-const KeywordChip = ({ bg, object, text }) => {
+const KeywordChip = ({ color, text }) => {
   return (
     <Container>
-      <Circle bg={bg}>
-        <Icon name="clover" fill={object} width={60} height={60} />
-      </Circle>
+      {color && (
+        <Circle bg={color.bg}>
+          <Icon name="clover" fill={color.object} width={60} height={60} />
+        </Circle>
+      )}
       <TextContainer>
         <Title>{text}</Title>
       </TextContainer>
@@ -49,7 +51,6 @@ const KeywordChip = ({ bg, object, text }) => {
 export default KeywordChip
 
 KeywordChip.propTypes = {
-  bg: PropTypes.string,
-  object: PropTypes.string,
+  color: PropTypes.object,
   text: PropTypes.string,
 }
