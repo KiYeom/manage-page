@@ -6,7 +6,8 @@ const Daily = React.lazy(() => import('./views/daily/Daily'))
 const Period = React.lazy(() => import('./views/period/Period'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
-
+const DailyReport = React.lazy(() => import('./views/report/DailyReport'))
+const PeriodReport = React.lazy(() => import('./views/report/PeriodReport'))
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
 const Breadcrumbs = React.lazy(() => import('./views/base/breadcrumbs/Breadcrumbs'))
@@ -56,6 +57,8 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
+  { path: '/dashboard/daily-report/:id', name: 'DailyReport', element: DailyReport },
+  { path: '/dashboard/period-report/:id', name: 'PeriodReport', element: PeriodReport },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/customers', name: 'Customers', element: Customers },
   { path: '/daily-analysis', name: 'Daily', element: Daily },

@@ -5,6 +5,7 @@ import Sad from '../../assets/svg/sad.svg'
 import Angry from '../../assets/svg/angry.svg'
 import Calm from '../../assets/svg/calm.svg'
 import Clover from '../../assets/svg/clover.svg'
+import Search from '../../assets/svg/search.svg'
 
 const Icon = ({ name, width, height, fill }) => {
   {
@@ -19,6 +20,8 @@ const Icon = ({ name, width, height, fill }) => {
         return <Calm width={width} height={height} fill={fill} />
       case 'clover':
         return <Clover width={width} height={height} fill={fill} />
+      case 'search':
+        return <Search width={width} height={height} fill={fill} />
     }
   }
 }

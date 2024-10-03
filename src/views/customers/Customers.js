@@ -1,5 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
+import { CNavItem, CNavLink } from '@coreui/react'
+import { NavLink } from 'react-router-dom'
+import { CForm, CFormInput, CFormLabel } from '@coreui/react'
 
 import {
   CAvatar,
@@ -226,6 +229,19 @@ const Customers = () => {
 
   return (
     <>
+      <CForm className="row g-3">
+        <CCol xs="auto">
+          <CFormLabel htmlFor="inputPassword2" className="visually-hidden">
+            ?
+          </CFormLabel>
+          <CFormInput type="text" id="inputPassword2" placeholder="내담자 검색 (이름)" />
+        </CCol>
+        <CCol xs="auto">
+          <CButton color="primary" type="submit" className="mb-3">
+            검색
+          </CButton>
+        </CCol>
+      </CForm>
       <CTable align="middle" className="mb-0 border" hover responsive>
         <CTableHead className="text-nowrap">
           <CTableRow>
@@ -239,7 +255,12 @@ const Customers = () => {
           {userTable.map((item, index) => (
             <CTableRow v-for="item in tableItems" key={index}>
               <CTableDataCell>
-                <div>{item.user.name}</div>
+                <CNavItem>
+                  <CNavLink to={`/dashboard/daily-report/${item.user.name}`} as={NavLink}>
+                    {item.user.name}!
+                  </CNavLink>
+                </CNavItem>
+
                 <div className="small text-body-secondary text-nowrap">
                   상담 시작 시간: {item.user.registered}
                 </div>
@@ -271,7 +292,7 @@ const Customers = () => {
         </CTableBody>
       </CTable>
       <br />
-      <h1>아래부터 예제입니다리</h1>
+      <h1>아래부터 예제입니다람이</h1>
       <br />
       <WidgetsDropdown className="mb-4" />
       <CCard className="mb-4">

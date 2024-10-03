@@ -314,7 +314,7 @@ const Cards = () => {
                 <CCol sm={6}>
                   <CCard>
                     <CCardBody>
-                      <CCardTitle>Special title treatment</CCardTitle>
+                      <CCardTitle>Special title treatment : )</CCardTitle>
                       <CCardText>
                         With supporting text below as a natural lead-in to additional content.
                       </CCardText>

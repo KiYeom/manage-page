@@ -15,6 +15,7 @@ import {
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
+//왼쪽 네비게이션바
 const _nav = [
   {
     component: CNavItem,

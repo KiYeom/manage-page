@@ -63,90 +63,6 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import { curveCardinal } from 'd3-shape'
 import KeywordChip from '../keyword/KeywordChip'
 import Icon from '../../components/icon/icons'
-//일일 키워드
-const dailyEmotion = [
-  {
-    keyword: '격분한',
-    group: 'angry',
-  },
-  {
-    keyword: '굴욕적인',
-    group: 'sad',
-  },
-  {
-    keyword: '기쁜',
-    group: 'happy',
-  },
-  {
-    keyword: '차분한',
-    group: 'calm',
-  },
-]
-
-//파이 그래프 데이터
-const datas = [
-  {
-    label: '분노하는',
-    percent: 53,
-  },
-  {
-    label: '짜증나는',
-    percent: 39,
-  },
-  {
-    label: '충격 받은',
-    percent: 2,
-  },
-  {
-    label: '부끄러운',
-    percent: 2,
-  },
-  {
-    label: '걱정스러운',
-    percent: 1,
-  },
-  {
-    label: '기타',
-    percent: 3,
-  },
-]
-
-//일일키워드
-const dailyKeyword = ['친구 관계 문제', '소외감 표현', '불만 표출']
-const colors = [
-  { bg: '#E5F8F3', object: '#31B28E' },
-  { bg: '#FDF9D8', object: '#FFB800' },
-  { bg: '#EFECFF', object: '#A395F1' },
-]
-
-// 데이터 전처리 함수
-const preprocessDoughnutData = (datas) => {
-  const labels = datas.map((item) => item.label)
-  const percent = datas.map((item) => item.percent)
-  return { labels, percent }
-}
-
-// 전처리한 데이터
-const { labels, percent } = preprocessDoughnutData(datas)
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
-const RADIAN = Math.PI / 180
-
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
-  const x = cx + radius * Math.cos(-midAngle * RADIAN)
-  const y = cy + radius * Math.sin(-midAngle * RADIAN)
-
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor={x > cx ? 'start' : 'end'}
-      dominantBaseline="central"
-    ></text>
-  )
-}
 
 const Daily = () => {
   const [date, setDate] = React.useState(new Date())
@@ -374,32 +290,7 @@ const Daily = () => {
       </CTable>
       <br />
       <h1>아래부터 예제입니다람쥐 일일분석.</h1>
-      <h2>감정 데이터</h2>
-      <div style={{ height: '500px', width: '500px' }}>
-        <CChartDoughnut
-          data={{
-            labels: labels,
-            datasets: [
-              {
-                backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-                data: percent,
-              },
-            ],
-          }}
-        />
-      </div>
-      <h2>기록한 감정</h2>
-      <EmotionContainer>
-        {dailyEmotion.map((item, index) => (
-          <EmotionChip text={item.keyword} group={item.group} key={index} />
-        ))}
-      </EmotionContainer>
-      <h2>일상 키워드</h2>
-      <EmotionContainer>
-        {dailyKeyword.map((item, index) => (
-          <KeywordChip key={index} color={colors[index]} text={item} />
-        ))}
-      </EmotionContainer>
+
       <br />
     </>
   )
