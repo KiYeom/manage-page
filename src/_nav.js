@@ -29,6 +29,7 @@ const _nav = [
     to: '/customers',
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
   },
+  /*
   {
     component: CNavItem,
     name: '일일 분석',
@@ -44,7 +45,8 @@ const _nav = [
   {
     component: CNavTitle,
     name: '아래부터는 예제 부분',
-  },
+  },*/
+  /*
   {
     component: CNavTitle,
     name: 'Theme',
@@ -323,7 +325,7 @@ const _nav = [
     name: 'Docs',
     href: 'https://coreui.io/react/docs/templates/installation/',
     icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
-  },
+  },*/
 ]
 
 export default _nav

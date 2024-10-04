@@ -62,7 +62,7 @@ const AppHeader = () => {
               내담자 관리
             </CNavLink>
           </CNavItem>
-          <CNavItem>
+          {/*<CNavItem>
             <CNavLink to="/daily-analysis" as={NavLink}>
               일일 분석
             </CNavLink>
@@ -71,7 +71,7 @@ const AppHeader = () => {
             <CNavLink to="/period-analysis" as={NavLink}>
               기간 분석
             </CNavLink>
-          </CNavItem>
+          </CNavItem>*/}
         </CHeaderNav>
         <CHeaderNav className="ms-auto">
           <CNavItem>
