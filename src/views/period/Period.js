@@ -116,7 +116,7 @@ const charts = [
     ],
   },
 ]
-const emotionList = ['anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
+const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
 const periodKeyword = ['keyword1', 'keyword2', 'keyword3']
 
 // 두 개의 감정 데이터를 날짜별로 병합하는 함수

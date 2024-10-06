@@ -11,7 +11,8 @@ import { NavLink } from 'react-router-dom'
 import { ResponsiveContainer } from 'recharts'
 import Card from '../base/cards/Card'
 import palette from '../../assets/styles/theme'
-
+import ChartDataLabels from 'chartjs-plugin-datalabels'
+import Icon from '../../components/icon/icons'
 //파이 그래프 데이터
 const datas = [
   {
@@ -89,6 +90,50 @@ const dailyEmotion = [
     group: 'calm',
   },
 ]
+const config = {
+  type: 'doughnut',
+  data: {
+    labels: labels,
+    datasets: [
+      {
+        backgroundColor: [
+          palette.graph[100],
+          palette.graph[200],
+          palette.graph[300],
+          palette.graph[400],
+          palette.graph[500],
+          palette.graph[600],
+        ],
+        data: percent,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      datalabels: {
+        formatter: (value, context) => {
+          let sum = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0)
+          let percentage = (value / sum) * 100
+          return percentage > 10 ? percentage + '%' : '' // 10% 미만은 표시하지 않음
+        },
+        color: '#fff', // 텍스트 색상
+        font: {
+          weight: 'bold',
+        },
+      },
+      legend: {
+        position: 'top', // 범례를 상단에 배치
+      },
+      title: {
+        display: true,
+        text: 'AI가 분석한 감정', // 차트 제목
+      },
+    },
+  },
+  plugins: [ChartDataLabels], // 플러그인 추가
+}
 const DailyReport = () => {
   const { id } = useParams()
   return (
@@ -104,7 +149,7 @@ const DailyReport = () => {
         <h2>{id}의 일일 리포트</h2>
         <CButton
           color="primary"
-          to={`/dashboard/period-report/${id}`}
+          to={`/customers/period-report/${id}`}
           as={NavLink}
           onClick={() => {
             console.log('버튼 클릭')
@@ -132,36 +177,28 @@ const DailyReport = () => {
         </div>
       </div>
       <h3>감정 데이터</h3>
-      <ResponsiveContainer>
-        <CChartDoughnut
-          data={{
-            labels: labels,
-            datasets: [
-              {
-                backgroundColor: [
-                  palette.graph[100],
-                  palette.graph[200],
-                  palette.graph[300],
-                  palette.graph[400],
-                  palette.graph[500],
-                  palette.graph[600],
-                ],
-                data: percent,
-              },
-            ],
-          }}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-          }}
-        />
+      <EmotionContainer style={{ height: '500px', width: '100%', flexDirection: 'row' }}>
+        <ResponsiveContainer width="100%" height="100%" flexDirection="row">
+          <CChartDoughnut {...config} />
+        </ResponsiveContainer>
+      </EmotionContainer>
+
+      <ResponsiveContainer width="100%" height="100%">
+        <CListGroup className="mb-2">
+          {dailyEmotion.map((item, keywordIndex) => (
+            <CListGroupItem key={keywordIndex}>
+              <Icon name={item.group} width={20} height={20} /> <span>{item.keyword || '-'} </span>
+              {/* 키워드가 없으면 기본 텍스트 사용 */}
+            </CListGroupItem>
+          ))}
+        </CListGroup>
       </ResponsiveContainer>
-      <h2>기록한 감정 (수정하기)</h2>
-      <EmotionContainer>
+
+      {/*<EmotionContainer>
         {dailyEmotion.map((item, index) => (
           <EmotionChip text={item.keyword} group={item.group} key={index} />
         ))}
-      </EmotionContainer>
+      </EmotionContainer>*/}
     </>
   )
 }
