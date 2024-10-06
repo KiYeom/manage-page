@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
+import Warning from '../../warning/Warning'
 
 import {
   CRow,
@@ -45,15 +46,15 @@ const CardDropdown = (props) => {
           <Card title="위험1" />
         </CCol>
         <CCol>
-          <Card title="위험2" />
+          <Card title="위험2" component={<Warning />} />
         </CCol>
       </CRow>
       <CRow>
         <CCol>
-          <Card title="위험3" />
+          <Card title="위험3" component={<Warning />} />
         </CCol>
         <CCol>
-          <Card title="위험4" />
+          <Card title="위험4" component={<Warning />} />
         </CCol>
       </CRow>
     </CRow>

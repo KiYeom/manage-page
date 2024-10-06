@@ -381,13 +381,13 @@ const Period = () => {
       <br />
       <h1>아래부터 예제입니다람이닮은 기간분석</h1>
       <br />
-      <h2>🧡감정 변화 추이🧡</h2>
+      <h2>감정 변화 추이</h2>
       <CCard className="mb-4">
         <CCardBody>
           <CRow>
             <CCol sm={5}>
               <h4 id="traffic" className="card-title mb-0">
-                🧡감정 변화 추이🧡
+                감정 변화 추이
               </h4>
               <div className="small text-body-secondary">January - July 2023</div>
             </CCol>

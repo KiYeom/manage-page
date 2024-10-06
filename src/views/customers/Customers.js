@@ -256,8 +256,12 @@ const Customers = () => {
             <CTableRow v-for="item in tableItems" key={index}>
               <CTableDataCell>
                 <CNavItem>
-                  <CNavLink to={`/dashboard/daily-report/${item.user.name}`} as={NavLink}>
-                    {item.user.name}!
+                  <CNavLink
+                    to={`/dashboard/daily-report/${item.user.name}`}
+                    as={NavLink}
+                    style={{ listStyleType: 'none' }}
+                  >
+                    {item.user.name}
                   </CNavLink>
                 </CNavItem>
 

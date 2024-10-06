@@ -133,7 +133,7 @@ const PeriodReport = () => {
           <CRow>
             <CCol sm={5}>
               <h4 id="traffic" className="card-title mb-0">
-                🧡감정 변화 추이🧡
+                감정 변화 추이
               </h4>
               <div className="small text-body-secondary">January - July 2023</div>
             </CCol>

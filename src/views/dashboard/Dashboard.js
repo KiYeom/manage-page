@@ -302,9 +302,9 @@ const Dashboard = () => {
     <>
       <CRow className="mb-4">
         <CCol lg={6} style={{ backgroundColor: 'red' }}>
-          <Card title="전체 내담자 위험점수" component={<Warning />} />
+          <Card title="전체 내담자 위험점수" component={<Warning height={300} />} />
         </CCol>
-        <CCol>
+        <CCol lg={6} style={{ backgroundColor: 'blue' }}>
           <CardDropdown className="mb-4" />
         </CCol>
       </CRow>
