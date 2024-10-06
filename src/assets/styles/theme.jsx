@@ -27,5 +27,11 @@ const palette = {
     500: '#FBF5B9',
     600: '#ababab',
   },
+  web: {
+    100: '#A155B9',
+    200: '#7987FF',
+    300: '#F765A3',
+    400: '#2B303C',
+  },
 }
 export default palette

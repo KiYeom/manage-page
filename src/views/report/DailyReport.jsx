@@ -6,8 +6,11 @@ import { CChartDoughnut } from '@coreui/react-chartjs'
 import EmotionContainer from '../emotion/EmotionContainer'
 import EmotionChip from '../emotion/EmotionChip'
 import KeywordChip from '../keyword/KeywordChip'
-import { CButton } from '@coreui/react'
+import { CButton, CListGroup, CListGroupItem } from '@coreui/react'
 import { NavLink } from 'react-router-dom'
+import { ResponsiveContainer } from 'recharts'
+import Card from '../base/cards/Card'
+import palette from '../../assets/styles/theme'
 
 //파이 그래프 데이터
 const datas = [
@@ -43,7 +46,18 @@ const preprocessDoughnutData = (datas) => {
   return { labels, percent }
 }
 //일일키워드
-const dailyKeyword = ['친구 관계 문제', '소외감 표현', '불만 표출']
+const dailyKeyword = [
+  '친구 관계 문제일까요 아니면 부모님과의 갈등일까요 뭘까요',
+  '소외감 표현',
+  '불만 표출',
+  '직장 괴롭힘',
+  '업무 스트레스',
+  '우울감 증폭',
+  '공황 장애',
+  '강아지 사랑',
+  '친구와의 불화',
+  '-',
+]
 const colors = [
   { bg: '#E5F8F3', object: '#31B28E' },
   { bg: '#FDF9D8', object: '#FFB800' },
@@ -52,22 +66,6 @@ const colors = [
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
 const RADIAN = Math.PI / 180
-
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5
-  const x = cx + radius * Math.cos(-midAngle * RADIAN)
-  const y = cy + radius * Math.sin(-midAngle * RADIAN)
-
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor={x > cx ? 'start' : 'end'}
-      dominantBaseline="central"
-    ></text>
-  )
-}
 
 // 전처리한 데이터
 const { labels, percent } = preprocessDoughnutData(datas)
@@ -115,28 +113,49 @@ const DailyReport = () => {
           기간 리포트 확인하기
         </CButton>
       </div>
-      <h3>위험 감지 그래프</h3>
-      <Warning />
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ flex: '1', marginRight: '10px' }}>
+          <h3>위험 감지 그래프</h3>
+          <Card title="테스트" component={<Warning height={200} />} />
+        </div>
+        <div style={{ flex: '1' }}>
+          <h3>일상 키워드</h3>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <CListGroup className="mb-2">
+              {dailyKeyword.map((keyword, keywordIndex) => (
+                <CListGroupItem key={keywordIndex}>
+                  {keyword || '빈 문자열 사용'} {/* 키워드가 없으면 기본 텍스트 사용 */}
+                </CListGroupItem>
+              ))}
+            </CListGroup>
+          </div>
+        </div>
+      </div>
       <h3>감정 데이터</h3>
-      <div style={{ height: '500px', width: '500px' }}>
+      <ResponsiveContainer>
         <CChartDoughnut
           data={{
             labels: labels,
             datasets: [
               {
-                backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+                backgroundColor: [
+                  palette.graph[100],
+                  palette.graph[200],
+                  palette.graph[300],
+                  palette.graph[400],
+                  palette.graph[500],
+                  palette.graph[600],
+                ],
                 data: percent,
               },
             ],
           }}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+          }}
         />
-      </div>
-      <h2>일상 키워드</h2>
-      <EmotionContainer>
-        {dailyKeyword.map((item, index) => (
-          <KeywordChip key={index} color={colors[index]} text={item} />
-        ))}
-      </EmotionContainer>
+      </ResponsiveContainer>
       <h2>기록한 감정 (수정하기)</h2>
       <EmotionContainer>
         {dailyEmotion.map((item, index) => (
