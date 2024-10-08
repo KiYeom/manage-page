@@ -234,6 +234,11 @@ const Customers = () => {
     },
   ]
 
+  const navigateToReport = (type, id) => {
+    const url = `/#/customers/${type}-report/${id}`
+    window.location.href = url
+  }
+
   return (
     <>
       <Title
@@ -259,7 +264,8 @@ const Customers = () => {
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">위험 지수</CTableHeaderCell>
-            {/*<CTableHeaderCell className="bg-body-tertiary">최근 감정 분석</CTableHeaderCell>*/}
+            <CTableHeaderCell className="bg-body-tertiary">일일 리포트</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">기간 리포트</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">최근 활동</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
@@ -280,6 +286,18 @@ const Customers = () => {
                 <div className="small text-body-secondary text-nowrap">
                   상담 시작 시간: {item.user.registered}
                 </div>
+              </CTableDataCell>
+
+              <CTableDataCell>
+                <CButton color="primary" onClick={() => navigateToReport('daily', index)}>
+                  일일 리포트
+                </CButton>
+              </CTableDataCell>
+
+              <CTableDataCell>
+                <CButton color="primary" onClick={() => navigateToReport('period', index)}>
+                  기간 리포트
+                </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
