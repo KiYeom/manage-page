@@ -13,6 +13,8 @@ import Card from '../base/cards/Card'
 import palette from '../../assets/styles/theme'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import Icon from '../../components/icon/icons'
+import Title from '../base/title/Title'
+import Container from '../container/Container'
 //파이 그래프 데이터
 const datas = [
   {
@@ -146,8 +148,8 @@ const DailyReport = () => {
           padding: '10px 0px',
         }}
       >
-        <h2>{id}의 일일 리포트</h2>
-        <CButton
+        <Title title={id} subtitle={`${id}님의 일일리포트입니다.`} />
+        {/*<CButton
           color="primary"
           to={`/customers/period-report/${id}`}
           as={NavLink}
@@ -155,16 +157,14 @@ const DailyReport = () => {
             console.log('버튼 클릭')
           }}
         >
-          기간 리포트 확인하기
-        </CButton>
+          기간 리포트 확인하기 (기간 리포트 버튼)
+        </CButton>*/}
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ flex: '1', marginRight: '10px' }}>
-          <h3>위험 감지 그래프</h3>
           <Card title="테스트" component={<Warning height={200} />} />
         </div>
         <div style={{ flex: '1' }}>
-          <h3>일상 키워드</h3>
           <div style={{ display: 'flex', flexDirection: 'row' }}>
             <CListGroup className="mb-2">
               {dailyKeyword.map((keyword, keywordIndex) => (
@@ -176,23 +176,28 @@ const DailyReport = () => {
           </div>
         </div>
       </div>
-      <h3>감정 데이터</h3>
-      <EmotionContainer style={{ height: '500px', width: '100%', flexDirection: 'row' }}>
-        <ResponsiveContainer width="100%" height="100%" flexDirection="row">
-          <CChartDoughnut {...config} />
+      <Container>
+        <EmotionContainer style={{ height: '500px', width: '48%', flexDirection: 'row' }}>
+          <ResponsiveContainer width="100%" height="100%" flexDirection="row">
+            <CChartDoughnut {...config} />
+          </ResponsiveContainer>
+        </EmotionContainer>
+        <EmotionContainer style={{ height: '500px', width: '48%' }}>테스트</EmotionContainer>
+      </Container>
+
+      <EmotionContainer>
+        <ResponsiveContainer width="50%" height="100%">
+          {/*<CListGroup className="mb-2">
+            {dailyEmotion.map((item, keywordIndex) => (
+              <CListGroupItem key={keywordIndex}>
+                <Icon name={item.group} width={20} height={20} />{' '}
+                <span>{item.keyword || '-'} </span>
+
+              </CListGroupItem>
+            ))}
+          </CListGroup>*/}
         </ResponsiveContainer>
       </EmotionContainer>
-
-      <ResponsiveContainer width="100%" height="100%">
-        <CListGroup className="mb-2">
-          {dailyEmotion.map((item, keywordIndex) => (
-            <CListGroupItem key={keywordIndex}>
-              <Icon name={item.group} width={20} height={20} /> <span>{item.keyword || '-'} </span>
-              {/* 키워드가 없으면 기본 텍스트 사용 */}
-            </CListGroupItem>
-          ))}
-        </CListGroup>
-      </ResponsiveContainer>
 
       {/*<EmotionContainer>
         {dailyEmotion.map((item, index) => (

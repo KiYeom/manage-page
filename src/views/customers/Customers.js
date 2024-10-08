@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom'
 import { CForm, CFormInput, CFormLabel } from '@coreui/react'
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react'
+import Title from '../base/title/Title'
 
 import {
   CAvatar,
@@ -235,6 +236,10 @@ const Customers = () => {
 
   return (
     <>
+      <Title
+        title="내담자 검색"
+        subtitle="이름을 입력하면 내담자에 대한 정보를 확인할 수 있습니다"
+      />
       <CForm className="row g-3">
         <CCol xs="auto">
           <CFormLabel htmlFor="inputPassword2" className="visually-hidden">
@@ -248,12 +253,13 @@ const Customers = () => {
           </CButton>
         </CCol>
       </CForm>
+      <Title title="전체 내담자 정보" subtitle="전체 내담자의 정보를 한 눈에 확인할 수 있습니다" />
       <CTable align="middle" className="mb-0 border" hover responsive>
         <CTableHead className="text-nowrap">
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">위험신호 감지</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">최근 감정 분석</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">위험 지수</CTableHeaderCell>
+            {/*<CTableHeaderCell className="bg-body-tertiary">최근 감정 분석</CTableHeaderCell>*/}
             <CTableHeaderCell className="bg-body-tertiary">최근 활동</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
@@ -283,7 +289,7 @@ const Customers = () => {
                 <CProgress thin color={item.usage.color} value={item.usage.value} />
               </CTableDataCell>
 
-              <CTableDataCell>
+              {/*(<CTableDataCell>
                 <div style={{ display: 'flex' }}>
                   {item.emotions.map((emotion, index) => (
                     <CBadge key={index} textBgColor="info">
@@ -291,7 +297,7 @@ const Customers = () => {
                     </CBadge>
                   ))}
                 </div>
-              </CTableDataCell>
+              </CTableDataCell>*/}
 
               <CTableDataCell>
                 <div className="small text-body-secondary text-nowrap">최근 대화 시간</div>
