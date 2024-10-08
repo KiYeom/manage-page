@@ -1,6 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
+import { CListGroup, CListGroupItem } from '@coreui/react'
 import {
   AreaChart,
   Area,
@@ -30,6 +31,20 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { useState } from 'react'
+import palette from '../../assets/styles/theme'
+//일일키워드
+const periodKeyword = [
+  '친구 관계 문제일까요 아니면 부모님과의 갈등일까요 뭘까요',
+  '소외감 표현',
+  '불만 표출',
+  '직장 괴롭힘',
+  '업무 스트레스',
+  '우울감 증폭',
+  '공황 장애',
+  '강아지 사랑',
+  '친구와의 불화',
+  '-',
+]
 const charts = [
   {
     category: 'anger',
@@ -80,7 +95,8 @@ const charts = [
     ],
   },
 ]
-const emotionList = ['anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
+const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
+
 const mergeData = () => {
   // 각 감정의 데이터를 날짜별로 병합
   const angerData = charts[0].chart
@@ -105,6 +121,36 @@ const PeriodReport = () => {
   const data = mergeData()
   const [clickedBtn, setClickedBtn] = useState(0)
   const { id } = useParams()
+
+  const renderAreas = () => {
+    if (clickedBtn === 0) {
+      // 'all'을 클릭했을 때 모든 감정 데이터를 보여줌
+      return emotionList
+        .slice(1)
+        .map((emotion, index) => (
+          <Area
+            key={emotion}
+            type="monotone"
+            dataKey={emotion}
+            stroke={palette.graph[(index + 1) * 100]}
+            fillOpacity={0.3}
+            fill={palette.graph[(index + 1) * 100]}
+          />
+        ))
+    } else {
+      // 특정 감정을 선택했을 때 해당 감정만 보여줌
+      return (
+        <Area
+          type="monotone"
+          dataKey={emotionList[clickedBtn]}
+          stroke={palette.graph[clickedBtn * 100]}
+          fill={palette.graph[clickedBtn * 100]}
+          fillOpacity={0.3}
+        />
+      )
+    }
+  }
+
   return (
     <>
       <div
@@ -118,7 +164,7 @@ const PeriodReport = () => {
         <h2>{id}의 기간 리포트</h2>
         <CButton
           color="primary"
-          to={`/dashboard/daily-report/${id}`}
+          to={`/customers/daily-report/${id}`}
           as={NavLink}
           onClick={() => {
             console.log('버튼 클릭')
@@ -127,7 +173,7 @@ const PeriodReport = () => {
           일일리포트 확인하기
         </CButton>
       </div>
-      <h2>감정 변화 추이</h2>
+
       <CCard className="mb-4">
         <CCardBody>
           <CRow>
@@ -135,7 +181,7 @@ const PeriodReport = () => {
               <h4 id="traffic" className="card-title mb-0">
                 감정 변화 추이
               </h4>
-              <div className="small text-body-secondary">January - July 2023</div>
+              <div className="small text-body-secondary">2024-06-19 ~ 2024-07-17</div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButtonGroup className="float-end me-3">
@@ -182,14 +228,40 @@ const PeriodReport = () => {
                 <XAxis dataKey="date" ticks={['2024-06-19', '2024-07-17']} />
                 <YAxis type="number" domain={[0, 100]} tickCount={3} />
                 <Tooltip />
-                <Area
-                  type="monotone"
-                  dataKey={emotionList[clickedBtn]}
-                  stroke="#8884d8"
-                  fill="#8884d8"
-                  fillOpacity={0.3}
-                />
+                {renderAreas()}
               </AreaChart>
+            </ResponsiveContainer>
+          </CRow>
+        </CCardFooter>
+      </CCard>
+
+      <CCard className="mb-4">
+        <CCardBody>
+          <CRow>
+            <CCol sm={5}>
+              <h4 id="traffic" className="card-title mb-0">
+                기간 키워드
+              </h4>
+              <div className="small text-body-secondary">2024-06-19 ~ 2024-07-17</div>
+            </CCol>
+          </CRow>
+        </CCardBody>
+        <CCardFooter>
+          <CRow
+            xs={{ cols: 1, gutter: 4 }}
+            sm={{ cols: 2 }}
+            lg={{ cols: 4 }}
+            xl={{ cols: 5 }}
+            className="mb-2 text-center justify-content-center align-item-center"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <CListGroup className="mb-2">
+                {periodKeyword.map((keyword, keywordIndex) => (
+                  <CListGroupItem key={keywordIndex}>
+                    {keyword || '-'} {/* 키워드가 없으면 기본 텍스트 사용 */}
+                  </CListGroupItem>
+                ))}
+              </CListGroup>
             </ResponsiveContainer>
           </CRow>
         </CCardFooter>
@@ -197,4 +269,5 @@ const PeriodReport = () => {
     </>
   )
 }
+
 export default PeriodReport

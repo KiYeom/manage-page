@@ -43,18 +43,18 @@ const CardDropdown = (props) => {
     <CRow style={{ backgroundColor: 'blue' }}>
       <CRow className={props.className}>
         <CCol>
-          <Card title="위험1" />
+          <Card title="위험1" component={<Warning height={200} />} />
         </CCol>
         <CCol>
-          <Card title="위험2" component={<Warning />} />
+          <Card title="위험2" component={<Warning height={200} />} />
         </CCol>
       </CRow>
       <CRow>
         <CCol>
-          <Card title="위험3" component={<Warning />} />
+          <Card title="위험3" component={<Warning height={200} />} />
         </CCol>
         <CCol>
-          <Card title="위험4" component={<Warning />} />
+          <Card title="위험4" component={<Warning height={200} />} />
         </CCol>
       </CRow>
     </CRow>

@@ -3,6 +3,9 @@ import classNames from 'classnames'
 import { CNavItem, CNavLink } from '@coreui/react'
 import { NavLink } from 'react-router-dom'
 import { CForm, CFormInput, CFormLabel } from '@coreui/react'
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react'
+import Title from '../base/title/Title'
 
 import {
   CAvatar,
@@ -65,7 +68,11 @@ const Customers = () => {
     { title: 'New Users', value: '22.123 Users', percent: 80, color: 'danger' },
     { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
   ]
-
+  const navItemStyle = css`
+    list-style-type: none; /* 리스트 스타일 제거 */
+    margin: 0; /* 기본 마진 제거 */
+    padding: 0; /* 기본 패딩 제거 */
+  `
   const progressGroupExample1 = [
     { title: 'Monday', value1: 34, value2: 78 },
     { title: 'Tuesday', value1: 56, value2: 94 },
@@ -229,6 +236,10 @@ const Customers = () => {
 
   return (
     <>
+      <Title
+        title="내담자 검색"
+        subtitle="이름을 입력하면 내담자에 대한 정보를 확인할 수 있습니다"
+      />
       <CForm className="row g-3">
         <CCol xs="auto">
           <CFormLabel htmlFor="inputPassword2" className="visually-hidden">
@@ -242,12 +253,13 @@ const Customers = () => {
           </CButton>
         </CCol>
       </CForm>
+      <Title title="전체 내담자 정보" subtitle="전체 내담자의 정보를 한 눈에 확인할 수 있습니다" />
       <CTable align="middle" className="mb-0 border" hover responsive>
         <CTableHead className="text-nowrap">
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">위험신호 감지</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">최근 감정 분석</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">위험 지수</CTableHeaderCell>
+            {/*<CTableHeaderCell className="bg-body-tertiary">최근 감정 분석</CTableHeaderCell>*/}
             <CTableHeaderCell className="bg-body-tertiary">최근 활동</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
@@ -255,9 +267,9 @@ const Customers = () => {
           {userTable.map((item, index) => (
             <CTableRow v-for="item in tableItems" key={index}>
               <CTableDataCell>
-                <CNavItem>
+                <CNavItem css={navItemStyle}>
                   <CNavLink
-                    to={`/dashboard/daily-report/${item.user.name}`}
+                    to={`/customers/daily-report/${item.user.name}`}
                     as={NavLink}
                     style={{ listStyleType: 'none' }}
                   >
@@ -277,7 +289,7 @@ const Customers = () => {
                 <CProgress thin color={item.usage.color} value={item.usage.value} />
               </CTableDataCell>
 
-              <CTableDataCell>
+              {/*(<CTableDataCell>
                 <div style={{ display: 'flex' }}>
                   {item.emotions.map((emotion, index) => (
                     <CBadge key={index} textBgColor="info">
@@ -285,7 +297,7 @@ const Customers = () => {
                     </CBadge>
                   ))}
                 </div>
-              </CTableDataCell>
+              </CTableDataCell>*/}
 
               <CTableDataCell>
                 <div className="small text-body-secondary text-nowrap">최근 대화 시간</div>

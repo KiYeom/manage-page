@@ -9,9 +9,7 @@ const data = [
   { name: 'B', value: 10, color: '#0093ff' },
   { name: 'C', value: 10, color: '#FF3E3E' },
 ]
-const iR = 50
-const oR = 100
-const value = 60
+const targetValue = 60
 
 const needle = (value, data, cx, cy, iR, oR, color) => {
   let total = 0
@@ -44,6 +42,7 @@ const needle = (value, data, cx, cy, iR, oR, color) => {
 const Warning = ({ height }) => {
   const containerRef = useRef(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
+  const [currentValue, setCurrentValue] = useState(0) // 애니메이션용 상태값
 
   useEffect(() => {
     const handleResize = () => {
@@ -63,8 +62,27 @@ const Warning = ({ height }) => {
     }
   }, [])
 
+  useEffect(() => {
+    let start = null
+    const duration = 500 // 애니메이션 지속 시간 (ms)
+
+    const animateNeedle = (timestamp) => {
+      if (!start) start = timestamp
+      const progress = timestamp - start
+      const newValue = Math.min((progress / duration) * targetValue, targetValue) // 점진적 증가
+      setCurrentValue(newValue)
+
+      if (progress < duration) {
+        requestAnimationFrame(animateNeedle)
+      }
+    }
+
+    requestAnimationFrame(animateNeedle)
+  }, []) // targetValue까지 바늘 애니메이션
+
   const cx = dimensions.width / 2
   const cy = dimensions.height / 2
+  const radius = Math.min(dimensions.width, dimensions.height) / 2.5 // 반지름을 더 키움
 
   return (
     <div ref={containerRef} style={{ width: '100%', height: height }}>
@@ -75,10 +93,10 @@ const Warning = ({ height }) => {
             startAngle={180}
             endAngle={0}
             data={data}
-            cx="50%" // 중심을 %로 설정
-            cy="50%" // 중심을 %로 설정
-            innerRadius={iR}
-            outerRadius={oR}
+            cx={cx} // 중심을 동적으로 설정
+            cy={cy} // 중심을 동적으로 설정
+            innerRadius={radius * 0.6} // 반지름을 조금 더 키움
+            outerRadius={radius} // 반지름을 조금 더 키움
             fill="#8884d8"
             stroke="none"
           >
@@ -86,7 +104,8 @@ const Warning = ({ height }) => {
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          {needle(value, data, cx, cy, iR, oR, 'white')} {/* 바늘의 cx와 cy를 계산된 픽셀로 설정 */}
+          {needle(currentValue, data, cx, cy, radius * 0.6, radius, 'white')}{' '}
+          {/* 애니메이션된 바늘 */}
         </PieChart>
       </ResponsiveContainer>
     </div>

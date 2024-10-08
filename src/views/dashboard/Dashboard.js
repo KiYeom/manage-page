@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom'
 import Card from '../base/cards/Card'
 import CardDropdown from '../base/cards/CardDropdown'
 import Warning from '../warning/Warning'
+import Title from '../base/title/Title'
 import {
   CAvatar,
   CBadge,
@@ -63,6 +64,7 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import MainChart from './MainChart'
+import Danger from '../danger/danger'
 
 const Dashboard = () => {
   const progressExample = [
@@ -300,6 +302,7 @@ const Dashboard = () => {
 
   return (
     <>
+      <Title title="위험 지수" subtitle="전체 내댐자의 위험 상황을 한 눈에 확인할 수 있습니다." />
       <CRow className="mb-4">
         <CCol lg={6} style={{ backgroundColor: 'red' }}>
           <Card title="전체 내담자 위험점수" component={<Warning height={300} />} />
@@ -310,6 +313,9 @@ const Dashboard = () => {
       </CRow>
 
       <br />
+      <Title title="내담자 간단 확인" subtitle="위험한 내담자의 상황을 한 눈에 볼 수 있습니다." />
+      <Danger />
+
       <h1>아래부터 예제입니다람쥐</h1>
 
       <br />

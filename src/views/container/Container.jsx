@@ -2,14 +2,12 @@ import React from 'react'
 import styled from '@emotion/styled'
 import palette from '../../assets/styles/theme'
 
-const EmotionContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  padding: 30px 30px;
+  justify-content: space-between;
   background-color: ${palette.web[400]};
-  //background-color: blue;
-  border-radius: 20px;
+  background-color: blue;
 `
 
-export default EmotionContainer
+export default Container
