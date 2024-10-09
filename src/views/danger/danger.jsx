@@ -40,11 +40,42 @@ import avatar3 from 'src/assets/images/avatars/3.jpg'
 import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
-
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
+import react, { useEffect } from 'react'
+import { dailyAnalyzeStatus } from '../../apis/customers'
 
 const Danger = () => {
+  const [userTable, setUserTable] = React.useState([])
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await dailyAnalyzeStatus()
+        // API로부터 받은 데이터를 userTable 형식에 맞게 변환하여 상태에 저장
+        console.log('response!', response)
+        const formattedData = response.map((user) => ({
+          user: {
+            name: user.nickname,
+            //new: user.newUser,
+            registered: user.birthdate,
+          },
+          usage: {
+            value: 60,
+            color: getProgressColor(60),
+          },
+          emotions: ['기쁜', '행복한'], // 감정 목록
+          activity: '2024-06-17', // 마지막 활동 시간
+        }))
+        console.log('formattedData:', formattedData)
+        setUserTable(formattedData)
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+      }
+    }
+
+    fetchUserData()
+  }, [])
+
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
     { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
@@ -166,6 +197,7 @@ const Danger = () => {
     },
   ]
 
+  //안전, 위험, 매우 위험을 구분하는 함수
   const dangerLevel = (value) => {
     if (value <= 60) {
       return '안전'
@@ -175,6 +207,7 @@ const Danger = () => {
       return '매우 위험'
     }
   }
+  //안전, 위험, 매우 위험에 따라 bar의 색상을 바꿔주는 함수
   const getProgressColor = (value) => {
     if (value <= 60) {
       return 'success'
@@ -186,7 +219,7 @@ const Danger = () => {
   }
 
   //내담자 간단 확인 예제
-  const userTable = [
+  /*const userTable = [
     {
       user: {
         name: 'Yiorgos Avraamu',
@@ -232,7 +265,7 @@ const Danger = () => {
       emotions: ['힘이드는'],
       activity: 'Last month',
     },
-  ]
+  ]*/
 
   const navigateToReport = (type, id) => {
     const url = `/#/customers/${type}-report/${id}`

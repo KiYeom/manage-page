@@ -91,7 +91,7 @@ const Warning = ({ height }) => {
         width: '100%',
         height: height + 30,
         padding: 0,
-        backgroundColor: '#2B303C',
+        backgroundColor: 'transparent',
         flexGrow: 1,
       }}
     >

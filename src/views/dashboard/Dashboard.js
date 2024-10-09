@@ -70,12 +70,6 @@ import { useEffect } from 'react'
 import EmotionContainer from '../emotion/EmotionContainer'
 
 const Dashboard = () => {
-  useEffect(() => {
-    dailyAnalyzeStatus().then((res) => {
-      console.log(res)
-    }, [])
-  }, [])
-
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
     { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
@@ -319,35 +313,29 @@ const Dashboard = () => {
               style={{
                 color: 'white',
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 justifyContent: 'center',
-                //width: '100%',
+                alignItems: 'center',
                 backgroundColor: '#2B303C',
                 borderRadius: '10px',
                 padding: '10px',
-                alignItems: 'center',
                 height: '100%',
+                textAlign: 'center',
                 //backgroundColor: '#F3F4F7',
               }}
             >
-              <div
-                style={{
-                  color: 'white',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#2B303C',
-                  borderRadius: '10px',
-                  padding: '10px',
-                  textAlign: 'center',
-                }}
-              >
-                <h6>전체 내담자 위험점수</h6>
+              <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
+                {' '}
+                {/* Column for text */}
+                <h6 style={{ whiteSpace: 'nowrap' }}>전체 내담자 위험점수</h6>
                 <h2>60점</h2>
               </div>
+              <div style={{ width: '350px', height: '350px' }}>
+                {' '}
+                {/* Ensure the graph has a defined size */}
+                <Warning height={350} />
+              </div>
             </div>
-            <Warning height={350} />
           </EmotionContainer>
         </CCol>
         <CCol lg={6} style={{ backgroundColor: '#2B303C' }}>

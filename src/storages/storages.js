@@ -16,8 +16,8 @@ export const setTokenInfo = (accessToken, refreshToken) => {
 
 //clearTokenInfo
 export const clearTokenInfo = () => {
-  localStorage.delete(ACCESS_TOKEN)
-  localStorage.delete(REFRESH_TOKEN)
+  localStorage.removeItem(ACCESS_TOKEN)
+  localStorage.removeItem(REFRESH_TOKEN)
 }
 
 //Tokens
@@ -31,7 +31,7 @@ export const setAccessToken = (accessToken) => {
 }
 
 export const deleteAccessToken = () => {
-  localStorage.delete(ACCESS_TOKEN)
+  localStorage.removeItem(ACCESS_TOKEN)
 }
 
 //RefreshToken
@@ -44,7 +44,7 @@ export const setRefreshToken = (refreshToken) => {
 }
 
 export const deleteRefreshToken = () => {
-  localStorage.delete(REFRESH_TOKEN)
+  localStorage.removeItem(REFRESH_TOKEN)
 }
 
 //WebId
