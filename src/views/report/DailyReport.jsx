@@ -61,6 +61,9 @@ const dailyKeyword = [
   '친구와의 불화',
   '-',
 ]
+
+//일일 이모션
+const dailyRecordedEmotion = ['힘든', '기쁜', '슬픈', '격노한']
 const colors = [
   { bg: '#E5F8F3', object: '#31B28E' },
   { bg: '#FDF9D8', object: '#FFB800' },
@@ -92,6 +95,7 @@ const dailyEmotion = [
     group: 'calm',
   },
 ]
+
 const config = {
   type: 'doughnut',
   data: {
@@ -182,7 +186,17 @@ const DailyReport = () => {
             <CChartDoughnut {...config} />
           </ResponsiveContainer>
         </EmotionContainer>
-        <EmotionContainer style={{ height: '500px', width: '48%' }}>테스트</EmotionContainer>
+        <EmotionContainer style={{ height: '500px', width: '48%' }}>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <CListGroup className="mb-2">
+              {dailyRecordedEmotion.map((keyword, keywordIndex) => (
+                <CListGroupItem key={keywordIndex}>
+                  {keyword || '빈 문자열 사용'} {/* 키워드가 없으면 기본 텍스트 사용 */}
+                </CListGroupItem>
+              ))}
+            </CListGroup>
+          </div>
+        </EmotionContainer>
       </Container>
 
       <EmotionContainer>

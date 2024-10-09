@@ -1,13 +1,13 @@
-/* eslint-disable no-shadow */
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useRef } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
+import palette from '../../assets/styles/theme'
 
 const RADIAN = Math.PI / 180
 const data = [
-  { name: 'A', value: 80, color: '#00a829' },
-  { name: 'B', value: 10, color: '#0093ff' },
-  { name: 'C', value: 10, color: '#FF3E3E' },
+  { name: 'A', value: 60, color: palette.web[200] },
+  { name: 'B', value: 25, color: palette.web[100] },
+  { name: 'C', value: 15, color: palette.web[300] },
 ]
 const targetValue = 60
 
@@ -17,19 +17,19 @@ const needle = (value, data, cx, cy, iR, oR, color) => {
     total += v.value
   })
 
-  const ang = 180.0 * (1 - value / total) // 바늘의 각도 계산
-  const length = (iR + 2 * oR) / 3 // 바늘의 길이 계산
+  const ang = 180.0 * (1 - value / total)
+  const length = (iR + 2 * oR) / 3
   const sin = Math.sin(-RADIAN * ang)
   const cos = Math.cos(-RADIAN * ang)
-  const r = 5 // 바늘의 시작점 원 반지름
-  const x0 = cx // 중심점 x 좌표
-  const y0 = cy // 중심점 y 좌표
-  const xba = x0 + r * sin // 바늘 시작점 x 좌표
-  const yba = y0 - r * cos // 바늘 시작점 y 좌표
-  const xbb = x0 - r * sin // 바늘 반대쪽 끝 x 좌표
-  const ybb = y0 + r * cos // 바늘 반대쪽 끝 y 좌표
-  const xp = x0 + length * cos // 바늘 끝 x 좌표
-  const yp = y0 + length * sin // 바늘 끝 y 좌표
+  const r = 5
+  const x0 = cx
+  const y0 = cy
+  const xba = x0 + r * sin
+  const yba = y0 - r * cos
+  const xbb = x0 - r * sin
+  const ybb = y0 + r * cos
+  const xp = x0 + length * cos
+  const yp = y0 + length * sin
 
   return (
     <>
@@ -42,7 +42,7 @@ const needle = (value, data, cx, cy, iR, oR, color) => {
 const Warning = ({ height }) => {
   const containerRef = useRef(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
-  const [currentValue, setCurrentValue] = useState(0) // 애니메이션용 상태값
+  const [currentValue, setCurrentValue] = useState(0)
 
   useEffect(() => {
     const handleResize = () => {
@@ -55,7 +55,7 @@ const Warning = ({ height }) => {
     }
 
     window.addEventListener('resize', handleResize)
-    handleResize() // 초기 크기 설정
+    handleResize()
 
     return () => {
       window.removeEventListener('resize', handleResize)
@@ -64,12 +64,12 @@ const Warning = ({ height }) => {
 
   useEffect(() => {
     let start = null
-    const duration = 500 // 애니메이션 지속 시간 (ms)
+    const duration = 500
 
     const animateNeedle = (timestamp) => {
       if (!start) start = timestamp
       const progress = timestamp - start
-      const newValue = Math.min((progress / duration) * targetValue, targetValue) // 점진적 증가
+      const newValue = Math.min((progress / duration) * targetValue, targetValue)
       setCurrentValue(newValue)
 
       if (progress < duration) {
@@ -78,34 +78,43 @@ const Warning = ({ height }) => {
     }
 
     requestAnimationFrame(animateNeedle)
-  }, []) // targetValue까지 바늘 애니메이션
+  }, [])
 
   const cx = dimensions.width / 2
   const cy = dimensions.height / 2
-  const radius = Math.min(dimensions.width, dimensions.height) / 2.5 // 반지름을 더 키움
+  const radius = Math.min(dimensions.width, dimensions.height) / 2.5
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: height }}>
+    <div
+      ref={containerRef}
+      style={{
+        width: '100%',
+        height: height + 30,
+        padding: 0,
+        backgroundColor: '#2B303C',
+        flexGrow: 1,
+      }}
+    >
       <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
+        <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
           <Pie
             dataKey="value"
             startAngle={180}
             endAngle={0}
             data={data}
-            cx={cx} // 중심을 동적으로 설정
-            cy={cy} // 중심을 동적으로 설정
-            innerRadius={radius * 0.6} // 반지름을 조금 더 키움
-            outerRadius={radius} // 반지름을 조금 더 키움
-            fill="#8884d8"
+            cx={cx}
+            cy={cy}
+            innerRadius={radius * 0.6}
+            outerRadius={radius}
+            paddingAngle={0}
+            fill={palette.web[100]}
             stroke="none"
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          {needle(currentValue, data, cx, cy, radius * 0.6, radius, 'white')}{' '}
-          {/* 애니메이션된 바늘 */}
+          {needle(currentValue, data, cx, cy, radius * 0.6, radius, 'white')}
         </PieChart>
       </ResponsiveContainer>
     </div>

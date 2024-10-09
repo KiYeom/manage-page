@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import Warning from '../../warning/Warning'
-
+import EmotionContainer from '../../emotion/EmotionContainer'
 import {
   CRow,
   CCol,
@@ -16,8 +16,24 @@ import { getStyle } from '@coreui/utils'
 import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
+import DonutChart from '../dount/DountChart'
+import { ResponsiveContainer } from 'recharts'
+const dataSafe = [
+  { name: '안전한 사람', value: 60 },
+  { name: '', value: 100 - 60 },
+]
 
-const CardDropdown = (props) => {
+const dataRisk = [
+  { name: '위험한 사람', value: 30 },
+  { name: '', value: 100 - 30 },
+]
+
+const dataVeryRisk = [
+  { name: '매우 위험한 사람', value: 10 },
+  { name: '', value: 100 - 10 },
+]
+
+const CardDropdown = () => {
   const widgetChartRef1 = useRef(null)
   const widgetChartRef2 = useRef(null)
 
@@ -40,24 +56,115 @@ const CardDropdown = (props) => {
   }, [widgetChartRef1, widgetChartRef2])
 
   return (
-    <CRow style={{ backgroundColor: 'blue' }}>
-      <CRow className={props.className}>
+    <div style={{ padding: '10px' }}>
+      <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
         <CCol>
-          <Card title="위험1" component={<Warning height={200} />} />
+          <div
+            style={{
+              //backgroundColor: 'pink',
+              width: '300px',
+              height: '300px',
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
+            <div
+              style={{
+                color: 'white',
+                //backgroundColor: 'red',
+                flexGrow: 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <h6>전체 인원</h6>
+              <h2>100명</h2>
+            </div>
+            <DonutChart data={dataRisk} />
+          </div>
         </CCol>
         <CCol>
-          <Card title="위험2" component={<Warning height={200} />} />
+          <div
+            style={{
+              //backgroundColor: 'pink',
+              width: '300px',
+              height: '300px',
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
+            <div
+              style={{
+                color: 'white',
+                //backgroundColor: 'red',
+                flexGrow: 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <h6>안전한사람</h6>
+              <h2>60명</h2>
+            </div>
+            <div style={{ flexGrow: 2 }}>
+              {' '}
+              {/* DonutChart가 남은 공간을 차지 */}
+              <ResponsiveContainer width="100%" height="100%">
+                <DonutChart data={dataSafe} />
+              </ResponsiveContainer>
+            </div>
+          </div>
         </CCol>
       </CRow>
-      <CRow>
+
+      <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
         <CCol>
-          <Card title="위험3" component={<Warning height={200} />} />
+          <div
+            style={{
+              //backgroundColor: 'pink',
+              width: '300px',
+              height: '300px',
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
+            <div
+              style={{
+                color: 'white',
+                //backgroundColor: 'red',
+                flexGrow: 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <h6>위험한 사람</h6>
+              <h2>30명</h2>
+            </div>
+            <DonutChart data={dataRisk} />
+          </div>
         </CCol>
         <CCol>
-          <Card title="위험4" component={<Warning height={200} />} />
+          <div
+            style={{
+              //backgroundColor: 'pink',
+              width: '300px',
+              height: '300px',
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
+            <div
+              style={{
+                color: 'white',
+                //backgroundColor: 'red',
+                flexGrow: 1,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <h6>매우 위험한 사람</h6>
+              <h2>10명</h2>
+            </div>
+            <DonutChart data={dataVeryRisk} />
+          </div>
         </CCol>
       </CRow>
-    </CRow>
+    </div>
   )
 }
 

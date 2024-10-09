@@ -7,7 +7,7 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: space-between;
   background-color: ${palette.web[400]};
-  background-color: blue;
+  //background-color: blue;
 `
 
 export default Container

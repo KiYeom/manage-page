@@ -7,9 +7,10 @@ const EmotionContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   padding: 30px 30px;
-  background-color: ${palette.web[400]};
-  //background-color: blue;
-  border-radius: 20px;
+  //background-color: ${palette.web[400]};
+  background-color: 'red';
+  border-radius: 0px;
+  background-color: 'red';
 `
 
 export default EmotionContainer

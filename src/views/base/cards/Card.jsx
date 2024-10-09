@@ -12,10 +12,7 @@ const Card = ({ title, component }) => {
         </CCardTitle>
 
         {/* 반응형 CRow */}
-        <CRow
-          className="align-items-center"
-          style={{ backgroundColor: 'blue', display: 'flex', flexWrap: 'wrap' }}
-        >
+        <CRow className="align-items-center" style={{ display: 'flex', flexWrap: 'wrap' }}>
           {/* 큰 화면에서는 6열, 작은 화면에서는 12열로 변화 CCol xs="12" md="6" */}
           <CCol lg="12" xl="6">
             <h1

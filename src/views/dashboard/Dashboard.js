@@ -65,6 +65,7 @@ import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import MainChart from './MainChart'
 import Danger from '../danger/danger'
+import EmotionContainer from '../emotion/EmotionContainer'
 
 const Dashboard = () => {
   const progressExample = [
@@ -304,11 +305,46 @@ const Dashboard = () => {
     <>
       <Title title="위험 지수" subtitle="전체 내댐자의 위험 상황을 한 눈에 확인할 수 있습니다." />
       <CRow className="mb-4">
-        <CCol lg={6} style={{ backgroundColor: 'red' }}>
-          <Card title="전체 내담자 위험점수" component={<Warning height={300} />} />
+        <CCol lg={6} style={{}}>
+          <EmotionContainer>
+            <div
+              style={{
+                color: 'white',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                //width: '100%',
+                backgroundColor: '#2B303C',
+                borderRadius: '10px',
+                padding: '10px',
+                alignItems: 'center',
+                height: '100%',
+                //backgroundColor: '#F3F4F7',
+              }}
+            >
+              <div
+                style={{
+                  color: 'white',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '#2B303C',
+                  borderRadius: '10px',
+                  padding: '10px',
+                  textAlign: 'center',
+                }}
+              >
+                <h6>전체 내담자 위험점수</h6>
+                <h2>60점</h2>
+              </div>
+            </div>
+            <Warning height={350} />
+          </EmotionContainer>
         </CCol>
-        <CCol lg={6} style={{ backgroundColor: 'blue' }}>
-          <CardDropdown className="mb-4" />
+        <CCol lg={6} style={{ backgroundColor: '#2B303C' }}>
+          {/*<CardDropdown className="mb-4" />*/}
+          <CardDropdown />
         </CCol>
       </CRow>
 
