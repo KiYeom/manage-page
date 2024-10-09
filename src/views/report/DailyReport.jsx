@@ -15,6 +15,8 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 import Icon from '../../components/icon/icons'
 import Title from '../base/title/Title'
 import Container from '../container/Container'
+import { useEffect } from 'react'
+import { dailyAnalyzeReport } from '../../apis/customers'
 //파이 그래프 데이터
 const datas = [
   {
@@ -48,19 +50,6 @@ const preprocessDoughnutData = (datas) => {
   const percent = datas.map((item) => item.percent)
   return { labels, percent }
 }
-//일일키워드
-const dailyKeyword = [
-  '친구 관계 문제일까요 아니면 부모님과의 갈등일까요 뭘까요',
-  '소외감 표현',
-  '불만 표출',
-  '직장 괴롭힘',
-  '업무 스트레스',
-  '우울감 증폭',
-  '공황 장애',
-  '강아지 사랑',
-  '친구와의 불화',
-  '-',
-]
 
 //일일 이모션
 const dailyRecordedEmotion = ['힘든', '기쁜', '슬픈', '격노한']
@@ -96,52 +85,79 @@ const dailyEmotion = [
   },
 ]
 
-const config = {
-  type: 'doughnut',
-  data: {
-    labels: labels,
-    datasets: [
-      {
-        backgroundColor: [
-          palette.graph[100],
-          palette.graph[200],
-          palette.graph[300],
-          palette.graph[400],
-          palette.graph[500],
-          palette.graph[600],
-        ],
-        data: percent,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      datalabels: {
-        formatter: (value, context) => {
-          let sum = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0)
-          let percentage = (value / sum) * 100
-          return percentage > 10 ? percentage + '%' : '' // 10% 미만은 표시하지 않음
-        },
-        color: '#fff', // 텍스트 색상
-        font: {
-          weight: 'bold',
-        },
-      },
-      legend: {
-        position: 'top', // 범례를 상단에 배치
-      },
-      title: {
-        display: true,
-        text: 'AI가 분석한 감정', // 차트 제목
-      },
-    },
-  },
-  plugins: [ChartDataLabels], // 플러그인 추가
-}
+//일일 리포트를 처음 들어올 때는 들어온 날의 날짜를 보여줘야 함
+//지금은 예시로 698번의 2024-10-08일의 리포트를 보여주는 것으로 설정
 const DailyReport = () => {
   const { id } = useParams()
+  const [dailyKeyword, setDailyKeyword] = React.useState([]) //일일 키워드분석
+  const [dailyEmotion, setDailyEmotion] = React.useState([]) //일일 감정분석
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await dailyAnalyzeReport(698, '2024-10-08')
+      //console.log('data', data.data)
+      //console.log('data.summary.keywords)', data.data.summary.keywords)
+      //console.log('data.summary.emotions)', data.data.classification.labels)
+      setDailyKeyword(data.data.summary.keywords)
+      setDailyEmotion(data.data.classification.labels)
+      console.log('data', data)
+    }
+    fetchData()
+  }, [])
+
+  const preprocessDoughnutData = (datas) => {
+    const labels = datas.map((item) => item.label)
+    const percent = datas.map((item) => Math.round(item.percent))
+    return { labels, percent }
+  }
+
+  const pieData = preprocessDoughnutData(dailyEmotion)
+
+  const config = {
+    type: 'doughnut',
+    data: {
+      labels: pieData.labels,
+      datasets: [
+        {
+          backgroundColor: [
+            palette.graph[100],
+            palette.graph[200],
+            palette.graph[300],
+            palette.graph[400],
+            palette.graph[500],
+            palette.graph[600],
+          ],
+          data: pieData.percent,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        datalabels: {
+          formatter: (value, context) => {
+            let sum = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0)
+            let percentage = ((value / sum) * 100).toFixed(2)
+            return percentage > 10 ? percentage + '%' : '' // 10% 미만은 표시하지 않음
+          },
+          color: '#fff', // 텍스트 색상
+          font: {
+            weight: 'bold',
+          },
+        },
+        legend: {
+          position: 'top', // 범례를 상단에 배치
+        },
+        title: {
+          display: true,
+          text: 'AI가 분석한 감정', // 차트 제목
+        },
+      },
+    },
+    plugins: [ChartDataLabels], // 플러그인 추가
+  }
+
   return (
     <>
       <div
@@ -211,12 +227,6 @@ const DailyReport = () => {
           </div>
         </div>
       </Container>
-
-      {/*<EmotionContainer>
-        {dailyEmotion.map((item, index) => (
-          <EmotionChip text={item.keyword} group={item.group} key={index} />
-        ))}
-      </EmotionContainer>*/}
     </>
   )
 }

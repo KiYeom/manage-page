@@ -56,6 +56,7 @@ const Danger = () => {
         const formattedData = response.map((user) => ({
           user: {
             name: user.nickname,
+            id: user.id,
             //new: user.newUser,
             registered: user.birthdate,
           },
@@ -267,7 +268,7 @@ const Danger = () => {
     },
   ]*/
 
-  const navigateToReport = (type, id) => {
+  const navigateToReport = (type, id, name) => {
     const url = `/#/customers/${type}-report/${id}`
     window.location.href = url
   }
@@ -297,13 +298,13 @@ const Danger = () => {
               </CTableDataCell>
 
               <CTableDataCell>
-                <CButton color="primary" onClick={() => navigateToReport('daily', index)}>
+                <CButton color="primary" onClick={() => navigateToReport('daily', item.user.id)}>
                   일일 리포트
                 </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
-                <CButton color="primary" onClick={() => navigateToReport('period', index)}>
+                <CButton color="primary" onClick={() => navigateToReport('period', item.user.id)}>
                   기간 리포트
                 </CButton>
               </CTableDataCell>
