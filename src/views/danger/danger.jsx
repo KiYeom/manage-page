@@ -1,21 +1,10 @@
 //위험 감지 테이블
 import React from 'react'
-import classNames from 'classnames'
-import { PureComponent } from 'react'
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts'
-import { CChartDoughnut } from '@coreui/react-chartjs'
+
 import {
-  CAvatar,
   CBadge,
   CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardHeader,
-  CCol,
   CProgress,
-  CRow,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -41,8 +30,6 @@ import {
   cifPl,
   cifUs,
   cibTwitter,
-  cilCloudDownload,
-  cilPeople,
   cilUser,
   cilUserFemale,
 } from '@coreui/icons'
@@ -54,17 +41,8 @@ import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
 
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
-import { Calendar } from 'react-date-range'
-import EmotionChip from '../emotion/EmotionChip'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
-import { curveCardinal } from 'd3-shape'
-import KeywordChip from '../keyword/KeywordChip'
-import Icon from '../../components/icon/icons'
-import palette from '../../assets/styles/theme'
 
 const Danger = () => {
   const progressExample = [
@@ -256,6 +234,11 @@ const Danger = () => {
     },
   ]
 
+  const navigateToReport = (type, id) => {
+    const url = `/#/customers/${type}-report/${id}`
+    window.location.href = url
+  }
+
   return (
     <>
       <br />
@@ -263,6 +246,8 @@ const Danger = () => {
         <CTableHead className="text-nowrap">
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">일일 리포트</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">기간 리포트</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">위험지수</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">분석 감정</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">최근 활동</CTableHeaderCell>
@@ -276,6 +261,18 @@ const Danger = () => {
                 <div className="small text-body-secondary text-nowrap">
                   상담 시작 시간: {item.user.registered}
                 </div>
+              </CTableDataCell>
+
+              <CTableDataCell>
+                <CButton color="primary" onClick={() => navigateToReport('daily', index)}>
+                  일일 리포트
+                </CButton>
+              </CTableDataCell>
+
+              <CTableDataCell>
+                <CButton color="primary" onClick={() => navigateToReport('period', index)}>
+                  기간 리포트
+                </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
