@@ -1,5 +1,6 @@
 import { instance } from './interceptor'
 
+//고객 정보 조회
 export const dailyAnalyzeStatus = async () => {
   try {
     const res = await instance.get('/v1/users/manage-users')
@@ -10,6 +11,7 @@ export const dailyAnalyzeStatus = async () => {
   }
 }
 
+//고객 (id)의 date에 따른 일일 리포트 조회
 export const dailyAnalyzeReport = async (id, date) => {
   try {
     const res = await instance.get('/v1/analyze/daily', {
@@ -21,6 +23,23 @@ export const dailyAnalyzeReport = async (id, date) => {
     return res
   } catch (error) {
     console.log('[ERROR] daily analyze', error)
+    return
+  }
+}
+
+//기간 분석 조회
+export const periodAnalyzeReport = async (id, startDate, endDate) => {
+  try {
+    const res = await instance.get('/v1/analyze/period/chart', {
+      params: {
+        start_date: startDate,
+        end_date: endDate,
+        customer: id,
+      },
+    })
+    return res
+  } catch (error) {
+    console.log('[ERROR] period analyze', error)
     return
   }
 }

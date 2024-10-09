@@ -32,6 +32,9 @@ import {
 } from '@coreui/react'
 import { useState } from 'react'
 import palette from '../../assets/styles/theme'
+import { useEffect } from 'react'
+import { periodAnalyzeReport } from '../../apis/customers'
+import { start } from '@popperjs/core'
 //일일키워드
 const periodKeyword = [
   '친구 관계 문제일까요 아니면 부모님과의 갈등일까요 뭘까요',
@@ -121,6 +124,24 @@ const PeriodReport = () => {
   const data = mergeData()
   const [clickedBtn, setClickedBtn] = useState(0)
   const { id } = useParams()
+  const [periodEmotion, setPeriodEmotion] = useState([]) //기간 감정분석
+  const [startDate, setStartDate] = useState('2024-06-17')
+  const [endDate, setEndDate] = useState('2024-06-24')
+
+  useEffect(() => {
+    console.log('기간 분석')
+    const fetchData = async () => {
+      try {
+        const data = await periodAnalyzeReport(698, '2024-10-01', '2024-10-09')
+        console.log('data', data.data)
+        setPeriodEmotion(data.data)
+      } catch (error) {
+        console.log('기간 분석 에러', error)
+        return
+      }
+    }
+    fetchData()
+  }, [])
 
   const renderAreas = () => {
     if (clickedBtn === 0) {
@@ -181,7 +202,9 @@ const PeriodReport = () => {
               <h4 id="traffic" className="card-title mb-0">
                 감정 변화 추이
               </h4>
-              <div className="small text-body-secondary">2024-06-19 ~ 2024-07-17</div>
+              <div className="small text-body-secondary">
+                {startDate} ~ {endDate}
+              </div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButtonGroup className="float-end me-3">
@@ -225,7 +248,7 @@ const PeriodReport = () => {
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" ticks={['2024-06-19', '2024-07-17']} />
+                <XAxis dataKey="date" ticks={[startDate, endDate]} />
                 <YAxis type="number" domain={[0, 100]} tickCount={3} />
                 <Tooltip />
                 {renderAreas()}
@@ -242,7 +265,9 @@ const PeriodReport = () => {
               <h4 id="traffic" className="card-title mb-0">
                 기간 키워드
               </h4>
-              <div className="small text-body-secondary">2024-06-19 ~ 2024-07-17</div>
+              <div className="small text-body-secondary">
+                {startDate} ~ {endDate}
+              </div>
             </CCol>
           </CRow>
         </CCardBody>
