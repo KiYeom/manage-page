@@ -12,6 +12,10 @@ export const dailyAnalyzeStatus = async () => {
 }
 
 //고객 (id)의 date에 따른 일일 리포트 조회
+//data.classification : 감정 분석 결과
+//data.record.Keywords : 직접 기록한 감정 키워드
+//data.record.todayFeeling : 기록한 오늘 일기
+//data.summary : 대화 분석해서 나온 키워드들
 export const dailyAnalyzeReport = async (id, date) => {
   try {
     const res = await instance.get('/v1/analyze/daily', {

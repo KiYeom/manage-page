@@ -91,15 +91,18 @@ const DailyReport = () => {
   const { id } = useParams()
   const [dailyKeyword, setDailyKeyword] = React.useState([]) //일일 키워드분석
   const [dailyEmotion, setDailyEmotion] = React.useState([]) //일일 감정분석
+  const [dailyRecordedEmotion, setDailyRecordedEmotion] = React.useState([]) //일일 직접 기록한 감정
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await dailyAnalyzeReport(698, '2024-10-08')
+      const data = await dailyAnalyzeReport(id, '2024-10-08')
       //console.log('data', data.data)
       //console.log('data.summary.keywords)', data.data.summary.keywords)
       //console.log('data.summary.emotions)', data.data.classification.labels)
+      console.log('data.record.Keywords)', data.data.record.Keywords)
       setDailyKeyword(data.data.summary.keywords)
       setDailyEmotion(data.data.classification.labels)
+      setDailyRecordedEmotion(data.data.record.Keywords)
       console.log('data', data)
     }
     fetchData()
@@ -211,10 +214,10 @@ const DailyReport = () => {
         </EmotionContainer>
         <div style={{ flex: '1' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {dailyKeyword.reduce((acc, item, index, arr) => {
+            {dailyRecordedEmotion.reduce((acc, item, index, arr) => {
               if (index % 2 === 0) {
-                const keyword1 = item
-                const keyword2 = arr[index + 1] ?? '-'
+                const keyword1 = item.keyword
+                const keyword2 = arr[index + 1]?.keyword ?? '-'
                 acc.push(
                   <CListGroup className="mb-2" layout={`horizontal`} key={index}>
                     <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>

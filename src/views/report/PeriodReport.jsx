@@ -10,6 +10,7 @@ import {
   CRow,
   CListGroup,
   CListGroupItem,
+  CSpinner,
 } from '@coreui/react'
 import {
   AreaChart,
@@ -56,6 +57,7 @@ const PeriodReport = () => {
   const [periodKeyword, setPeriodKeyword] = useState([]) // 기간 키워드 분석
   const [startDate, setStartDate] = useState('2024-10-02')
   const [endDate, setEndDate] = useState('2024-10-09')
+  const [loading, setLoading] = useState(true) //로딩 상태
 
   useEffect(() => {
     console.log('기간 분석')
@@ -71,8 +73,10 @@ const PeriodReport = () => {
         setPeriodEmotion(mergedData) //감정 변화 추이 데이터
         setPeriodKeyword(responseKeyword.data.keywords) //키워드 데이터
         //setPeriodEmotion(response.data.data.classification.labels)
+        setLoading(false) //데이터 로드 완료
       } catch (error) {
         console.log('기간 분석 에러', error)
+        setLoading(false)
         return
       }
     }
@@ -106,6 +110,15 @@ const PeriodReport = () => {
         />
       )
     }
+  }
+  if (loading) {
+    return (
+      <div
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
+        <CSpinner color="primary" style={{ width: '4rem', height: '4rem' }} />
+      </div>
+    )
   }
 
   return (
