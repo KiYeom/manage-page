@@ -248,10 +248,10 @@ const DailyReport = () => {
           <div style={{ flex: '1', margin: '20px 0px 20px 0px' }}>
             <Title title="내담자가 기록한 감정" subtitle="내담자가 직접 선택한 감정 단어입니다." />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {dailyKeyword.reduce((acc, item, index, arr) => {
+              {dailyRecordedEmotion.reduce((acc, item, index, arr) => {
                 if (index % 2 === 0) {
-                  const keyword1 = item
-                  const keyword2 = arr[index + 1] ?? '-'
+                  const keyword1 = item.keyword
+                  const keyword2 = arr[index + 1]?.keyword ?? '-'
                   acc.push(
                     <CListGroup className="mb-2" layout={`horizontal`} key={index}>
                       <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
