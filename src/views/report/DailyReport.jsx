@@ -248,19 +248,34 @@ const DailyReport = () => {
           <div style={{ flex: '1', margin: '20px 0px 20px 0px' }}>
             <Title title="내담자가 기록한 감정" subtitle="내담자가 직접 선택한 감정 단어입니다." />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {dailyRecordedEmotion.reduce((acc, item, index, arr) => {
-                if (index % 2 === 0) {
-                  const keyword1 = item.keyword
-                  const keyword2 = arr[index + 1]?.keyword ?? '-'
-                  acc.push(
-                    <CListGroup className="mb-2" layout={`horizontal`} key={index}>
-                      <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
-                      <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
-                    </CListGroup>,
-                  )
-                }
-                return acc
-              }, [])}
+              {dailyRecordedEmotion.length === 0 ? (
+                <CListGroup className="mb-2" layout={`horizontal`}>
+                  <CListGroupItem
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    기록한 감정이 없습니다
+                  </CListGroupItem>
+                </CListGroup>
+              ) : (
+                dailyRecordedEmotion.reduce((acc, item, index, arr) => {
+                  if (index % 2 === 0) {
+                    const keyword1 = item.keyword
+                    const keyword2 = arr[index + 1]?.keyword ?? '-'
+                    acc.push(
+                      <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                        <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
+                        <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
+                      </CListGroup>,
+                    )
+                  }
+                  return acc
+                }, [])
+              )}
             </div>
           </div>
         </CCol>
