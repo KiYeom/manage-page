@@ -31,6 +31,22 @@ export const dailyAnalyzeReport = async (id, date) => {
   }
 }
 
+//[일일] 위험 점수 조회
+export const dangerScore = async (id, date) => {
+  try {
+    const res = await instance.get('/v1/analyze/daily/score', {
+      params: {
+        date,
+        customer: id,
+      },
+    })
+    return res
+  } catch (error) {
+    console.log('[ERROR] daily danger score', error)
+    return
+  }
+}
+
 //[기간] 감정 변화 추이 데이터 분석 조회
 export const periodEmotionReport = async (id, startDate, endDate) => {
   try {

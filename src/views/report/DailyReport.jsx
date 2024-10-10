@@ -16,7 +16,7 @@ import Title from '../base/title/Title'
 import Container from '../container/Container'
 import { useEffect, useState } from 'react'
 import { Calendar } from 'react-date-range'
-import { dailyAnalyzeReport } from '../../apis/customers'
+import { dailyAnalyzeReport, dangerScore } from '../../apis/customers'
 import CalendarIcon from '../../assets/svg/calendar.svg' // Adjust the path as needed
 import HalfPanel from '../half-panel/half-panel'
 //파이 그래프 데이터
@@ -95,10 +95,12 @@ const DailyReport = () => {
   const [dailyEmotion, setDailyEmotion] = React.useState([]) //일일 감정분석
   const [dailyRecordedEmotion, setDailyRecordedEmotion] = React.useState([]) //일일 직접 기록한 감정
   const [modalVisible, setModalVisible] = useState(false)
+  const [dangerscore, setDangerscore] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await dailyAnalyzeReport(id, '2024-10-08')
+      const dangerdata = await dangerScore(id, '2024-10-08')
       //console.log('data', data.data)
       //console.log('data.summary.keywords)', data.data.summary.keywords)
       //console.log('data.summary.emotions)', data.data.classification.labels)
@@ -106,6 +108,8 @@ const DailyReport = () => {
       setDailyKeyword(data.data.summary.keywords)
       setDailyEmotion(data.data.classification.labels)
       setDailyRecordedEmotion(data.data.record.Keywords)
+      //console.log('dangerdata', dangerdata.data.score)
+      setDangerscore(dangerdata.data.score)
       console.log('data', data)
     }
     fetchData()
@@ -210,7 +214,7 @@ const DailyReport = () => {
 
       <CRow className="mb-4 align-items-center">
         <CCol lg={6}>
-          <HalfPanel subText="위험점수" mainText="점" score={75} />
+          <HalfPanel subText="위험점수" mainText="점" score={dangerscore} />
         </CCol>
         <CCol lg={6}>
           <div style={{ flex: '1' }}>
