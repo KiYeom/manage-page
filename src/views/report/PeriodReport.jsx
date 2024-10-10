@@ -23,33 +23,10 @@ import {
 } from 'recharts'
 import axios from 'axios'
 import palette from '../../assets/styles/theme'
-import { periodEmotionReport, periodKeywordReport } from '../../apis/customers'
+import userTableDummy from '../../assets/dummy' // 더미 데이터를 import
 
 const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
 const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨']
-
-const mergeData = (charts) => {
-  // 각 감정의 데이터를 날짜별로 병합
-  const angerData = charts[0].chart
-  const sadnessData = charts[1].chart
-  const nerveData = charts[2].chart
-  const hurtData = charts[3].chart
-  const embarrassmentData = charts[4].chart
-  const happyData = charts[5].chart
-
-  const mergeDataResult = angerData.map((angerItem, index) => ({
-    date: angerItem.date,
-    anger: angerItem.value,
-    sadness: sadnessData[index].value,
-    nerve: nerveData[index].value,
-    hurt: hurtData[index].value,
-    embarrassment: embarrassmentData[index].value,
-    happy: happyData[index].value,
-  }))
-
-  // 병합된 데이터를 반환
-  return mergeDataResult
-}
 
 const PeriodReport = () => {
   const [clickedBtn, setClickedBtn] = useState(0)
@@ -59,22 +36,21 @@ const PeriodReport = () => {
   const [startDate, setStartDate] = useState('2024-10-02')
   const [endDate, setEndDate] = useState('2024-10-09')
   const [loading, setLoading] = useState(true) //로딩 상태
+  const [name, setName] = useState('')
 
   useEffect(() => {
     console.log('기간 분석')
     const fetchData = async () => {
       try {
-        //감정 파이
-        const response = await periodEmotionReport(id, startDate, endDate) // id, startdate, enddate
-        console.log('api result', response)
-        //키워드
-        const responseKeyword = await periodKeywordReport(id, startDate, endDate)
-        console.log('api result - keyword', responseKeyword.data.keywords)
-        const mergedData = mergeData(response.data.charts)
-        setPeriodEmotion(mergedData) //감정 변화 추이 데이터
-        setPeriodKeyword(responseKeyword.data.keywords) //키워드 데이터
-        //setPeriodEmotion(response.data.data.classification.labels)
-        setLoading(false) //데이터 로드 완료
+        // 감정 파이 데이터 및 키워드 데이터 설정
+        const userData = userTableDummy.find((item) => item.id === parseInt(id))
+
+        if (userData) {
+          setName(userData.table.name)
+          setPeriodKeyword(userData.period?.periodKeywords || [])
+          setPeriodEmotion(userData.period?.periodGraph || []) // userTableDummy에서 periodGraph 가져오기
+          setLoading(false)
+        }
       } catch (error) {
         console.log('기간 분석 에러', error)
         setLoading(false)
@@ -132,7 +108,7 @@ const PeriodReport = () => {
           padding: '10px 0px',
         }}
       >
-        <h2>{id}의 기간 리포트</h2>
+        <h2>{name}의 기간 리포트</h2>
         <CButton
           color="primary"
           to={`/customers/daily-report/${id}`}

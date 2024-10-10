@@ -12,11 +12,15 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CToast,
+  CToastBody,
+  CToastHeader,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { emailLogin } from '../../../apis/auth'
 import { getRefreshToken, setTokenInfo } from '../../../storages/storages'
+import CTAButton from '../../buttons/cta-button'
 
 const Login = () => {
   const [loading, setLoading] = React.useState(false)
@@ -71,7 +75,7 @@ const Login = () => {
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+              <CCard className="text-white bg-primary py-5" style={{ width: '100%' }}>
                 <CCardBody className="text-center">
                   <div>
                     <h2>reMIND 관리자 페이지</h2>
@@ -116,17 +120,25 @@ const Login = () => {
                           onClick={handleLogin}
                           disabled={loading || !email || !password || emailError}
                         >
-                          로그인하기
+                          로그인
                         </CButton>
                       </CCol>
                     </CRow>
                   </CForm>
+                  <br />
+                  <CToast animation={true} autohide={false} visible={true}>
+                    <CToastHeader closeButton>
+                      <div className="fw-bold me-auto">체험 모드</div>
+                    </CToastHeader>
+                    <CToastBody>"로그인" 버튼을 클릭하여 바로 시작하세요.</CToastBody>
+                  </CToast>
                 </CCardBody>
               </CCard>
             </CCardGroup>
           </CCol>
         </CRow>
       </CContainer>
+      <CTAButton />
     </div>
   )
 }

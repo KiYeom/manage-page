@@ -2,16 +2,17 @@ import React, { useState, useEffect, useRef } from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import palette from '../../assets/styles/theme'
 import styled from '@emotion/styled'
+import { SubTitle } from 'chart.js'
 
 const COLORS = [palette.web[50], palette.web[300], palette.web[300], palette.web[400]]
 
 const data = [
-  { name: 'A', value: 60, color: palette.web[200] },
-  { name: 'B', value: 25, color: palette.web[100] },
-  { name: 'C', value: 15, color: palette.web[300] },
+  { name: 'A', value: 6, color: palette.web[200] },
+  { name: 'B', value: 3, color: palette.web[100] },
+  { name: 'C', value: 1, color: palette.web[300] },
 ]
 
-const FullPie = () => {
+const FullPie = ({ type }) => {
   const containerRef = useRef(null)
   const [width, setWidth] = useState(0)
 
@@ -54,9 +55,22 @@ const FullPie = () => {
           startAngle={90} // 시작 각도 설정
           endAngle={450} // 끝 각도 설정
         >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
+          {data.map((entry, index) => {
+            return (
+              <Cell
+                key={`cell-${index}`}
+                fill={
+                  entry.name === 'A' && type === '안전한 내담자'
+                    ? '#36A2EB' // Blue for '안전한 내담자'
+                    : entry.name === 'B' && type === '위험한 내담자'
+                      ? '#FFCE56' // Pink for '위험한 내담자'
+                      : entry.name === 'C' && type === '매우 위험한 내담자'
+                        ? '#FF6384' // Yellow for '매우 위험한 내담자'
+                        : '#CCCCCC' // Default colors for others
+                }
+              />
+            )
+          })}
         </Pie>
         <Tooltip />
       </PieChart>

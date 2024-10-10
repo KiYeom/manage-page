@@ -20,18 +20,18 @@ import FullPie from '../../full-panel/full-pie'
 import { ResponsiveContainer } from 'recharts'
 import FullPanel from '../../full-panel/full-panel'
 const dataSafe = [
-  { name: '안전한 사람', value: 60 },
-  { name: '', value: 100 - 60 },
+  { name: '안전한 내담자', value: 6 },
+  { name: '', value: 10 - 6 },
 ]
 
 const dataRisk = [
-  { name: '위험한 사람', value: 30 },
-  { name: '', value: 100 - 30 },
+  { name: '위험한 내담자', value: 3 },
+  { name: '', value: 10 - 3 },
 ]
 
 const dataVeryRisk = [
-  { name: '매우 위험한 사람', value: 10 },
-  { name: '', value: 100 - 10 },
+  { name: '매우 위험한 내담자', value: 1 },
+  { name: '', value: 10 - 1 },
 ]
 
 const CardDropdown = () => {
@@ -60,18 +60,18 @@ const CardDropdown = () => {
     <div style={{ padding: '10px' }}>
       <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
         <CCol>
-          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
+          <FullPanel subText={'전체 내담자'} mainText={'명'} score={10} />
         </CCol>
         <CCol>
-          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
+          <FullPanel subText={'매우 위험한 내담자'} mainText={'명'} score={1} />
         </CCol>
       </CRow>
       <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
         <CCol>
-          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
+          <FullPanel subText={'위험한 내담자'} mainText={'명'} score={3} />
         </CCol>
         <CCol>
-          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
+          <FullPanel subText={'안전한 내담자'} mainText={'명'} score={6} />
         </CCol>
       </CRow>
     </div>
