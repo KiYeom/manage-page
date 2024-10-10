@@ -1,7 +1,17 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import { NavLink } from 'react-router-dom'
-import { CListGroup, CListGroupItem } from '@coreui/react'
+import React, { useState, useEffect } from 'react'
+import { useParams, NavLink } from 'react-router-dom'
+import {
+  CButton,
+  CButtonGroup,
+  CCard,
+  CCardBody,
+  CCardFooter,
+  CCol,
+  CRow,
+  CListGroup,
+  CListGroupItem,
+  CSpinner,
+} from '@coreui/react'
 import {
   AreaChart,
   Area,
@@ -11,93 +21,14 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import {
-  CAvatar,
-  CBadge,
-  CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardHeader,
-  CCol,
-  CProgress,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-} from '@coreui/react'
-import { useState } from 'react'
+import axios from 'axios'
 import palette from '../../assets/styles/theme'
-//일일키워드
-const periodKeyword = [
-  '친구 관계 문제일까요 아니면 부모님과의 갈등일까요 뭘까요',
-  '소외감 표현',
-  '불만 표출',
-  '직장 괴롭힘',
-  '업무 스트레스',
-  '우울감 증폭',
-  '공황 장애',
-  '강아지 사랑',
-  '친구와의 불화',
-  '-',
-]
-const charts = [
-  {
-    category: 'anger',
-    chart: [
-      { date: '2024-06-19', value: 34 },
-      { date: '2024-06-27', value: 63 },
-      { date: '2024-07-17', value: 21 },
-    ],
-  },
-  {
-    category: 'sadness',
-    chart: [
-      { date: '2024-06-19', value: 10 },
-      { date: '2024-06-27', value: 60 },
-      { date: '2024-07-17', value: 30 },
-    ],
-  },
-  {
-    category: 'nerve',
-    chart: [
-      { date: '2024-06-19', value: 100 },
-      { date: '2024-06-27', value: 90 },
-      { date: '2024-07-17', value: 80 },
-    ],
-  },
-  {
-    category: 'hurt',
-    chart: [
-      { date: '2024-06-19', value: 80 },
-      { date: '2024-06-27', value: 0 },
-      { date: '2024-07-17', value: 1 },
-    ],
-  },
-  {
-    category: 'embarrassment',
-    chart: [
-      { date: '2024-06-19', value: 10 },
-      { date: '2024-06-27', value: 30 },
-      { date: '2024-07-17', value: 20 },
-    ],
-  },
-  {
-    category: 'happy',
-    chart: [
-      { date: '2024-06-19', value: 10 },
-      { date: '2024-06-27', value: 60 },
-      { date: '2024-07-17', value: 30 },
-    ],
-  },
-]
-const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
+import { periodEmotionReport, periodKeywordReport } from '../../apis/customers'
 
-const mergeData = () => {
+const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
+const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨']
+
+const mergeData = (charts) => {
   // 각 감정의 데이터를 날짜별로 병합
   const angerData = charts[0].chart
   const sadnessData = charts[1].chart
@@ -106,8 +37,7 @@ const mergeData = () => {
   const embarrassmentData = charts[4].chart
   const happyData = charts[5].chart
 
-  // 병합된 데이터를 반환
-  return angerData.map((angerItem, index) => ({
+  const mergeDataResult = angerData.map((angerItem, index) => ({
     date: angerItem.date,
     anger: angerItem.value,
     sadness: sadnessData[index].value,
@@ -116,11 +46,43 @@ const mergeData = () => {
     embarrassment: embarrassmentData[index].value,
     happy: happyData[index].value,
   }))
+
+  // 병합된 데이터를 반환
+  return mergeDataResult
 }
+
 const PeriodReport = () => {
-  const data = mergeData()
   const [clickedBtn, setClickedBtn] = useState(0)
   const { id } = useParams()
+  const [periodEmotion, setPeriodEmotion] = useState([]) // 기간 감정분석
+  const [periodKeyword, setPeriodKeyword] = useState([]) // 기간 키워드 분석
+  const [startDate, setStartDate] = useState('2024-10-02')
+  const [endDate, setEndDate] = useState('2024-10-09')
+  const [loading, setLoading] = useState(true) //로딩 상태
+
+  useEffect(() => {
+    console.log('기간 분석')
+    const fetchData = async () => {
+      try {
+        //감정 파이
+        const response = await periodEmotionReport(id, startDate, endDate) // id, startdate, enddate
+        console.log('api result', response)
+        //키워드
+        const responseKeyword = await periodKeywordReport(id, startDate, endDate)
+        console.log('api result - keyword', responseKeyword.data.keywords)
+        const mergedData = mergeData(response.data.charts)
+        setPeriodEmotion(mergedData) //감정 변화 추이 데이터
+        setPeriodKeyword(responseKeyword.data.keywords) //키워드 데이터
+        //setPeriodEmotion(response.data.data.classification.labels)
+        setLoading(false) //데이터 로드 완료
+      } catch (error) {
+        console.log('기간 분석 에러', error)
+        setLoading(false)
+        return
+      }
+    }
+    fetchData()
+  }, [id, startDate, endDate])
 
   const renderAreas = () => {
     if (clickedBtn === 0) {
@@ -150,6 +112,15 @@ const PeriodReport = () => {
       )
     }
   }
+  if (loading) {
+    return (
+      <div
+        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
+        <CSpinner color="primary" style={{ width: '4rem', height: '4rem' }} />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -170,7 +141,7 @@ const PeriodReport = () => {
             console.log('버튼 클릭')
           }}
         >
-          일일리포트 확인하기
+          일일리포트 확인
         </CButton>
       </div>
 
@@ -181,10 +152,12 @@ const PeriodReport = () => {
               <h4 id="traffic" className="card-title mb-0">
                 감정 변화 추이
               </h4>
-              <div className="small text-body-secondary">2024-06-19 ~ 2024-07-17</div>
+              <div className="small text-body-secondary">
+                {startDate} ~ {endDate}
+              </div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
-              <CButtonGroup className="float-end me-3">
+              <CButtonGroup className="float-end me-3 ">
                 {emotionList.map((value, index) => (
                   <CButton
                     color="outline-secondary"
@@ -216,7 +189,7 @@ const PeriodReport = () => {
               <AreaChart
                 width={800}
                 height={500}
-                data={data}
+                data={periodEmotion}
                 margin={{
                   top: 10,
                   right: 30,
@@ -225,7 +198,7 @@ const PeriodReport = () => {
                 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" ticks={['2024-06-19', '2024-07-17']} />
+                <XAxis dataKey="date" ticks={[startDate, endDate]} />
                 <YAxis type="number" domain={[0, 100]} tickCount={3} />
                 <Tooltip />
                 {renderAreas()}
@@ -242,25 +215,29 @@ const PeriodReport = () => {
               <h4 id="traffic" className="card-title mb-0">
                 기간 키워드
               </h4>
-              <div className="small text-body-secondary">2024-06-19 ~ 2024-07-17</div>
+              <div className="small text-body-secondary">
+                {startDate} ~ {endDate}
+              </div>
             </CCol>
           </CRow>
         </CCardBody>
         <CCardFooter>
-          <CRow
-            xs={{ cols: 1, gutter: 4 }}
-            sm={{ cols: 2 }}
-            lg={{ cols: 4 }}
-            xl={{ cols: 5 }}
-            className="mb-2 text-center justify-content-center align-item-center"
-          >
+          <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} lg={{ cols: 4 }}>
             <ResponsiveContainer width="100%" height="100%">
               <CListGroup className="mb-2">
-                {periodKeyword.map((keyword, keywordIndex) => (
-                  <CListGroupItem key={keywordIndex}>
-                    {keyword || '-'} {/* 키워드가 없으면 기본 텍스트 사용 */}
-                  </CListGroupItem>
-                ))}
+                {periodKeyword.reduce((acc, item, index, arr) => {
+                  if (index % 2 === 0) {
+                    const keyword1 = item
+                    const keyword2 = arr[index + 1] ?? '-'
+                    acc.push(
+                      <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                        <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
+                        <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
+                      </CListGroup>,
+                    )
+                  }
+                  return acc
+                }, [])}
               </CListGroup>
             </ResponsiveContainer>
           </CRow>

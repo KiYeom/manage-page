@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import Warning from '../../warning/Warning'
-
+import EmotionContainer from '../../emotion/EmotionContainer'
 import {
   CRow,
   CCol,
@@ -16,8 +16,25 @@ import { getStyle } from '@coreui/utils'
 import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
+import FullPie from '../../full-panel/full-pie'
+import { ResponsiveContainer } from 'recharts'
+import FullPanel from '../../full-panel/full-panel'
+const dataSafe = [
+  { name: '안전한 사람', value: 60 },
+  { name: '', value: 100 - 60 },
+]
 
-const CardDropdown = (props) => {
+const dataRisk = [
+  { name: '위험한 사람', value: 30 },
+  { name: '', value: 100 - 30 },
+]
+
+const dataVeryRisk = [
+  { name: '매우 위험한 사람', value: 10 },
+  { name: '', value: 100 - 10 },
+]
+
+const CardDropdown = () => {
   const widgetChartRef1 = useRef(null)
   const widgetChartRef2 = useRef(null)
 
@@ -40,24 +57,24 @@ const CardDropdown = (props) => {
   }, [widgetChartRef1, widgetChartRef2])
 
   return (
-    <CRow style={{ backgroundColor: 'blue' }}>
-      <CRow className={props.className}>
+    <div style={{ padding: '10px' }}>
+      <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
         <CCol>
-          <Card title="위험1" component={<Warning height={200} />} />
+          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
         </CCol>
         <CCol>
-          <Card title="위험2" component={<Warning height={200} />} />
-        </CCol>
-      </CRow>
-      <CRow>
-        <CCol>
-          <Card title="위험3" component={<Warning height={200} />} />
-        </CCol>
-        <CCol>
-          <Card title="위험4" component={<Warning height={200} />} />
+          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
         </CCol>
       </CRow>
-    </CRow>
+      <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
+        <CCol>
+          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
+        </CCol>
+        <CCol>
+          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
+        </CCol>
+      </CRow>
+    </div>
   )
 }
 

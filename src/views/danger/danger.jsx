@@ -1,21 +1,10 @@
 //위험 감지 테이블
 import React from 'react'
-import classNames from 'classnames'
-import { PureComponent } from 'react'
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts'
-import { CChartDoughnut } from '@coreui/react-chartjs'
+
 import {
-  CAvatar,
   CBadge,
   CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardHeader,
-  CCol,
   CProgress,
-  CRow,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -41,8 +30,6 @@ import {
   cifPl,
   cifUs,
   cibTwitter,
-  cilCloudDownload,
-  cilPeople,
   cilUser,
   cilUserFemale,
 } from '@coreui/icons'
@@ -53,20 +40,43 @@ import avatar3 from 'src/assets/images/avatars/3.jpg'
 import avatar4 from 'src/assets/images/avatars/4.jpg'
 import avatar5 from 'src/assets/images/avatars/5.jpg'
 import avatar6 from 'src/assets/images/avatars/6.jpg'
-
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
-import { Calendar } from 'react-date-range'
-import EmotionChip from '../emotion/EmotionChip'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
-import { curveCardinal } from 'd3-shape'
-import KeywordChip from '../keyword/KeywordChip'
-import Icon from '../../components/icon/icons'
-import palette from '../../assets/styles/theme'
+import react, { useEffect } from 'react'
+import { dailyAnalyzeStatus } from '../../apis/customers'
 
 const Danger = () => {
+  const [userTable, setUserTable] = React.useState([])
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await dailyAnalyzeStatus()
+        // API로부터 받은 데이터를 userTable 형식에 맞게 변환하여 상태에 저장
+        console.log('response!', response)
+        const formattedData = response.map((user) => ({
+          user: {
+            name: user.nickname,
+            id: user.id,
+            //new: user.newUser,
+            registered: user.birthdate,
+          },
+          usage: {
+            value: 60,
+            color: getProgressColor(60),
+          },
+          emotions: ['기쁜', '행복한'], // 감정 목록
+          activity: '2024-06-17', // 마지막 활동 시간
+        }))
+        console.log('formattedData:', formattedData)
+        setUserTable(formattedData)
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+      }
+    }
+
+    fetchUserData()
+  }, [])
+
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
     { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
@@ -188,6 +198,7 @@ const Danger = () => {
     },
   ]
 
+  //안전, 위험, 매우 위험을 구분하는 함수
   const dangerLevel = (value) => {
     if (value <= 60) {
       return '안전'
@@ -197,6 +208,7 @@ const Danger = () => {
       return '매우 위험'
     }
   }
+  //안전, 위험, 매우 위험에 따라 bar의 색상을 바꿔주는 함수
   const getProgressColor = (value) => {
     if (value <= 60) {
       return 'success'
@@ -207,54 +219,10 @@ const Danger = () => {
     }
   }
 
-  //내담자 간단 확인 예제
-  const userTable = [
-    {
-      user: {
-        name: 'Yiorgos Avraamu',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      usage: {
-        value: 50,
-        color: 'success',
-      },
-      emotions: ['벅찬'],
-      activity: '10 sec ago',
-    },
-    {
-      user: {
-        name: 'Avram Tarasios',
-        new: false,
-        registered: 'Jan 1, 2023',
-      },
-      usage: {
-        value: 22,
-        color: 'info',
-      },
-      emotions: ['화가나는'],
-      activity: '5 minutes ago',
-    },
-    {
-      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 74,
-        color: 'warning',
-      },
-      emotions: ['죄책감이 드는'],
-      activity: '1 hour ago',
-    },
-    {
-      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 98,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'danger',
-      },
-      emotions: ['힘이드는'],
-      activity: 'Last month',
-    },
-  ]
+  const navigateToReport = (type, id, name) => {
+    const url = `/#/customers/${type}-report/${id}`
+    window.location.href = url
+  }
 
   return (
     <>
@@ -264,8 +232,9 @@ const Danger = () => {
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">위험지수</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">분석 감정</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">최근 활동</CTableHeaderCell>
+
+            <CTableHeaderCell className="bg-body-tertiary">일일 리포트</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">기간 리포트</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
@@ -274,7 +243,8 @@ const Danger = () => {
               <CTableDataCell>
                 <div>{item.user.name}</div>
                 <div className="small text-body-secondary text-nowrap">
-                  상담 시작 시간: {item.user.registered}
+                  마지막 대화: {'\n'}
+                  {item.user.registered}
                 </div>
               </CTableDataCell>
 
@@ -290,20 +260,16 @@ const Danger = () => {
                   value={item.usage.value}
                 />
               </CTableDataCell>
-
               <CTableDataCell>
-                <div style={{ display: 'flex' }}>
-                  {item.emotions.map((emotion, index) => (
-                    <CBadge key={index} textBgColor="info">
-                      {emotion}
-                    </CBadge>
-                  ))}
-                </div>
+                <CButton color="primary" onClick={() => navigateToReport('daily', item.user.id)}>
+                  일일 리포트
+                </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
-                <div className="small text-body-secondary text-nowrap">최근 대화 시간</div>
-                <div className="fw-semibold text-nowrap">{item.activity}</div>
+                <CButton color="primary" onClick={() => navigateToReport('period', item.user.id)}>
+                  기간 리포트
+                </CButton>
               </CTableDataCell>
             </CTableRow>
           ))}
