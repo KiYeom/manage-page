@@ -44,6 +44,7 @@ import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
 import react, { useEffect } from 'react'
 import { dailyAnalyzeStatus } from '../../apis/customers'
+import userTableDummy from '../../assets/dummy'
 
 const Danger = () => {
   const [userTable, setUserTable] = React.useState([])
@@ -67,8 +68,9 @@ const Danger = () => {
           emotions: ['기쁜', '행복한'], // 감정 목록
           activity: '2024-06-17', // 마지막 활동 시간
         }))
+
         console.log('formattedData:', formattedData)
-        setUserTable(formattedData)
+        setUserTable(userTableDummy)
       } catch (error) {
         console.error('Error fetching user data:', error)
       }

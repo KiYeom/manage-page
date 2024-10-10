@@ -90,7 +90,7 @@ const Dashboard = () => {
     { title: 'Saturday', value1: 53, value2: 82 },
     { title: 'Sunday', value1: 9, value2: 69 },
   ]
-
+  /*
   const progressGroupExample2 = [
     { title: 'Male', icon: cilUser, value: 53 },
     { title: 'Female', icon: cilUserFemale, value: 43 },
@@ -304,7 +304,7 @@ const Dashboard = () => {
       emotions: ['a', 'b', 'c'],
       activity: 'Last month',
     },
-  ]
+  ]*/
 
   return (
     <>
@@ -319,7 +319,10 @@ const Dashboard = () => {
       </CRow>
 
       <br />
-      <Title title="내담자 간단 확인" subtitle="위험한 내담자의 상황을 한 눈에 볼 수 있습니다." />
+      <Title
+        title="내담자 상태 파악하기"
+        subtitle="위험한 내담자의 상황을 한 눈에 볼 수 있습니다."
+      />
       <Danger />
     </>
   )

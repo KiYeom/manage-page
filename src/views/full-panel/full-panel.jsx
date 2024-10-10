@@ -28,7 +28,7 @@ const FullPanel = ({ mainText, subText, score, width, height }) => {
         </MainText>
       </PanelText>
       <PanelGraph>
-        <FullPie />
+        <FullPie type={subText} />
       </PanelGraph>
     </PanelContainer>
   )

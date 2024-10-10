@@ -19,6 +19,8 @@ import { Calendar } from 'react-date-range'
 import { dailyAnalyzeReport, dangerScore } from '../../apis/customers'
 import CalendarIcon from '../../assets/svg/calendar.svg' // Adjust the path as needed
 import HalfPanel from '../half-panel/half-panel'
+import userTableDummy from '../../assets/dummy'
+
 //파이 그래프 데이터
 const datas = [
   {
@@ -94,23 +96,23 @@ const DailyReport = () => {
   const [dailyKeyword, setDailyKeyword] = React.useState([]) //일일 키워드분석
   const [dailyEmotion, setDailyEmotion] = React.useState([]) //일일 감정분석
   const [dailyRecordedEmotion, setDailyRecordedEmotion] = React.useState([]) //일일 직접 기록한 감정
-  const [modalVisible, setModalVisible] = useState(false)
   const [dangerscore, setDangerscore] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await dailyAnalyzeReport(id, '2024-10-08')
-      const dangerdata = await dangerScore(id, '2024-10-08')
-      //console.log('data', data.data)
-      //console.log('data.summary.keywords)', data.data.summary.keywords)
-      //console.log('data.summary.emotions)', data.data.classification.labels)
-      //console.log('data.record.Keywords)', data.data.record.Keywords)
-      setDailyKeyword(data.data.summary.keywords)
-      setDailyEmotion(data.data.classification.labels)
-      setDailyRecordedEmotion(data.data.record.Keywords)
-      //console.log('dangerdata', dangerdata.data.score)
-      setDangerscore(dangerdata.data.score)
+      //const data = await dailyAnalyzeReport(id, '2024-10-08') api 연결
+      const data = userTableDummy
       console.log('data', data)
+      const dangerdata = await dangerScore(id, '2024-10-08')
+      //setDailyKeyword(data.data.summary.keywords)
+      //setDailyEmotion(data.data.classification.labels)
+      //setDailyRecordedEmotion(data.data.record.Keywords)
+      //setDangerscore(dangerdata.data.score)
+
+      setDailyKeyword(data[id - 1].dailyKeyword)
+      setDailyRecordedEmotion(data[id - 1].dailyRecordedEmotion)
+      console.log('ddddd', dailyRecordedEmotion)
+      setDangerscore(data[id - 1].usage.value)
     }
     fetchData()
   }, [])
@@ -267,11 +269,16 @@ const DailyReport = () => {
                 </CListGroup>
               ) : (
                 dailyRecordedEmotion.reduce((acc, item, index, arr) => {
+                  // Check if the current index is even
                   if (index % 2 === 0) {
-                    const keyword1 = item.keyword
-                    const keyword2 = arr[index + 1]?.keyword ?? '-'
+                    // Destructure the keyword property from the current item
+                    const { keyword: keyword1 } = item
+                    // Destructure the keyword property from the next item, if it exists
+                    const { keyword: keyword2 = '-' } = arr[index + 1] || {}
+
+                    // Push a new CListGroup component to the accumulator array
                     acc.push(
-                      <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                      <CListGroup className="mb-2" layout="horizontal" key={index}>
                         <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
                         <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
                       </CListGroup>,
