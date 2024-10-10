@@ -7,12 +7,12 @@ import { SubTitle } from 'chart.js'
 const COLORS = [palette.web[50], palette.web[300], palette.web[300], palette.web[400]]
 
 const data = [
-  { name: 'A', value: 60, color: palette.web[200] },
-  { name: 'B', value: 17, color: palette.web[100] },
-  { name: 'C', value: 23, color: palette.web[300] },
+  { name: 'A', value: 6, color: palette.web[200] },
+  { name: 'B', value: 3, color: palette.web[100] },
+  { name: 'C', value: 1, color: palette.web[300] },
 ]
 
-const FullPie = (type) => {
+const FullPie = ({ type }) => {
   const containerRef = useRef(null)
   const [width, setWidth] = useState(0)
 
@@ -63,9 +63,9 @@ const FullPie = (type) => {
                   entry.name === 'A' && type === '안전한 내담자'
                     ? '#36A2EB' // Blue for '안전한 내담자'
                     : entry.name === 'B' && type === '위험한 내담자'
-                      ? '#FF6384' // Pink for '위험한 내담자'
+                      ? '#FFCE56' // Pink for '위험한 내담자'
                       : entry.name === 'C' && type === '매우 위험한 내담자'
-                        ? '#FFCE56' // Yellow for '매우 위험한 내담자'
+                        ? '#FF6384' // Yellow for '매우 위험한 내담자'
                         : '#CCCCCC' // Default colors for others
                 }
               />
