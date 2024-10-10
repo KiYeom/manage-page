@@ -100,8 +100,8 @@ const DailyReport = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      //const data = await dailyAnalyzeReport(id, '2024-10-08') api 연결
-      const data = userTableDummy
+      const data = await dailyAnalyzeReport(id, '2024-10-08') api 연결
+      //const data = userTableDummy
       console.log('data', data)
       const dangerdata = await dangerScore(id, '2024-10-08')
       //setDailyKeyword(data.data.summary.keywords)
@@ -111,7 +111,6 @@ const DailyReport = () => {
 
       setDailyKeyword(data[id - 1].dailyKeyword)
       setDailyRecordedEmotion(data[id - 1].dailyRecordedEmotion)
-      console.log('ddddd', dailyRecordedEmotion)
       setDangerscore(data[id - 1].usage.value)
     }
     fetchData()
