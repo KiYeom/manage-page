@@ -3,8 +3,6 @@ import classNames from 'classnames'
 import { CNavItem, CNavLink } from '@coreui/react'
 import { NavLink } from 'react-router-dom'
 import { CForm, CFormInput, CFormLabel } from '@coreui/react'
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
 import Title from '../base/title/Title'
 
 import {
@@ -70,11 +68,7 @@ const Customers = () => {
     { title: 'New Users', value: '22.123 Users', percent: 80, color: 'danger' },
     { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
   ]
-  const navItemStyle = css`
-    list-style-type: none; /* 리스트 스타일 제거 */
-    margin: 0; /* 기본 마진 제거 */
-    padding: 0; /* 기본 패딩 제거 */
-  `
+
   const progressGroupExample1 = [
     { title: 'Monday', value1: 34, value2: 78 },
     { title: 'Tuesday', value1: 56, value2: 94 },
