@@ -20,9 +20,9 @@ import { getRefreshToken, setTokenInfo } from '../../../storages/storages'
 
 const Login = () => {
   const [loading, setLoading] = React.useState(false)
-  const [email, setEmail] = React.useState('')
+  const [email, setEmail] = React.useState('test@test.com')
   const [emailError, setEmailError] = React.useState('')
-  const [password, setPassword] = React.useState('')
+  const [password, setPassword] = React.useState('testtest')
 
   const handleLogin = () => {
     //버튼 비활성화
@@ -38,6 +38,7 @@ const Login = () => {
       })
       .finally(() => {
         //버튼 활성화
+        window.location.href = '/'
         setLoading(false)
       })
   }
@@ -45,7 +46,7 @@ const Login = () => {
   useEffect(() => {
     //토큰이 있으면 대시보드 페이지로 이동
     if (getRefreshToken()) {
-      window.location.href = '/dashboard'
+      window.location.href = '/'
     }
   }, [])
 

@@ -88,11 +88,11 @@ const Warning = ({ height }) => {
     <div
       ref={containerRef}
       style={{
-        width: '100%',
+        flex: 1,
+        width: 'auto',
         height: height + 30,
-        padding: 0,
-        backgroundColor: 'transparent',
-        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
       <ResponsiveContainer width="100%" height="100%">

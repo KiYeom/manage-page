@@ -16,8 +16,9 @@ import { getStyle } from '@coreui/utils'
 import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
-import DonutChart from '../dount/DountChart'
+import FullPie from '../../full-panel/full-pie'
 import { ResponsiveContainer } from 'recharts'
+import FullPanel from '../../full-panel/full-panel'
 const dataSafe = [
   { name: '안전한 사람', value: 60 },
   { name: '', value: 100 - 60 },
@@ -59,110 +60,15 @@ const CardDropdown = () => {
     <div style={{ padding: '10px' }}>
       <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
         <CCol>
-          <div
-            style={{
-              //backgroundColor: 'pink',
-              width: '300px',
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-          >
-            <div
-              style={{
-                color: 'white',
-                //backgroundColor: 'red',
-                flexGrow: 1,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <h6>전체 인원</h6>
-              <h2>100명</h2>
-            </div>
-            <DonutChart data={dataRisk} />
-          </div>
+          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
         </CCol>
         <CCol>
-          <div
-            style={{
-              //backgroundColor: 'pink',
-              width: '300px',
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-          >
-            <div
-              style={{
-                color: 'white',
-                //backgroundColor: 'red',
-                flexGrow: 1,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <h6>안전한사람</h6>
-              <h2>60명</h2>
-            </div>
-            <div style={{ flexGrow: 2 }}>
-              {' '}
-              {/* DonutChart가 남은 공간을 차지 */}
-              <ResponsiveContainer width="100%" height="100%">
-                <DonutChart data={dataSafe} />
-              </ResponsiveContainer>
-            </div>
-          </div>
+          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
         </CCol>
       </CRow>
-
       <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
-        <CCol>
-          <div
-            style={{
-              //backgroundColor: 'pink',
-              width: '300px',
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-          >
-            <div
-              style={{
-                color: 'white',
-                //backgroundColor: 'red',
-                flexGrow: 1,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <h6>위험한 사람</h6>
-              <h2>30명</h2>
-            </div>
-            <DonutChart data={dataRisk} />
-          </div>
-        </CCol>
-        <CCol>
-          <div
-            style={{
-              //backgroundColor: 'pink',
-              width: '300px',
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-          >
-            <div
-              style={{
-                color: 'white',
-                //backgroundColor: 'red',
-                flexGrow: 1,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <h6>매우 위험한 사람</h6>
-              <h2>10명</h2>
-            </div>
-            <DonutChart data={dataVeryRisk} />
-          </div>
-        </CCol>
+        <CCol></CCol>
+        <CCol></CCol>
       </CRow>
     </div>
   )

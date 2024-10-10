@@ -68,6 +68,9 @@ import Danger from '../danger/danger'
 import { dailyAnalyzeStatus } from '../../apis/customers'
 import { useEffect } from 'react'
 import EmotionContainer from '../emotion/EmotionContainer'
+import WarningTest from '../half-panel/half-pie'
+import HalfPanel from '../half-panel/half-panel'
+import FullPanel from '../full-panel/full-panel'
 
 const Dashboard = () => {
   const progressExample = [
@@ -307,36 +310,8 @@ const Dashboard = () => {
     <>
       <Title title="위험 지수" subtitle="전체 내댐자의 위험 상황을 한 눈에 확인할 수 있습니다." />
       <CRow className="mb-4">
-        <CCol lg={6} style={{}}>
-          <EmotionContainer>
-            <div
-              style={{
-                color: 'white',
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#2B303C',
-                borderRadius: '10px',
-                padding: '10px',
-                height: '100%',
-                textAlign: 'center',
-                //backgroundColor: '#F3F4F7',
-              }}
-            >
-              <div style={{ display: 'flex', flexDirection: 'column', marginRight: '20px' }}>
-                {' '}
-                {/* Column for text */}
-                <h6 style={{ whiteSpace: 'nowrap' }}>전체 내담자 위험점수</h6>
-                <h2>60점</h2>
-              </div>
-              <div style={{ width: '350px', height: '350px' }}>
-                {' '}
-                {/* Ensure the graph has a defined size */}
-                <Warning height={350} />
-              </div>
-            </div>
-          </EmotionContainer>
+        <CCol lg={6}>
+          <HalfPanel subText="전체 내담자 위험점수" mainText="점" score={75} />
         </CCol>
         <CCol lg={6} style={{ backgroundColor: '#2B303C' }}>
           {/*<CardDropdown className="mb-4" />*/}
@@ -345,6 +320,7 @@ const Dashboard = () => {
       </CRow>
 
       <br />
+      <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
       <Title title="내담자 간단 확인" subtitle="위험한 내담자의 상황을 한 눈에 볼 수 있습니다." />
       <Danger />
     </>

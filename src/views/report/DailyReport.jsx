@@ -1,5 +1,4 @@
 import React from 'react'
-import { css } from '@emotion/react'
 import { useParams } from 'react-router-dom'
 import Warning from '../warning/Warning'
 import { CChartDoughnut } from '@coreui/react-chartjs'

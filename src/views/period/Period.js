@@ -3,7 +3,6 @@ import classNames from 'classnames'
 import { useState } from 'react'
 import { curveCardinal } from 'd3-shape'
 import { CChartLine } from '@coreui/react-chartjs'
-import { css } from '@emotion/react'
 import {
   AreaChart,
   Area,
