@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, NavLink } from 'react-router-dom'
-import { CButton, CButtonGroup, CCard, CCardBody, CCardFooter, CCol, CRow } from '@coreui/react'
+import {
+  CButton,
+  CButtonGroup,
+  CCard,
+  CCardBody,
+  CCardFooter,
+  CCol,
+  CRow,
+  CListGroup,
+  CListGroupItem,
+} from '@coreui/react'
 import {
   AreaChart,
   Area,
@@ -12,7 +22,7 @@ import {
 } from 'recharts'
 import axios from 'axios'
 import palette from '../../assets/styles/theme'
-import { periodAnalyzeReport } from '../../apis/customers'
+import { periodEmotionReport, periodKeywordReport } from '../../apis/customers'
 
 const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
 
@@ -42,8 +52,8 @@ const mergeData = (charts) => {
 const PeriodReport = () => {
   const [clickedBtn, setClickedBtn] = useState(0)
   const { id } = useParams()
-  const [data, setData] = useState([])
   const [periodEmotion, setPeriodEmotion] = useState([]) // 기간 감정분석
+  const [periodKeyword, setPeriodKeyword] = useState([]) // 기간 키워드 분석
   const [startDate, setStartDate] = useState('2024-10-02')
   const [endDate, setEndDate] = useState('2024-10-09')
 
@@ -51,11 +61,16 @@ const PeriodReport = () => {
     console.log('기간 분석')
     const fetchData = async () => {
       try {
-        const response = await periodAnalyzeReport(id, startDate, endDate) // id, startdate, enddate
+        //감정 파이
+        const response = await periodEmotionReport(id, startDate, endDate) // id, startdate, enddate
         console.log('api result', response)
+        //키워드
+        const responseKeyword = await periodKeywordReport(id, startDate, endDate)
+        console.log('api result - keyword', responseKeyword.data.keywords)
         const mergedData = mergeData(response.data.charts)
-        setData(mergedData) //감정 변화 추이 데이터
-        setPeriodEmotion(response.data.data.classification.labels)
+        setPeriodEmotion(mergedData) //감정 변화 추이 데이터
+        setPeriodKeyword(responseKeyword.data.keywords) //키워드 데이터
+        //setPeriodEmotion(response.data.data.classification.labels)
       } catch (error) {
         console.log('기간 분석 에러', error)
         return
@@ -160,7 +175,7 @@ const PeriodReport = () => {
               <AreaChart
                 width={800}
                 height={500}
-                data={data}
+                data={periodEmotion}
                 margin={{
                   top: 10,
                   right: 30,
@@ -194,7 +209,15 @@ const PeriodReport = () => {
         </CCardBody>
         <CCardFooter>
           <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} lg={{ cols: 4 }}>
-            {/* Add your content here */}
+            <ResponsiveContainer width="100%" height="100%">
+              <CListGroup className="mb-2">
+                {periodKeyword.map((keyword, keywordIndex) => (
+                  <CListGroupItem key={keywordIndex}>
+                    {keyword || '-'} {/* 키워드가 없으면 기본 텍스트 사용 */}
+                  </CListGroupItem>
+                ))}
+              </CListGroup>
+            </ResponsiveContainer>
           </CRow>
         </CCardFooter>
       </CCard>
