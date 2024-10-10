@@ -7,6 +7,7 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: space-between;
   background-color: ${palette.web[400]};
+  border-radius: 20px;
   //background-color: blue;
 `
 

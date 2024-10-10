@@ -26,6 +26,7 @@ import palette from '../../assets/styles/theme'
 import { periodEmotionReport, periodKeywordReport } from '../../apis/customers'
 
 const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
+const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨']
 
 const mergeData = (charts) => {
   // 각 감정의 데이터를 날짜별로 병합
@@ -140,7 +141,7 @@ const PeriodReport = () => {
             console.log('버튼 클릭')
           }}
         >
-          일일리포트 확인하기
+          일일리포트 확인
         </CButton>
       </div>
 
@@ -156,7 +157,7 @@ const PeriodReport = () => {
               </div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
-              <CButtonGroup className="float-end me-3">
+              <CButtonGroup className="float-end me-3 ">
                 {emotionList.map((value, index) => (
                   <CButton
                     color="outline-secondary"
@@ -224,11 +225,19 @@ const PeriodReport = () => {
           <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} lg={{ cols: 4 }}>
             <ResponsiveContainer width="100%" height="100%">
               <CListGroup className="mb-2">
-                {periodKeyword.map((keyword, keywordIndex) => (
-                  <CListGroupItem key={keywordIndex}>
-                    {keyword || '-'} {/* 키워드가 없으면 기본 텍스트 사용 */}
-                  </CListGroupItem>
-                ))}
+                {periodKeyword.reduce((acc, item, index, arr) => {
+                  if (index % 2 === 0) {
+                    const keyword1 = item
+                    const keyword2 = arr[index + 1] ?? '-'
+                    acc.push(
+                      <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                        <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
+                        <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
+                      </CListGroup>,
+                    )
+                  }
+                  return acc
+                }, [])}
               </CListGroup>
             </ResponsiveContainer>
           </CRow>

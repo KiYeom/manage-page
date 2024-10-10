@@ -5,7 +5,7 @@ import { CChartDoughnut } from '@coreui/react-chartjs'
 import EmotionContainer from '../emotion/EmotionContainer'
 import EmotionChip from '../emotion/EmotionChip'
 import KeywordChip from '../keyword/KeywordChip'
-import { CButton, CListGroup, CListGroupItem } from '@coreui/react'
+import { CButton, CCol, CListGroup, CListGroupItem, CRow } from '@coreui/react'
 import { NavLink } from 'react-router-dom'
 import { ResponsiveContainer } from 'recharts'
 import Card from '../base/cards/Card'
@@ -18,6 +18,7 @@ import { useEffect } from 'react'
 import { Calendar } from 'react-date-range'
 import { dailyAnalyzeReport } from '../../apis/customers'
 import CalendarIcon from '../../assets/svg/calendar.svg' // Adjust the path as needed
+import HalfPanel from '../half-panel/half-panel'
 //파이 그래프 데이터
 const datas = [
   {
@@ -145,17 +146,23 @@ const DailyReport = () => {
             let percentage = ((value / sum) * 100).toFixed(2)
             return percentage > 10 ? percentage + '%' : '' // 10% 미만은 표시하지 않음
           },
-          color: '#fff', // 텍스트 색상
+          color: '#000000', // 텍스트 색상
           font: {
             weight: 'bold',
+            size: 16,
           },
         },
         legend: {
           position: 'top', // 범례를 상단에 배치
+          color: '#FFFFFF', // 제목 글자 색상
         },
         title: {
           display: true,
           text: 'AI가 분석한 감정', // 차트 제목
+          color: '#FFFFFF', // 제목 글자 색상
+          font: {
+            size: 30, // 제목 글자 크기
+          },
         },
       },
     },
@@ -174,7 +181,7 @@ const DailyReport = () => {
       >
         <Title title={id} subtitle={`${id}님의 일일리포트입니다.`} />
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
-          <CButton
+          {/* <CButton
             className="align-self-center"
             color="primary"
             to={`/customers/period-report/${id}`}
@@ -184,7 +191,7 @@ const DailyReport = () => {
             }}
           >
             <CalendarIcon style={{ width: '1em', height: '1em' }} />
-          </CButton>
+          </CButton> */}
           <CButton
             className="align-self-center"
             color="primary"
@@ -194,59 +201,68 @@ const DailyReport = () => {
               console.log('버튼 클릭')
             }}
           >
-            기간 리포트 확인하기
+            기간 리포트 확인
           </CButton>
         </div>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div style={{ flex: '1', marginRight: '10px' }}>
-          <Card title="테스트" component={<Warning height={200} />} />
-        </div>
-        <div style={{ flex: '1' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {dailyKeyword.reduce((acc, item, index, arr) => {
-              if (index % 2 === 0) {
-                const keyword1 = item
-                const keyword2 = arr[index + 1] ?? '-'
-                acc.push(
-                  <CListGroup className="mb-2" layout={`horizontal`} key={index}>
-                    <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
-                    <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
-                  </CListGroup>,
-                )
-              }
-              return acc
-            }, [])}
-          </div>
-        </div>
-      </div>
-      <Container>
-        <EmotionContainer style={{ height: '500px', width: '48%', flexDirection: 'row' }}>
-          <ResponsiveContainer width="100%" height="100%" flexDirection="row">
-            <CChartDoughnut {...config} />
-          </ResponsiveContainer>
-        </EmotionContainer>
-        <div style={{ flex: '1' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {dailyRecordedEmotion.reduce((acc, item, index, arr) => {
-              if (index % 2 === 0) {
-                const keyword1 = item.keyword
-                const keyword2 = arr[index + 1]?.keyword ?? '-'
-                acc.push(
-                  <CListGroup className="mb-2" layout={`horizontal`} key={index}>
-                    <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
-                    <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
-                  </CListGroup>,
-                )
-              }
-              return acc
-            }, [])}
-          </div>
-        </div>
-      </Container>
-      <h2>다람쥐</h2>
 
-      <Calendar date={new Date()} onChange={() => console.log('바뀜')} />
+      <CRow className="mb-4 align-items-center">
+        <CCol lg={6}>
+          <HalfPanel subText="위험점수" mainText="점" score={75} />
+        </CCol>
+        <CCol lg={6}>
+          <div style={{ flex: '1' }}>
+            <Title title="대화 주제" subtitle="내담자가 많이 언급한 주제입니다." />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {dailyKeyword.reduce((acc, item, index, arr) => {
+                if (index % 2 === 0) {
+                  const keyword1 = item
+                  const keyword2 = arr[index + 1] ?? '-'
+                  acc.push(
+                    <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                      <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
+                      <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
+                    </CListGroup>,
+                  )
+                }
+                return acc
+              }, [])}
+            </div>
+          </div>
+        </CCol>
+      </CRow>
+
+      <CRow className="mb-4 align-items-center">
+        <CCol lg={6}>
+          <Container>
+            <EmotionContainer style={{ height: '500px', width: '100%', flexDirection: 'row' }}>
+              <ResponsiveContainer width="100%" height="100%" flexDirection="row">
+                <CChartDoughnut {...config} />
+              </ResponsiveContainer>
+            </EmotionContainer>
+          </Container>
+        </CCol>
+        <CCol lg={6}>
+          <div style={{ flex: '1', margin: '20px 0px 20px 0px' }}>
+            <Title title="내담자가 기록한 감정" subtitle="내담자가 직접 선택한 감정 단어입니다." />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {dailyKeyword.reduce((acc, item, index, arr) => {
+                if (index % 2 === 0) {
+                  const keyword1 = item
+                  const keyword2 = arr[index + 1] ?? '-'
+                  acc.push(
+                    <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                      <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
+                      <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
+                    </CListGroup>,
+                  )
+                }
+                return acc
+              }, [])}
+            </div>
+          </div>
+        </CCol>
+      </CRow>
     </>
   )
 }

@@ -219,55 +219,6 @@ const Danger = () => {
     }
   }
 
-  //내담자 간단 확인 예제
-  /*const userTable = [
-    {
-      user: {
-        name: 'Yiorgos Avraamu',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      usage: {
-        value: 50,
-        color: 'success',
-      },
-      emotions: ['벅찬'],
-      activity: '10 sec ago',
-    },
-    {
-      user: {
-        name: 'Avram Tarasios',
-        new: false,
-        registered: 'Jan 1, 2023',
-      },
-      usage: {
-        value: 22,
-        color: 'info',
-      },
-      emotions: ['화가나는'],
-      activity: '5 minutes ago',
-    },
-    {
-      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 74,
-        color: 'warning',
-      },
-      emotions: ['죄책감이 드는'],
-      activity: '1 hour ago',
-    },
-    {
-      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 98,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'danger',
-      },
-      emotions: ['힘이드는'],
-      activity: 'Last month',
-    },
-  ]*/
-
   const navigateToReport = (type, id, name) => {
     const url = `/#/customers/${type}-report/${id}`
     window.location.href = url
@@ -280,11 +231,10 @@ const Danger = () => {
         <CTableHead className="text-nowrap">
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">위험지수</CTableHeaderCell>
+
             <CTableHeaderCell className="bg-body-tertiary">일일 리포트</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">기간 리포트</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">위험지수</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">분석 감정</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">최근 활동</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
@@ -293,20 +243,9 @@ const Danger = () => {
               <CTableDataCell>
                 <div>{item.user.name}</div>
                 <div className="small text-body-secondary text-nowrap">
-                  상담 시작 시간: {item.user.registered}
+                  마지막 대화: {'\n'}
+                  {item.user.registered}
                 </div>
-              </CTableDataCell>
-
-              <CTableDataCell>
-                <CButton color="primary" onClick={() => navigateToReport('daily', item.user.id)}>
-                  일일 리포트
-                </CButton>
-              </CTableDataCell>
-
-              <CTableDataCell>
-                <CButton color="primary" onClick={() => navigateToReport('period', item.user.id)}>
-                  기간 리포트
-                </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
@@ -321,20 +260,16 @@ const Danger = () => {
                   value={item.usage.value}
                 />
               </CTableDataCell>
-
               <CTableDataCell>
-                <div style={{ display: 'flex' }}>
-                  {item.emotions.map((emotion, index) => (
-                    <CBadge key={index} textBgColor="info">
-                      {emotion}
-                    </CBadge>
-                  ))}
-                </div>
+                <CButton color="primary" onClick={() => navigateToReport('daily', item.user.id)}>
+                  일일 리포트
+                </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
-                <div className="small text-body-secondary text-nowrap">최근 대화 시간</div>
-                <div className="fw-semibold text-nowrap">{item.activity}</div>
+                <CButton color="primary" onClick={() => navigateToReport('period', item.user.id)}>
+                  기간 리포트
+                </CButton>
               </CTableDataCell>
             </CTableRow>
           ))}
