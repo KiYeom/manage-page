@@ -14,7 +14,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 import Icon from '../../components/icon/icons'
 import Title from '../base/title/Title'
 import Container from '../container/Container'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Calendar } from 'react-date-range'
 import { dailyAnalyzeReport } from '../../apis/customers'
 import CalendarIcon from '../../assets/svg/calendar.svg' // Adjust the path as needed
@@ -94,6 +94,7 @@ const DailyReport = () => {
   const [dailyKeyword, setDailyKeyword] = React.useState([]) //일일 키워드분석
   const [dailyEmotion, setDailyEmotion] = React.useState([]) //일일 감정분석
   const [dailyRecordedEmotion, setDailyRecordedEmotion] = React.useState([]) //일일 직접 기록한 감정
+  const [modalVisible, setModalVisible] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -188,6 +189,7 @@ const DailyReport = () => {
             as={NavLink}
             onClick={() => {
               console.log('버튼 클릭')
+              setModalVisible(true)
             }}
           >
             <CalendarIcon style={{ width: '1em', height: '1em' }} />
