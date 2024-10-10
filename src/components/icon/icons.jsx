@@ -6,6 +6,7 @@ import Angry from '../../assets/svg/angry.svg'
 import Calm from '../../assets/svg/calm.svg'
 import Clover from '../../assets/svg/clover.svg'
 import Search from '../../assets/svg/search.svg'
+import { CalendarIcon } from 'react-date-range'
 
 const Icon = ({ name, width, height, fill }) => {
   {
@@ -22,6 +23,8 @@ const Icon = ({ name, width, height, fill }) => {
         return <Clover width={width} height={height} fill={fill} />
       case 'search':
         return <Search width={width} height={height} fill={fill} />
+      case 'calendar':
+        return <CalendarIcon width={width} height={height} fill={fill} />
     }
   }
 }
