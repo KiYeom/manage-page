@@ -174,7 +174,7 @@ const DailyReport = () => {
         }}
       >
         <Title title={id} subtitle={`${id}님의 일일리포트입니다.`} />
-        <>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
           <CButton
             className="align-self-center"
             color="primary"
@@ -184,7 +184,7 @@ const DailyReport = () => {
               console.log('버튼 클릭')
             }}
           >
-            <CalendarIcon style={{ width: '1em', height: '1em', marginRight: '0.5em' }} />
+            <CalendarIcon style={{ width: '1em', height: '1em' }} />
           </CButton>
           <CButton
             className="align-self-center"
@@ -197,7 +197,7 @@ const DailyReport = () => {
           >
             기간 리포트 확인하기
           </CButton>
-        </>
+        </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <div style={{ flex: '1', marginRight: '10px' }}>
