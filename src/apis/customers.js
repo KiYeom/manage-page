@@ -27,7 +27,7 @@ export const dailyAnalyzeReport = async (id, date) => {
   }
 }
 
-//기간 분석 조회
+//[기간] 감정 변화 추이 데이터 분석 조회
 export const periodAnalyzeReport = async (id, startDate, endDate) => {
   try {
     const res = await instance.get('/v1/analyze/period/chart', {
