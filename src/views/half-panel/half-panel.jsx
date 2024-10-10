@@ -1,12 +1,25 @@
 import React from 'react'
-import Warning from '../warning/Warning'
 import HalfPie from './half-pie'
 import styled from '@emotion/styled'
 import propTypes from 'prop-types'
 
-const HalfPanel = ({ mainText, subText, score }) => {
+const HalfPanel = ({ mainText, subText, score, width, height }) => {
+  const PanelContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: ${width};
+    height: ${height};
+    justify-content: space-between;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0px 20px 0px;
+    justify-content: center;
+    align-items: center;
+    background-color: #222630;
+  `
+
   return (
-    <PanelContainer>
+    <PanelContainer width={width} height={height}>
       <PanelText>
         <SubText>{subText}</SubText>
         <MainText>
@@ -20,17 +33,6 @@ const HalfPanel = ({ mainText, subText, score }) => {
     </PanelContainer>
   )
 }
-
-const PanelContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-radius: 20px;
-  padding: 20px;
-  justify-content: center;
-  align-items: center;
-  background-color: #222630;
-`
 
 const PanelText = styled.div`
   display: flex;
@@ -69,6 +71,8 @@ HalfPanel.propTypes = {
   mainText: propTypes.string,
   subText: propTypes.string,
   score: propTypes.number,
+  width: propTypes.string,
+  height: propTypes.string,
 }
 
 export default HalfPanel

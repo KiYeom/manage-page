@@ -34,7 +34,7 @@ const FullPie = () => {
     }
   }, [])
 
-  const height = width / 2
+  const height = width
   const cx = width / 2
   const cy = width / 2
   const iR = width / 4
@@ -42,26 +42,24 @@ const FullPie = () => {
 
   return (
     <PieContainer ref={containerRef}>
-      <ResponsiveContainer>
-        <PieChart width={width} height={height}>
-          <Pie
-            data={data}
-            dataKey="value"
-            cx={cx}
-            cy={cy}
-            innerRadius={iR}
-            outerRadius={oR}
-            fill={palette.web[200]}
-            startAngle={90} // 시작 각도 설정
-            endAngle={450} // 끝 각도 설정
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
-      </ResponsiveContainer>
+      <PieChart width={width + 8} height={height + 8}>
+        <Pie
+          data={data}
+          dataKey="value"
+          cx={cx}
+          cy={cy}
+          innerRadius={iR}
+          outerRadius={oR}
+          fill={palette.web[200]}
+          startAngle={90} // 시작 각도 설정
+          endAngle={450} // 끝 각도 설정
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+      </PieChart>
     </PieContainer>
   )
 }
@@ -71,7 +69,6 @@ const PieContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  background-color: #892f2f;
 `
 
 export default FullPie

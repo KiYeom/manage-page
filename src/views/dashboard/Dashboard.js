@@ -309,18 +309,16 @@ const Dashboard = () => {
   return (
     <>
       <Title title="위험 지수" subtitle="전체 내댐자의 위험 상황을 한 눈에 확인할 수 있습니다." />
-      <CRow className="mb-4">
+      <CRow className="mb-4 align-items-center">
         <CCol lg={6}>
           <HalfPanel subText="전체 내담자 위험점수" mainText="점" score={75} />
         </CCol>
-        <CCol lg={6} style={{ backgroundColor: '#2B303C' }}>
-          {/*<CardDropdown className="mb-4" />*/}
+        <CCol lg={6}>
           <CardDropdown />
         </CCol>
       </CRow>
 
       <br />
-      <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
       <Title title="내담자 간단 확인" subtitle="위험한 내담자의 상황을 한 눈에 볼 수 있습니다." />
       <Danger />
     </>

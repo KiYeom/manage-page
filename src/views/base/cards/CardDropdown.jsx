@@ -67,8 +67,12 @@ const CardDropdown = () => {
         </CCol>
       </CRow>
       <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
-        <CCol></CCol>
-        <CCol></CCol>
+        <CCol>
+          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
+        </CCol>
+        <CCol>
+          <FullPanel subText={'안전한 사람'} mainText={'명'} score={30} />
+        </CCol>
       </CRow>
     </div>
   )
