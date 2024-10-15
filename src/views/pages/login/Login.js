@@ -48,6 +48,7 @@ const Login = () => {
   }
 
   useEffect(() => {
+    localStorage.setItem('coreui-free-react-admin-template-theme', 'light')
     //토큰이 있으면 대시보드 페이지로 이동
     if (getRefreshToken()) {
       window.location.href = '/'
@@ -125,20 +126,13 @@ const Login = () => {
                       </CCol>
                     </CRow>
                   </CForm>
-                  <br />
-                  <CToast animation={true} autohide={false} visible={true}>
-                    <CToastHeader closeButton>
-                      <div className="fw-bold me-auto">체험 모드</div>
-                    </CToastHeader>
-                    <CToastBody>"로그인" 버튼을 클릭하여 바로 시작하세요.</CToastBody>
-                  </CToast>
                 </CCardBody>
               </CCard>
             </CCardGroup>
           </CCol>
         </CRow>
       </CContainer>
-      <CTAButton />
+      {/* <CTAButton /> */}
     </div>
   )
 }

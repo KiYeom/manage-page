@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
 import CTAButton from '../views/buttons/cta-button'
 
 const DefaultLayout = () => {
+  useEffect(() => {
+    localStorage.setItem('coreui-free-react-admin-template-theme', 'light')
+  }, [])
   return (
     <div>
       <AppSidebar />
@@ -13,7 +16,7 @@ const DefaultLayout = () => {
         </div>
         <AppFooter />
       </div>
-      <CTAButton />
+      {/* <CTAButton /> */}
     </div>
   )
 }
