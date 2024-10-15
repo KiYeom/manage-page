@@ -90,14 +90,16 @@ const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '�
 
 const PeriodReport = () => {
   const [clickedBtn, setClickedBtn] = useState(0)
-  const [dateCLicked, setDateClicked] = useState(false)
+  const [dateClicked, setDateClicked] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   const { id } = useParams()
   const [name, setName] = useState('')
+  const [allowedDates, setAllowedDates] = useState([])
   const [selected, setSelected] = useState()
   const [timeRange, setTimeRange] = useState([])
   const [periodEmotion, setPeriodEmotion] = useState([]) // 기간 감정분석
   const [periodKeyword, setPeriodKeyword] = useState([]) // 기간 키워드 분석
-  const [loading, setLoading] = useState(true) //로딩 상태
+  const [keywordLoading, setKeywordLoading] = useState(false) //로딩 상태
 
   useEffect(() => {
     setTimeRange([
@@ -108,6 +110,7 @@ const PeriodReport = () => {
     analyticsDates(id, '2024')
       .then((data) => {
         setName(data.nickname)
+        setAllowedDates(data.dates)
       })
       .catch((error) => {
         console.log('날짜 에러', error)
@@ -120,11 +123,10 @@ const PeriodReport = () => {
       getDateInfo(selected.from, KOREA_TIME_OFFSET_MINUTES).dateString,
       getDateInfo(selected.to, KOREA_TIME_OFFSET_MINUTES).dateString,
     ])
-  }, [dateCLicked])
+  }, [dateClicked])
 
   useEffect(() => {
     if (timeRange.length === 0) return
-    setLoading(true)
     console.log('startDate: ', timeRange[0])
     console.log('endDate: ', timeRange[1])
 
@@ -137,6 +139,7 @@ const PeriodReport = () => {
         console.log('기간 분석 에러', error)
       })
 
+    setKeywordLoading(true)
     periodKeywordReport(id, timeRange[0], timeRange[1])
       .then((data) => {
         console.log('기간 키워드 데이터', data)
@@ -145,8 +148,9 @@ const PeriodReport = () => {
       .catch((error) => {
         console.log('기간 키워드 에러', error)
       })
-
-    setLoading(false)
+      .finally(() => {
+        setKeywordLoading(false)
+      })
   }, [timeRange])
 
   const renderAreas = () => {
@@ -203,8 +207,10 @@ const PeriodReport = () => {
           subtitle={`${timeRange[0]}~${timeRange[1]}의 리포트입니다.`}
         />
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
-          <CDropdown variant="btn-group" autoClose={'outside'}>
-            <CDropdownToggle color="primary">날짜 선택</CDropdownToggle>
+          <CDropdown variant="btn-group" autoClose={false} visible={dropdownOpen}>
+            <CDropdownToggle color="primary" onClick={() => setDropdownOpen(!dropdownOpen)}>
+              날짜 선택
+            </CDropdownToggle>
             <CDropdownMenu style={{ padding: '10px' }}>
               <DayPicker
                 captionLayout="dropdown"
@@ -212,12 +218,18 @@ const PeriodReport = () => {
                 timeZone="Asia/Seoul"
                 selected={selected}
                 onSelect={setSelected}
+                disabled={(date) => {
+                  return !allowedDates.includes(
+                    getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString,
+                  )
+                }}
               />
               <div className="d-grid gap-2">
                 <CButton
                   color="primary"
                   onClick={() => {
-                    setDateClicked(!dateCLicked)
+                    setDateClicked(!dateClicked)
+                    setDropdownOpen(false)
                   }}
                 >
                   날짜 선택 완료
@@ -318,7 +330,17 @@ const PeriodReport = () => {
           <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} lg={{ cols: 4 }}>
             <ResponsiveContainer width="100%" height="100%">
               <CListGroup className="mb-2">
-                {periodKeyword.length === 0 ? (
+                {keywordLoading ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <CSpinner color="primary" />
+                  </div>
+                ) : periodKeyword.length === 0 ? (
                   <CListGroup className="mb-2" layout={`horizontal`}>
                     <CListGroupItem
                       style={{

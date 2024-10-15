@@ -38,7 +38,7 @@ const handleSummaryKeyword = (data) => {
 
 const handleRecordedEmotion = (data) => {
   if (data.isNULL) return []
-  return data.Keywords
+  return data.Keywords.map((item) => item.keyword)
 }
 
 const handleFeeling = (data) => {
@@ -69,6 +69,7 @@ const handleEmotionsData = (data) => {
 const DailyReport = () => {
   const { id } = useParams()
   const [name, setName] = useState('')
+  const [allowedDates, setAllowedDates] = useState([])
   const [nowDate, setNowDate] = useState('')
   const [selected, setSelected] = useState()
   const [dailyKeyword, setDailyKeyword] = useState([]) // 일일 키워드 분석
@@ -79,6 +80,15 @@ const DailyReport = () => {
   const [pieData, setPieData] = useState({ labels: [], percent: [] })
 
   useEffect(() => {
+    analyticsDates(id, '2024')
+      .then((data) => {
+        setName(data.nickname)
+        setAllowedDates(data.dates)
+        console.log('날짜')
+      })
+      .catch((error) => {
+        console.log('날짜 에러', error)
+      })
     setNowDate(getServiceYesterdayDate().toString())
   }, [])
 
@@ -101,14 +111,6 @@ const DailyReport = () => {
       })
       .catch((error) => {
         console.log('일일 리포트 에러', error)
-      })
-
-    analyticsDates(id, '2024')
-      .then((data) => {
-        setName(data.nickname)
-      })
-      .catch((error) => {
-        console.log('날짜 에러', error)
       })
 
     // getDangerScore(id, getDateInfo(new Date(), KOREA_TIME_OFFSET_MINUTES).dateString)
@@ -194,6 +196,11 @@ const DailyReport = () => {
                 timeZone="Asia/Seoul"
                 selected={selected}
                 onSelect={setSelected}
+                disabled={(date) => {
+                  return !allowedDates.includes(
+                    getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString,
+                  )
+                }}
               />
             </CDropdownMenu>
           </CDropdown>
