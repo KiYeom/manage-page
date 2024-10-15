@@ -3,7 +3,7 @@ import HalfPie from './half-pie'
 import styled from '@emotion/styled'
 import propTypes from 'prop-types'
 
-const HalfPanel = ({ mainText, subText, score, width, height }) => {
+const HalfPanel = ({ mainText, subText, detailText, width, height, score }) => {
   const PanelContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -26,6 +26,7 @@ const HalfPanel = ({ mainText, subText, score, width, height }) => {
           {score}
           {mainText}
         </MainText>
+        <DetailText>{detailText}</DetailText>
       </PanelText>
       <PanelGraph>
         <HalfPie score={score} />
@@ -59,6 +60,14 @@ const SubText = styled.span`
   padding: 0;
 `
 
+const DetailText = styled.span`
+  font-size: 16px;
+  color: #cbcbcb;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+`
+
 const PanelGraph = styled.div`
   display: flex;
   flex-grow: 1;
@@ -70,6 +79,7 @@ const PanelGraph = styled.div`
 HalfPanel.propTypes = {
   mainText: propTypes.string,
   subText: propTypes.string,
+  detailText: propTypes.string,
   score: propTypes.number,
   width: propTypes.string,
   height: propTypes.string,

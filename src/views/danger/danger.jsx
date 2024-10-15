@@ -36,15 +36,10 @@ import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
 import react, { useEffect } from 'react'
 import userTableDummy from '../../assets/dummy'
+import { manageUsers } from '../../apis/customers'
+import PropTypes from 'prop-types'
 
-const Danger = () => {
-  const [userTable, setUserTable] = React.useState([])
-  useEffect(() => {
-    // userTableDummy 데이터를 score 높은 순으로 정렬하여 상태에 저장
-    const sortedData = [...userTableDummy].sort((a, b) => b.table.score - a.table.score)
-    setUserTable(sortedData)
-  }, [])
-
+const Danger = ({ userTable }) => {
   const dangerLevel = (value) => {
     if (value <= 60) {
       return '안전'
@@ -86,33 +81,48 @@ const Danger = () => {
           {userTable.map((item, index) => (
             <CTableRow key={index}>
               <CTableDataCell>
-                <div>{item.table.name}</div>
+                <div>
+                  <span>{item.nickname}</span>
+                  <span className="small text-body-secondary text-nowrap"> #{item.id}</span>
+                </div>
                 <div className="small text-body-secondary text-nowrap">
-                  마지막 대화: {'\n'}
-                  {item.table.last}
+                  마지막 대화: {item.lastTime ? item.lastTime : '정보 없음'}
                 </div>
               </CTableDataCell>
 
               <CTableDataCell>
-                <div className="d-flex justify-content-between text-nowrap">
-                  <div className="fw-semibold">
-                    {item.table.score}% {dangerLevel(item.table.score)}
-                  </div>
+                <div className="fw-semibold">
+                  {item.score?.score === null || item.score?.score === undefined
+                    ? '없음'
+                    : `${item.score.score}% ${dangerLevel(item.score.score)}`}
                 </div>
                 <CProgress
                   thin
-                  color={getProgressColor(item.table.score)}
-                  value={item.table.score}
+                  color={getProgressColor(item.score?.score ?? 0)}
+                  value={item.score?.score ?? 0}
                 />
+                <div className="small text-body-secondary text-nowrap">
+                  업데이트: {item.lastTime ? item.lastTime : '정보 없음'}
+                </div>
+                {/* <div className="d-flex justify-content-between text-nowrap">
+                  <div className="fw-semibold">
+                    {item.score?.score === null || item.score?.score === undefined
+                      ? '없음'
+                      : `${item.score.score}% ${dangerLevel(item.score.score)}`}
+                  </div>
+                  <div className="small text-body-secondary text-nowrap">
+                    업데이트: {item.lastTime ? item.lastTime : '정보 없음'}
+                  </div>
+                </div> */}
               </CTableDataCell>
               <CTableDataCell>
-                <CButton color="primary" onClick={() => navigateToReport('daily', item.table.id)}>
+                <CButton color="primary" onClick={() => navigateToReport('daily', item.id)}>
                   일일 리포트
                 </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
-                <CButton color="primary" onClick={() => navigateToReport('period', item.table.id)}>
+                <CButton color="primary" onClick={() => navigateToReport('period', item.id)}>
                   기간 리포트
                 </CButton>
               </CTableDataCell>
@@ -126,3 +136,7 @@ const Danger = () => {
 }
 
 export default Danger
+
+Danger.propTypes = {
+  userTable: PropTypes.array,
+}

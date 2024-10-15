@@ -10,38 +10,32 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { dailyAnalyzeStatus } from '../../apis/customers'
+import PropTypes from 'prop-types'
 
-// 사용자 데이터를 외부에서 가져오기
-import userTableDummy from '../../assets/dummy'
-
-const CustomersTable = () => {
+const CustomersTable = ({ data }) => {
   const [userTable, setUserTable] = React.useState([])
 
   useEffect(() => {
-    // API 대신 제공된 데이터를 사용하여 userTable 설정
-    const formattedData = userTableDummy.map((user) => ({
-      user: {
-        name: user.table.name,
+    if (data && Array.isArray(data)) {
+      const formattedData = data.map((user) => ({
         id: user.id,
-        registered: user.table.last,
-      },
-      usage: {
-        value: user.table.score,
-        color: getProgressColor(user.table.score),
-      },
-      emotions: [user.table.emotion],
-      activity: user.table.first,
-    }))
+        nickname: user.nickname,
+        score: user.score ? user.score.score : null,
+        lastTime: user.lastTime,
+        firstTime: user.firstTime,
+        emotion: user.emotion ? user.emotion.highestEmotion : null,
+        emotionUpdateTime: user.emotion ? user.emotion.dateString : null,
+      }))
 
-    // score가 높은 순으로 정렬
-    formattedData.sort((a, b) => b.usage.value - a.usage.value)
+      // score가 높은 순으로 정렬
+      formattedData.sort((a, b) => (b.score || 0) - (a.score || 0))
 
-    setUserTable(formattedData)
-  }, [])
+      setUserTable(formattedData)
+    }
+  }, [data])
 
-  //안전, 위험, 매우 위험을 구분하는 함수
   const dangerLevel = (value) => {
+    if (value === null) return '정보 없음'
     if (value <= 60) {
       return '안전'
     } else if (value <= 85) {
@@ -51,8 +45,8 @@ const CustomersTable = () => {
     }
   }
 
-  //안전, 위험, 매우 위험에 따라 bar의 색상을 바꿔주는 함수
   const getProgressColor = (value) => {
+    if (value === null) return 'secondary'
     if (value <= 60) {
       return 'success'
     } else if (value <= 85) {
@@ -62,7 +56,7 @@ const CustomersTable = () => {
     }
   }
 
-  const navigateToReport = (type, id, name) => {
+  const navigateToReport = (type, id) => {
     const url = `/#/customers/${type}-report/${id}`
     window.location.href = url
   }
@@ -85,49 +79,56 @@ const CustomersTable = () => {
           {userTable.map((item, index) => (
             <CTableRow key={index}>
               <CTableDataCell>
-                <div>{item.user.name}</div>
+                <div>
+                  <span>{item.nickname}</span>
+                  <span className="small text-body-secondary text-nowrap"> #{item.id}</span>
+                </div>
                 <div className="small text-body-secondary text-nowrap">
-                  마지막 대화: {item.user.registered}
+                  마지막 대화: {item.lastTime ? item.lastTime : '정보 없음'}
                 </div>
               </CTableDataCell>
 
               <CTableDataCell>
-                <div className="d-flex justify-content-between text-nowrap">
-                  <div className="fw-semibold">
-                    {item.usage.value}% {dangerLevel(item.usage.value)}
-                  </div>
+                <div className="fw-semibold">
+                  {item.score === null ? '없음' : `${item.score}% ${dangerLevel(item.score)}`}
                 </div>
-                <CProgress
-                  thin
-                  color={getProgressColor(item.usage.value)}
-                  value={item.usage.value}
-                />
+                <CProgress thin color={getProgressColor(item.score)} value={item.score || 0} />
+                <div className="small text-body-secondary text-nowrap">
+                  업데이트: {item.lastTime ? item.lastTime : '정보 없음'}
+                </div>
               </CTableDataCell>
 
               <CTableDataCell>
-                <CButton color="primary" onClick={() => navigateToReport('daily', item.user.id)}>
+                <CButton color="primary" onClick={() => navigateToReport('daily', item.id)}>
                   일일 리포트
                 </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
-                <CButton color="primary" onClick={() => navigateToReport('period', item.user.id)}>
+                <CButton color="primary" onClick={() => navigateToReport('period', item.id)}>
                   기간 리포트
                 </CButton>
               </CTableDataCell>
 
               <CTableDataCell>
                 <div className={'flex-column'} style={{ display: 'flex' }}>
-                  {item.emotions.map((emotion, index) => (
-                    <CBadge key={index} textBgColor="info" style={{ margin: '4px' }}>
-                      {emotion}
-                    </CBadge>
-                  ))}
+                  {item.emotion ? (
+                    <>
+                      <CBadge textBgColor="info" style={{ margin: '4px' }}>
+                        {item.emotion}
+                      </CBadge>
+                      <div className="small text-body-secondary text-nowrap">
+                        업데이트: {item.emotionUpdateTime ? item.emotionUpdateTime : '정보 없음'}
+                      </div>
+                    </>
+                  ) : (
+                    '정보 없음'
+                  )}
                 </div>
               </CTableDataCell>
 
               <CTableDataCell>
-                <div className="fw-semibold text-nowrap">{item.activity}</div>
+                <div className="fw-semibold text-nowrap">{item.firstTime}</div>
               </CTableDataCell>
             </CTableRow>
           ))}
@@ -136,6 +137,10 @@ const CustomersTable = () => {
       <br />
     </>
   )
+}
+
+CustomersTable.propTypes = {
+  data: PropTypes.array,
 }
 
 export default CustomersTable
