@@ -1,10 +1,20 @@
 import { instance } from './interceptor'
 
 //고객 정보 조회
-export const dailyAnalyzeStatus = async () => {
+export const manageUsers = async () => {
   try {
     const res = await instance.get('/v1/users/manage-users')
-    return res.data //record, summary, classification 리턴
+    return res.data
+  } catch (error) {
+    console.log('[ERROR] daily analyze', error)
+    return
+  }
+}
+
+export const analyticsDates = async (id, year) => {
+  try {
+    const res = await instance.get('/v1/analyze/daily-status', { params: { year, customer: id } })
+    return res.data
   } catch (error) {
     console.log('[ERROR] daily analyze', error)
     return
@@ -24,7 +34,7 @@ export const dailyAnalyzeReport = async (id, date) => {
         customer: id, // customer ID와 date를 query parameter로 전달
       },
     })
-    return res
+    return res.data
   } catch (error) {
     console.log('[ERROR] daily analyze', error)
     return
@@ -32,7 +42,7 @@ export const dailyAnalyzeReport = async (id, date) => {
 }
 
 //[일일] 위험 점수 조회
-export const dangerScore = async (id, date) => {
+export const getDangerScore = async (id, date) => {
   try {
     const res = await instance.get('/v1/analyze/daily/score', {
       params: {
@@ -40,7 +50,7 @@ export const dangerScore = async (id, date) => {
         customer: id,
       },
     })
-    return res
+    return res.data
   } catch (error) {
     console.log('[ERROR] daily danger score', error)
     return
@@ -57,7 +67,7 @@ export const periodEmotionReport = async (id, startDate, endDate) => {
         customer: id,
       },
     })
-    return res
+    return res.data
   } catch (error) {
     console.log('[ERROR] period analyze', error)
     return
@@ -74,9 +84,26 @@ export const periodKeywordReport = async (id, startDate, endDate) => {
         customer: id,
       },
     })
-    return res
+    return res.data
   } catch (error) {
     console.log('[ERROR] period keyword analyze', error)
+    return
+  }
+}
+
+//[기간] 위험 점수 변화 추이 데이터 분석 조회
+export const periodScoreReport = async (id, startDate, endDate) => {
+  try {
+    const res = await instance.get('/v1/analyze/period/score', {
+      params: {
+        start_date: startDate,
+        end_date: endDate,
+        customer: id,
+      },
+    })
+    return res.data
+  } catch (error) {
+    console.log('[ERROR] period analyze', error)
     return
   }
 }

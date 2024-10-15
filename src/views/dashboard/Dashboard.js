@@ -65,256 +65,68 @@ import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import MainChart from './MainChart'
 import Danger from '../danger/danger'
-import { dailyAnalyzeStatus } from '../../apis/customers'
+import { manageUsers } from '../../apis/customers'
 import { useEffect } from 'react'
 import EmotionContainer from '../emotion/EmotionContainer'
 import WarningTest from '../half-panel/half-pie'
 import HalfPanel from '../half-panel/half-panel'
 import FullPanel from '../full-panel/full-panel'
 
+const getScoreArray = (userTable) => {
+  const scores = []
+  for (let i = 0; i < userTable.length; i++) {
+    const user = userTable[i]
+    if (user.score !== null && user.score.score !== null) {
+      scores.push(user.score.score)
+    } else {
+      scores.push(null)
+    }
+  }
+  // return [96, 92, 85, 82, 73, 25, null, 99, 2]
+  return scores
+}
+
 const Dashboard = () => {
-  const progressExample = [
-    { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
-    { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
-    { title: 'Pageviews', value: '78.706 Views', percent: 60, color: 'warning' },
-    { title: 'New Users', value: '22.123 Users', percent: 80, color: 'danger' },
-    { title: 'Bounce Rate', value: 'Average Rate', percent: 40.15, color: 'primary' },
-  ]
-
-  const progressGroupExample1 = [
-    { title: 'Monday', value1: 34, value2: 78 },
-    { title: 'Tuesday', value1: 56, value2: 94 },
-    { title: 'Wednesday', value1: 12, value2: 67 },
-    { title: 'Thursday', value1: 43, value2: 91 },
-    { title: 'Friday', value1: 22, value2: 73 },
-    { title: 'Saturday', value1: 53, value2: 82 },
-    { title: 'Sunday', value1: 9, value2: 69 },
-  ]
-  /*
-  const progressGroupExample2 = [
-    { title: 'Male', icon: cilUser, value: 53 },
-    { title: 'Female', icon: cilUserFemale, value: 43 },
-  ]
-
-  const progressGroupExample3 = [
-    { title: 'Organic Search', icon: cibGoogle, percent: 56, value: '191,235' },
-    { title: 'Facebook', icon: cibFacebook, percent: 15, value: '51,223' },
-    { title: 'Twitter', icon: cibTwitter, percent: 11, value: '37,564' },
-    { title: 'LinkedIn', icon: cibLinkedin, percent: 8, value: '27,319' },
-  ]
-
-  const tableExample = [
-    {
-      avatar: { src: avatar1, status: 'success' },
-      user: {
-        name: 'Yiorgos Avraamu',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      country: { name: 'USA', flag: cifUs },
-      usage: {
-        value: 50,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'success',
-      },
-      payment: { name: 'Mastercard', icon: cibCcMastercard },
-      activity: '10 sec ago',
-    },
-    {
-      avatar: { src: avatar2, status: 'danger' },
-      user: {
-        name: 'Avram Tarasios',
-        new: false,
-        registered: 'Jan 1, 2023',
-      },
-      country: { name: 'Brazil', flag: cifBr },
-      usage: {
-        value: 22,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'info',
-      },
-      payment: { name: 'Visa', icon: cibCcVisa },
-      activity: '5 minutes ago',
-    },
-    {
-      avatar: { src: avatar3, status: 'warning' },
-      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
-      country: { name: 'India', flag: cifIn },
-      usage: {
-        value: 74,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'warning',
-      },
-      payment: { name: 'Stripe', icon: cibCcStripe },
-      activity: '1 hour ago',
-    },
-    {
-      avatar: { src: avatar4, status: 'secondary' },
-      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-      country: { name: 'France', flag: cifFr },
-      usage: {
-        value: 98,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'danger',
-      },
-      payment: { name: 'PayPal', icon: cibCcPaypal },
-      activity: 'Last month',
-    },
-    {
-      avatar: { src: avatar5, status: 'success' },
-      user: {
-        name: 'Agapetus Tadeáš',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      country: { name: 'Spain', flag: cifEs },
-      usage: {
-        value: 22,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'primary',
-      },
-      payment: { name: 'Google Wallet', icon: cibCcApplePay },
-      activity: 'Last week',
-    },
-    {
-      avatar: { src: avatar6, status: 'danger' },
-      user: {
-        name: 'Friderik Dávid',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      country: { name: 'Poland', flag: cifPl },
-      usage: {
-        value: 43,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'success',
-      },
-      payment: { name: 'Amex', icon: cibCcAmex },
-      activity: 'Last week',
-    },
-  ]
-
-  const userTable = [
-    {
-      user: {
-        name: 'Yiorgos Avraamu',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      usage: {
-        value: 50,
-        color: 'success',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: '10 sec ago',
-    },
-    {
-      user: {
-        name: 'Avram Tarasios',
-        new: false,
-        registered: 'Jan 1, 2023',
-      },
-      usage: {
-        value: 22,
-        color: 'info',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: '5 minutes ago',
-    },
-    {
-      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 74,
-        color: 'warning',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: '1 hour ago',
-    },
-    {
-      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 98,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'danger',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: 'Last month',
-    },
-    {
-      user: {
-        name: 'Yiorgos Avraamu',
-        new: true,
-        registered: 'Jan 1, 2023',
-      },
-      usage: {
-        value: 50,
-        color: 'success',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: '10 sec ago',
-    },
-    {
-      user: {
-        name: 'Avram Tarasios',
-        new: false,
-        registered: 'Jan 1, 2023',
-      },
-      usage: {
-        value: 22,
-        color: 'info',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: '5 minutes ago',
-    },
-    {
-      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 74,
-        color: 'warning',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: '1 hour ago',
-    },
-    {
-      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 98,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'danger',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: 'Last month',
-    },
-    {
-      user: { name: 'Quintin Ed', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 74,
-        color: 'warning',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: '1 hour ago',
-    },
-    {
-      user: { name: 'Enéas Kwadwo', new: true, registered: 'Jan 1, 2023' },
-      usage: {
-        value: 98,
-        period: 'Jun 11, 2023 - Jul 10, 2023',
-        color: 'danger',
-      },
-      emotions: ['a', 'b', 'c'],
-      activity: 'Last month',
-    },
-  ]*/
+  const [userTable, setUserTable] = React.useState([])
+  const [userScores, setUserScores] = React.useState([])
+  useEffect(() => {
+    manageUsers()
+      .then((data) => {
+        const userData = data.sort((a, b) => {
+          if (a.score === null && b.score === null) {
+            return 0 // 둘 다 score가 null인 경우 원래 순서 유지
+          }
+          if (a.score === null) {
+            return 1 // a의 score가 null이면 b보다 뒤로
+          }
+          if (b.score === null) {
+            return -1 // b의 score가 null이면 a보다 뒤로
+          }
+          return b.score.score - a.score.score // score 값이 있는 경우 큰 값이 먼저 오도록 정렬
+        })
+        setUserTable(userData)
+        setUserScores(getScoreArray(userData))
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }, [])
 
   return (
     <>
       <Title title="위험 지수" subtitle="전체 내댐자의 위험 상황을 한 눈에 확인할 수 있습니다." />
       <CRow className="mb-4 align-items-center">
         <CCol lg={6}>
-          <HalfPanel subText="전체 내담자 위험점수" mainText="점" score={53} />
+          <HalfPanel
+            subText="전체 내담자 위험점수"
+            mainText="점"
+            score={userScores
+              .filter((score) => score !== null)
+              .reduce((a, b, _, arr) => a + b / arr.length, 0)}
+          />
         </CCol>
         <CCol lg={6}>
-          <CardDropdown />
+          <CardDropdown scores={userScores} />
         </CCol>
       </CRow>
 
@@ -323,7 +135,7 @@ const Dashboard = () => {
         title="내담자 상태 파악하기"
         subtitle="위험한 내담자의 상황을 한 눈에 볼 수 있습니다."
       />
-      <Danger />
+      <Danger userTable={userTable} />
     </>
   )
 }

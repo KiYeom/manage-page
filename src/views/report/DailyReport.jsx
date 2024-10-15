@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { CChartDoughnut } from '@coreui/react-chartjs'
-import { CButton, CCol, CListGroup, CListGroupItem, CRow } from '@coreui/react'
+import {
+  CButton,
+  CCol,
+  CCollapse,
+  CContainer,
+  CDropdown,
+  CDropdownMenu,
+  CDropdownToggle,
+  CListGroup,
+  CListGroupItem,
+  CRow,
+  CSpinner,
+} from '@coreui/react'
 import { NavLink } from 'react-router-dom'
 import { ResponsiveContainer } from 'recharts'
 import Title from '../base/title/Title'
@@ -10,11 +22,45 @@ import HalfPanel from '../half-panel/half-panel'
 import userTableDummy from '../../assets/dummy'
 import palette from '../../assets/styles/theme'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import { analyticsDates, dailyAnalyzeReport, getDangerScore } from '../../apis/customers'
+import {
+  getDateInfo,
+  getServiceYesterdayDate as getServiceYesterdayDate,
+  KOREA_TIME_OFFSET_MINUTES,
+} from '../../utils/time'
+import { DayPicker } from 'react-day-picker'
+import styled from '@emotion/styled'
+
+const handleSummaryKeyword = (data) => {
+  if (data.isNULL) return []
+  return data.keywords
+}
+
+const handleRecordedEmotion = (data) => {
+  if (data.isNULL) return []
+  return data.Keywords.map((item) => item.keyword)
+}
+
+const handleFeeling = (data) => {
+  if (data.isNULL || !data.todayFeeling) return ''
+  return data.todayFeeling
+}
+
+const handleDangerScore = (data) => {
+  if (!data || !data.score) return 0
+  return data.score
+}
+
+const handleDangerScoreUpdate = (data) => {
+  if (!data || !data.updateTime) return ''
+  return data.updateTime
+}
 
 // 데이터 전처리 함수
-const preprocessDoughnutData = (datas) => {
-  const labels = datas.map((item) => item.label)
-  const percent = datas.map((item) => item.percent)
+const handleEmotionsData = (data) => {
+  if (data.isNULL) return { labels: [], percent: [] }
+  const labels = data.labels.map((item) => item.label)
+  const percent = data.labels.map((item) => item.percent)
   return { labels, percent }
 }
 
@@ -23,27 +69,60 @@ const preprocessDoughnutData = (datas) => {
 const DailyReport = () => {
   const { id } = useParams()
   const [name, setName] = useState('')
+  const [allowedDates, setAllowedDates] = useState([])
+  const [nowDate, setNowDate] = useState('')
+  const [selected, setSelected] = useState()
   const [dailyKeyword, setDailyKeyword] = useState([]) // 일일 키워드 분석
   const [dailyRecordedEmotion, setDailyRecordedEmotion] = useState([]) // 일일 직접 기록한 감정
-  const [dangerscore, setDangerscore] = useState(0)
+  const [feeling, setFeeling] = useState('')
+  const [dangerScore, setDangerScore] = useState(0)
+  const [dangerUpdate, setDangerUpdate] = useState('')
   const [pieData, setPieData] = useState({ labels: [], percent: [] })
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = userTableDummy
-      const userData = data.find((item) => item.id === parseInt(id))
+    analyticsDates(id, '2024')
+      .then((data) => {
+        setName(data.nickname)
+        setAllowedDates(data.dates)
+        console.log('날짜')
+      })
+      .catch((error) => {
+        console.log('날짜 에러', error)
+      })
+    setNowDate(getServiceYesterdayDate().toString())
+  }, [])
 
-      if (userData) {
-        setName(userData.table.name)
-        setDailyKeyword(userData.daily?.dailyKeyword || [])
-        setDailyRecordedEmotion(userData.daily?.dailyRecordedEmotion || [])
-        setDangerscore(userData.table?.score || 0)
-        setPieData(preprocessDoughnutData(userData.daily?.pieEmotionData || []))
-      }
-    }
+  useEffect(() => {
+    if (selected === undefined) return
+    setNowDate(getDateInfo(selected, KOREA_TIME_OFFSET_MINUTES).dateString)
+  }, [selected])
 
-    fetchData()
-  }, [id])
+  useEffect(() => {
+    dailyAnalyzeReport(id, nowDate)
+      .then((data) => {
+        console.log('일일 리포트', data)
+        // setName(data.name)
+        setDailyKeyword(handleSummaryKeyword(data.summary))
+        setDailyRecordedEmotion(handleRecordedEmotion(data.record))
+        setFeeling(handleFeeling(data.record))
+        setDangerScore(handleDangerScore(data.score))
+        setDangerUpdate(handleDangerScoreUpdate(data.score))
+        setPieData(handleEmotionsData(data.classification))
+      })
+      .catch((error) => {
+        console.log('일일 리포트 에러', error)
+      })
+
+    // getDangerScore(id, getDateInfo(new Date(), KOREA_TIME_OFFSET_MINUTES).dateString)
+    //   .then((data) => {
+    //     console.log('위험점수', data)
+    //     setDangerScore(data.score)
+    //     setDangerUpdate(data.updateTime)
+    //   })
+    //   .catch((error) => {
+    //     console.log('위험점수 에러', error)
+    //   })
+  }, [nowDate])
 
   const config = {
     type: 'doughnut',
@@ -106,8 +185,25 @@ const DailyReport = () => {
           padding: '10px 0px',
         }}
       >
-        <Title title={name} subtitle={`${name}님의 일일리포트입니다.`} />
+        <Title title={`${name} (#${id})`} subtitle={`${nowDate}의 리포트입니다.`} />
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
+          <CDropdown variant="btn-group">
+            <CDropdownToggle color="primary">날짜 선택</CDropdownToggle>
+            <CDropdownMenu style={{ padding: '10px' }}>
+              <DayPicker
+                captionLayout="dropdown"
+                mode="single"
+                timeZone="Asia/Seoul"
+                selected={selected}
+                onSelect={setSelected}
+                disabled={(date) => {
+                  return !allowedDates.includes(
+                    getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString,
+                  )
+                }}
+              />
+            </CDropdownMenu>
+          </CDropdown>
           <CButton
             className="align-self-center"
             color="primary"
@@ -124,25 +220,45 @@ const DailyReport = () => {
 
       <CRow className="mb-4 align-items-center">
         <CCol lg={6}>
-          <HalfPanel subText="위험점수" mainText="점" score={dangerscore} />
+          <HalfPanel
+            subText="위험점수"
+            mainText="점"
+            score={dangerScore}
+            detailText={`* 당일 업데이트: ${dangerUpdate}`}
+          />
         </CCol>
         <CCol lg={6}>
           <div style={{ flex: '1' }}>
             <Title title="대화 주제" subtitle="내담자가 많이 언급한 주제입니다." />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {dailyKeyword.reduce((acc, item, index, arr) => {
-                if (index % 2 === 0) {
-                  const keyword1 = item
-                  const keyword2 = arr[index + 1] ?? '-'
-                  acc.push(
-                    <CListGroup className="mb-2" layout={`horizontal`} key={index}>
-                      <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
-                      <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
-                    </CListGroup>,
-                  )
-                }
-                return acc
-              }, [])}
+              {dailyKeyword.length === 0 ? (
+                <CListGroup className="mb-2" layout={`horizontal`}>
+                  <CListGroupItem
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    나눈 대화가 없습니다.
+                  </CListGroupItem>
+                </CListGroup>
+              ) : (
+                dailyKeyword.reduce((acc, item, index, arr) => {
+                  if (index % 2 === 0) {
+                    const keyword1 = item
+                    const keyword2 = arr[index + 1] ?? '-'
+                    acc.push(
+                      <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                        <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
+                        <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
+                      </CListGroup>,
+                    )
+                  }
+                  return acc
+                }, [])
+              )}
             </div>
           </div>
         </CCol>
@@ -172,7 +288,7 @@ const DailyReport = () => {
                       alignItems: 'center',
                     }}
                   >
-                    기록한 감정이 없습니다
+                    기록한 감정이 없습니다.
                   </CListGroupItem>
                 </CListGroup>
               ) : (
@@ -192,10 +308,32 @@ const DailyReport = () => {
               )}
             </div>
           </div>
+          <div style={{ flex: '1', margin: '20px 0px 20px 0px' }}>
+            <Title title="내담자의 한 줄 기록" subtitle="내담자가 직접 작성한 한 줄 기록입니다." />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <CListGroup className="mb-2" layout={`horizontal`}>
+                <CListGroupItem
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  {feeling ? feeling : '한 줄 기록이 없습니다'}
+                </CListGroupItem>
+              </CListGroup>
+            </div>
+          </div>
         </CCol>
       </CRow>
     </>
   )
 }
+
+const CalenderContainer = styled.div`
+  display: flex;
+  justify-content: right;
+`
 
 export default DailyReport

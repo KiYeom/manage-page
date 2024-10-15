@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import propTypes from 'prop-types'
 import FullPie from './full-pie'
 
-const FullPanel = ({ mainText, subText, score, width, height }) => {
+const FullPanel = ({ mainText, subText, score, width, height, pieData, highlight }) => {
   const PanelContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -28,7 +28,7 @@ const FullPanel = ({ mainText, subText, score, width, height }) => {
         </MainText>
       </PanelText>
       <PanelGraph>
-        <FullPie type={subText} />
+        <FullPie data={pieData} highlight={highlight % pieData.length} />
       </PanelGraph>
     </PanelContainer>
   )
@@ -73,6 +73,8 @@ FullPanel.propTypes = {
   score: propTypes.number,
   width: propTypes.string,
   height: propTypes.string,
+  pieData: propTypes.array,
+  highlight: propTypes.number,
 }
 
 export default FullPanel
