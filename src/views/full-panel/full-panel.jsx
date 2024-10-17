@@ -23,7 +23,7 @@ const FullPanel = ({ mainText, subText, score, width, height, pieData, highlight
       <PanelText>
         <SubText>{subText}</SubText>
         <MainText>
-          {score}
+          {Math.floor(score)}
           {mainText}
         </MainText>
       </PanelText>

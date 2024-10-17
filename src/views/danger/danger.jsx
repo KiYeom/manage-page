@@ -72,7 +72,7 @@ const Danger = ({ userTable }) => {
         <CTableHead className="text-nowrap">
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">위험지수</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">위험점수</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">일일 리포트</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">기간 리포트</CTableHeaderCell>
           </CTableRow>
@@ -98,11 +98,11 @@ const Danger = ({ userTable }) => {
                 </div>
                 <CProgress
                   thin
-                  color={getProgressColor(item.score?.score ?? 0)}
-                  value={item.score?.score ?? 0}
+                  color={getProgressColor(Math.floor(item.score?.score ?? 0))}
+                  value={Math.floor(item.score?.score ?? 0)}
                 />
                 <div className="small text-body-secondary text-nowrap">
-                  업데이트: {item.lastTime ? item.lastTime : '정보 없음'}
+                  업데이트: {item.score?.updateTime ? item.score.updateTime : '정보 없음'}
                 </div>
                 {/* <div className="d-flex justify-content-between text-nowrap">
                   <div className="fw-semibold">

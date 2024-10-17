@@ -23,7 +23,7 @@ const HalfPanel = ({ mainText, subText, detailText, width, height, score }) => {
       <PanelText>
         <SubText>{subText}</SubText>
         <MainText>
-          {score}
+          {Math.floor(score)}
           {mainText}
         </MainText>
         <DetailText>{detailText}</DetailText>
