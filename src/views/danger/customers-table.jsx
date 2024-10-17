@@ -20,7 +20,7 @@ const CustomersTable = ({ data }) => {
       const formattedData = data.map((user) => ({
         id: user.id,
         nickname: user.nickname,
-        score: user.score ? user.score.score : null,
+        score: user.score ? user.score : null,
         lastTime: user.lastTime,
         firstTime: user.firstTime,
         emotion: user.emotion ? user.emotion.highestEmotion : null,
@@ -68,7 +68,7 @@ const CustomersTable = ({ data }) => {
         <CTableHead className="text-nowrap">
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">위험지수</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">위험점수</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">일일 리포트</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">기간 리포트</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">감정 분석</CTableHeaderCell>
@@ -90,11 +90,17 @@ const CustomersTable = ({ data }) => {
 
               <CTableDataCell>
                 <div className="fw-semibold">
-                  {item.score === null ? '없음' : `${item.score}% ${dangerLevel(item.score)}`}
+                  {item.score === null
+                    ? '없음'
+                    : `${item.score.score}% ${dangerLevel(item.score.score)}`}
                 </div>
-                <CProgress thin color={getProgressColor(item.score)} value={item.score || 0} />
+                <CProgress
+                  thin
+                  color={getProgressColor(item.score ? item.score.score : 0)}
+                  value={item.score ? item.score.score : 0}
+                />
                 <div className="small text-body-secondary text-nowrap">
-                  업데이트: {item.lastTime ? item.lastTime : '정보 없음'}
+                  업데이트: {item.score?.updateTime ? item.score.updateTime : '정보 없음'}
                 </div>
               </CTableDataCell>
 
