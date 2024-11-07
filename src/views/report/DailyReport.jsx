@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { CChartDoughnut } from '@coreui/react-chartjs'
 import {
+  CAlert,
   CButton,
   CCol,
   CCollapse,
@@ -30,6 +31,8 @@ import {
 } from '../../utils/time'
 import { DayPicker } from 'react-day-picker'
 import styled from '@emotion/styled'
+import { refreshAnalytics } from '../../apis/analytics'
+import { tr } from 'react-day-picker/locale'
 
 const handleSummaryKeyword = (data) => {
   if (data.isNULL) return []
@@ -78,6 +81,29 @@ const DailyReport = () => {
   const [dangerScore, setDangerScore] = useState(0)
   const [dangerUpdate, setDangerUpdate] = useState('')
   const [pieData, setPieData] = useState({ labels: [], percent: [] })
+  const [refreshVisible, setRefreshVisible] = useState(false)
+  const [refreshDoneVisible, setRefreshDoneVisible] = useState(false)
+
+  const handleAnalyticsRefresh = () => {
+    console.log('분석 갱신')
+    setRefreshVisible(true)
+    refreshAnalytics(id)
+      .then((data) => {
+        if (data) {
+          console.log('분석 갱신 요청 완료')
+        } else {
+          console.log('분석 갱신 요청 실패')
+          setRefreshVisible(false)
+          setRefreshDoneVisible(true)
+          setTimeout(() => {
+            console.log('새로고침')
+          }, 3000)
+        }
+      })
+      .catch((error) => {
+        console.log('분석 갱신 에러', error)
+      })
+  }
 
   useEffect(() => {
     analyticsDates(id, '2024')
@@ -215,10 +241,36 @@ const DailyReport = () => {
           >
             기간 리포트 확인
           </CButton>
+          <CButton
+            className="align-self-center"
+            color="primary"
+            as={NavLink}
+            onClick={() => {
+              handleAnalyticsRefresh()
+            }}
+          >
+            분석 갱신
+          </CButton>
         </div>
       </div>
 
       <CRow className="mb-4 align-items-center">
+        <CAlert
+          color="primary"
+          dismissible
+          visible={refreshVisible}
+          onClose={() => setRefreshVisible(false)}
+        >
+          분석 갱신 요청중입니다. 완료되면 페이지가 새로고침됩니다.
+        </CAlert>
+        <CAlert
+          color="primary"
+          dismissible
+          visible={refreshVisible}
+          onClose={() => setRefreshVisible(false)}
+        >
+          분석 갱신이 완료되었습니다. 페이지가 3초 뒤에 새로고침됩니다.
+        </CAlert>
         <CCol lg={6}>
           <HalfPanel
             subText="위험점수"
