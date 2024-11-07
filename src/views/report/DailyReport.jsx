@@ -97,11 +97,10 @@ const DailyReport = () => {
     setNowDate(getDateInfo(selected, KOREA_TIME_OFFSET_MINUTES).dateString)
   }, [selected])
 
-  useEffect(() => {
+  const fetchDailyReport = () => {
     dailyAnalyzeReport(id, nowDate)
       .then((data) => {
         console.log('일일 리포트', data)
-        // setName(data.name)
         setDailyKeyword(handleSummaryKeyword(data.summary))
         setDailyRecordedEmotion(handleRecordedEmotion(data.record))
         setFeeling(handleFeeling(data.record))
@@ -112,16 +111,19 @@ const DailyReport = () => {
       .catch((error) => {
         console.log('일일 리포트 에러', error)
       })
+  }
 
-    // getDangerScore(id, getDateInfo(new Date(), KOREA_TIME_OFFSET_MINUTES).dateString)
-    //   .then((data) => {
-    //     console.log('위험점수', data)
-    //     setDangerScore(data.score)
-    //     setDangerUpdate(data.updateTime)
-    //   })
-    //   .catch((error) => {
-    //     console.log('위험점수 에러', error)
-    //   })
+  useEffect(() => {
+    fetchDailyReport() // 일일 리포트 데이터 갱신 함수 호출
+  }, [nowDate])
+
+  useEffect(() => {
+    // 설정된 간격으로 일일 리포트 데이터 갱신
+    const intervalId = setInterval(() => {
+      fetchDailyReport() // 일일 리포트 데이터 갱신 함수 호출
+    }, 5000) // 5초 간격
+
+    return () => clearInterval(intervalId) // 컴포넌트 언마운트 시 간격 해제
   }, [nowDate])
 
   const config = {
