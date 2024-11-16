@@ -64,7 +64,7 @@ const CardDropdown = ({ scores }) => {
 
   return (
     <div style={{ padding: '10px' }}>
-      <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
+      <CRow sm={{ cols: 2 }}>
         <CCol>
           <FullPanel
             subText={'전체 내담자'}
@@ -76,7 +76,7 @@ const CardDropdown = ({ scores }) => {
         </CCol>
         <CCol>
           <FullPanel
-            subText={'매우 위험한 내담자'}
+            subText={'고위험 내담자'}
             mainText={'명'}
             score={veryRiskClients}
             pieData={totalPieData}
@@ -87,7 +87,7 @@ const CardDropdown = ({ scores }) => {
       <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
         <CCol>
           <FullPanel
-            subText={'위험한 내담자'}
+            subText={'위험 내담자'}
             mainText={'명'}
             score={riskClients}
             pieData={totalPieData}
@@ -96,7 +96,7 @@ const CardDropdown = ({ scores }) => {
         </CCol>
         <CCol>
           <FullPanel
-            subText={'안전한 내담자'}
+            subText={'일반 내담자'}
             mainText={'명'}
             score={safeClients}
             pieData={totalPieData}
