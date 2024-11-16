@@ -273,22 +273,6 @@ const DailyReport = () => {
       </div>
 
       <CRow className="mb-4 align-items-center">
-        <CAlert
-          color="primary"
-          dismissible
-          visible={refreshVisible}
-          onClose={() => setRefreshVisible(false)}
-        >
-          분석 갱신 요청중입니다. 완료되면 페이지가 새로고침됩니다.
-        </CAlert>
-        <CAlert
-          color="primary"
-          dismissible
-          visible={refreshVisible}
-          onClose={() => setRefreshVisible(false)}
-        >
-          분석 갱신이 완료되었습니다. 페이지가 3초 뒤에 새로고침됩니다.
-        </CAlert>
         <CCol lg={6}>
           <HalfPanel
             subText="위험점수"
