@@ -23,7 +23,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { deleteAccessToken, deleteRefreshToken } from '../../storages/storages'
 
-import avatar8 from './../../assets/images/avatars/8.jpg'
+import avatar10 from './../../assets/images/avatars/10.jpg'
 
 const navigateToHome = () => [(window.location.href = '/')]
 
@@ -37,7 +37,7 @@ const AppHeaderDropdown = () => {
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
-        <CAvatar src={avatar8} size="md" />
+        <CAvatar src={avatar10} size="md" />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownItem href="#" onClick={handleLogout}>

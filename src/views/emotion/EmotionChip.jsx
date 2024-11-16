@@ -18,8 +18,6 @@ const Text = styled.span`
 `
 
 const EmotionChip = ({ text, group }) => {
-  console.log('text : ', text)
-  console.log('group : ', group)
   return (
     <Container>
       <Icon name={group} />

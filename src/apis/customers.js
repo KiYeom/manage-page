@@ -107,3 +107,13 @@ export const periodScoreReport = async (id, startDate, endDate) => {
     return
   }
 }
+
+export const requestReport = async (id) => {
+  try {
+    const res = await instance.get('/v1/analyze/daily-update', { customer: id })
+    return res.data
+  } catch (error) {
+    console.log('[ERROR] request report', error)
+    return
+  }
+}

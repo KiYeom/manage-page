@@ -11,6 +11,8 @@ import {
   CTableRow,
 } from '@coreui/react'
 import PropTypes from 'prop-types'
+import { se } from 'react-day-picker/locale'
+import { th } from 'react-day-picker/locale'
 
 const CustomersTable = ({ data }) => {
   const [userTable, setUserTable] = React.useState([])
@@ -23,7 +25,9 @@ const CustomersTable = ({ data }) => {
         score: user.score ? user.score : null,
         lastTime: user.lastTime,
         firstTime: user.firstTime,
-        emotion: user.emotion ? user.emotion.highestEmotion : null,
+        highestEmotion: user.emotion ? user.emotion.highestEmotion : null,
+        secondEmotion: user.emotion ? user.emotion.secondEmotion : null,
+        thirdEmotion: user.emotion ? user.emotion.thirdEmotion : null,
         emotionUpdateTime: user.emotion ? user.emotion.dateString : null,
       }))
 
@@ -118,11 +122,23 @@ const CustomersTable = ({ data }) => {
 
               <CTableDataCell>
                 <div className={'flex-column'} style={{ display: 'flex' }}>
-                  {item.emotion ? (
+                  {item.highestEmotion ? (
                     <>
-                      <CBadge textBgColor="info" style={{ margin: '4px' }}>
-                        {item.emotion}
-                      </CBadge>
+                      <div className={'flex-row'} style={{ display: 'flex' }}>
+                        <CBadge textBgColor="info" style={{ margin: '4px' }}>
+                          {item.highestEmotion}
+                        </CBadge>
+                        {item.secondEmotion && (
+                          <CBadge textBgColor="info" style={{ margin: '4px' }}>
+                            {item.secondEmotion}
+                          </CBadge>
+                        )}
+                        {item.thirdEmotion && (
+                          <CBadge textBgColor="info" style={{ margin: '4px' }}>
+                            {item.thirdEmotion}
+                          </CBadge>
+                        )}
+                      </div>
                       <div className="small text-body-secondary text-nowrap">
                         업데이트: {item.emotionUpdateTime ? item.emotionUpdateTime : '정보 없음'}
                       </div>
