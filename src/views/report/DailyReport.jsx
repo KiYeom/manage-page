@@ -4,32 +4,41 @@ import { CChartDoughnut } from '@coreui/react-chartjs'
 import {
   CButton,
   CCol,
-  CCollapse,
-  CContainer,
   CDropdown,
   CDropdownMenu,
   CDropdownToggle,
   CListGroup,
   CListGroupItem,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
   CRow,
-  CSpinner,
 } from '@coreui/react'
 import { NavLink } from 'react-router-dom'
 import { ResponsiveContainer } from 'recharts'
 import Title from '../base/title/Title'
 import Container from '../container/Container'
 import HalfPanel from '../half-panel/half-panel'
-import userTableDummy from '../../assets/dummy'
 import palette from '../../assets/styles/theme'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import { analyticsDates, dailyAnalyzeReport, getDangerScore } from '../../apis/customers'
+import {
+  analyticsDates,
+  dailyAnalyzeReport,
+  getDangerScore,
+  requestReport,
+} from '../../apis/customers'
 import {
   getDateInfo,
+  getServiceTodayDate,
   getServiceYesterdayDate as getServiceYesterdayDate,
   KOREA_TIME_OFFSET_MINUTES,
 } from '../../utils/time'
 import { DayPicker } from 'react-day-picker'
 import styled from '@emotion/styled'
+import CIcon from '@coreui/icons-react'
+import { cilSync } from '@coreui/icons'
 
 const handleSummaryKeyword = (data) => {
   if (data.isNULL) return []
@@ -78,6 +87,8 @@ const DailyReport = () => {
   const [dangerScore, setDangerScore] = useState(0)
   const [dangerUpdate, setDangerUpdate] = useState('')
   const [pieData, setPieData] = useState({ labels: [], percent: [] })
+  const [refreshButton, setRefreshButton] = useState(false)
+  const [refreshText, setRefreshText] = useState('새로고침하기')
 
   useEffect(() => {
     analyticsDates(id, '2024')
@@ -89,7 +100,7 @@ const DailyReport = () => {
       .catch((error) => {
         console.log('날짜 에러', error)
       })
-    setNowDate(getServiceYesterdayDate().toString())
+    setNowDate(getServiceTodayDate().toString())
   }, [])
 
   useEffect(() => {
@@ -97,11 +108,10 @@ const DailyReport = () => {
     setNowDate(getDateInfo(selected, KOREA_TIME_OFFSET_MINUTES).dateString)
   }, [selected])
 
-  useEffect(() => {
+  const fetchDailyReport = () => {
     dailyAnalyzeReport(id, nowDate)
       .then((data) => {
         console.log('일일 리포트', data)
-        // setName(data.name)
         setDailyKeyword(handleSummaryKeyword(data.summary))
         setDailyRecordedEmotion(handleRecordedEmotion(data.record))
         setFeeling(handleFeeling(data.record))
@@ -112,17 +122,20 @@ const DailyReport = () => {
       .catch((error) => {
         console.log('일일 리포트 에러', error)
       })
+  }
 
-    // getDangerScore(id, getDateInfo(new Date(), KOREA_TIME_OFFSET_MINUTES).dateString)
-    //   .then((data) => {
-    //     console.log('위험점수', data)
-    //     setDangerScore(data.score)
-    //     setDangerUpdate(data.updateTime)
-    //   })
-    //   .catch((error) => {
-    //     console.log('위험점수 에러', error)
-    //   })
+  useEffect(() => {
+    fetchDailyReport() // 일일 리포트 데이터 갱신 함수 호출
   }, [nowDate])
+
+  // useEffect(() => {
+  //   // 설정된 간격으로 일일 리포트 데이터 갱신
+  //   const intervalId = setInterval(() => {
+  //     fetchDailyReport() // 일일 리포트 데이터 갱신 함수 호출
+  //   }, 3000) // 5초 간격
+
+  //   return () => clearInterval(intervalId) // 컴포넌트 언마운트 시 간격 해제
+  // }, [nowDate])
 
   const config = {
     type: 'doughnut',
@@ -215,6 +228,46 @@ const DailyReport = () => {
           >
             기간 리포트 확인
           </CButton>
+          {nowDate === getServiceTodayDate().toString() && (
+            <>
+              <CButton
+                className="align-self-center"
+                color="primary"
+                as={NavLink}
+                onClick={() => {
+                  requestReport(id)
+                  setRefreshButton(true)
+                }}
+              >
+                <CIcon icon={cilSync} /> 감정 분석 업데이트하기
+              </CButton>
+              <CModal
+                visible={refreshButton}
+                onClose={() => setRefreshButton(false)}
+                aria-labelledby="LiveDemoExampleLabel"
+              >
+                <CModalHeader>
+                  <CModalTitle id="LiveDemoExampleLabel">감정 분석 업데이트하기</CModalTitle>
+                </CModalHeader>
+                <CModalBody>
+                  <p>해당 사용자의 감정 분석 업데이트가 진행중입니다! 5초~10초 정도 소요됩니다. </p>
+                </CModalBody>
+                <CModalFooter>
+                  <CButton color="secondary" onClick={() => setRefreshButton(false)}>
+                    닫기
+                  </CButton>
+                  <CButton
+                    color="primary"
+                    onClick={() => {
+                      setRefreshButton(false)
+                    }}
+                  >
+                    {refreshText}
+                  </CButton>
+                </CModalFooter>
+              </CModal>
+            </>
+          )}
         </div>
       </div>
 
@@ -224,7 +277,7 @@ const DailyReport = () => {
             subText="위험점수"
             mainText="점"
             score={dangerScore}
-            detailText={`* 당일 업데이트: ${dangerUpdate}`}
+            detailText={`* 최종 업데이트: ${dangerUpdate}`}
           />
         </CCol>
         <CCol lg={6}>
