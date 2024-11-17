@@ -76,7 +76,7 @@ const CardDropdown = ({ scores }) => {
         </CCol>
         <CCol>
           <FullPanel
-            subText={'고위험 내담자'}
+            subText={'긴급 내담자'}
             mainText={'명'}
             score={veryRiskClients}
             pieData={totalPieData}

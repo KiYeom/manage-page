@@ -14,6 +14,7 @@ import {
   CDropdown,
   CDropdownToggle,
   CDropdownMenu,
+  CBadge,
 } from '@coreui/react'
 import {
   AreaChart,
@@ -27,7 +28,12 @@ import {
 import axios from 'axios'
 import palette from '../../assets/styles/theme'
 import userTableDummy from '../../assets/dummy' // 더미 데이터를 import
-import { analyticsDates, periodEmotionReport, periodKeywordReport } from '../../apis/customers'
+import {
+  analyticsDates,
+  periodEmotionReport,
+  periodKeywordReport,
+  periodTotalEmotion,
+} from '../../apis/customers'
 import { DayPicker } from 'react-day-picker'
 import Title from '../base/title/Title'
 import {
@@ -88,6 +94,17 @@ const handlePeriodChart = (data) => {
 const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
 const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨']
 
+const getValueKorean = (value) => {
+  return emotionListKorean[emotionList.indexOf(value)]
+}
+
+const getRankingText = (rank) => {
+  if (rank === 1) return '1st'
+  if (rank === 2) return '2nd'
+  if (rank === 3) return '3rd'
+  return `${rank}th`
+}
+
 const PeriodReport = () => {
   const [clickedBtn, setClickedBtn] = useState(0)
   const [dateClicked, setDateClicked] = useState(false)
@@ -100,6 +117,8 @@ const PeriodReport = () => {
   const [periodEmotion, setPeriodEmotion] = useState([]) // 기간 감정분석
   const [periodKeyword, setPeriodKeyword] = useState([]) // 기간 키워드 분석
   const [keywordLoading, setKeywordLoading] = useState(false) //로딩 상태
+  const [periodTopEmotions, setPeriodTopEmotions] = useState([]) // 기간 상위 감정 분석
+  const [topEmotionsLoading, setTopEmotionsLoading] = useState(false) // 상위 감정 로딩 상태
 
   useEffect(() => {
     setTimeRange([
@@ -150,6 +169,19 @@ const PeriodReport = () => {
       })
       .finally(() => {
         setKeywordLoading(false)
+      })
+
+    setTopEmotionsLoading(true)
+    periodTotalEmotion(id, timeRange[0], timeRange[1])
+      .then((data) => {
+        console.log('기간 탑 감정 데이터', data)
+        setPeriodTopEmotions(data.emotions)
+      })
+      .catch((error) => {
+        console.log('기간 탑 감정 데이터 에러', error)
+      })
+      .finally(() => {
+        setTopEmotionsLoading(false)
       })
   }, [timeRange])
 
@@ -262,7 +294,7 @@ const PeriodReport = () => {
               </div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
-              <CButtonGroup className="float-end me-3 ">
+              <CButtonGroup role="group" className="float-end me-3 ">
                 {emotionList.map((value, index) => (
                   <CButton
                     color="outline-secondary"
@@ -271,11 +303,9 @@ const PeriodReport = () => {
                     active={index === clickedBtn}
                     onClick={() => {
                       setClickedBtn(index)
-                      console.log(index)
-                      console.log(emotionList[clickedBtn])
                     }}
                   >
-                    {value}
+                    {getValueKorean(value)}
                   </CButton>
                 ))}
               </CButtonGroup>
@@ -290,89 +320,184 @@ const PeriodReport = () => {
             xl={{ cols: 5 }}
             className="mb-2 text-center"
           >
-            <ResponsiveContainer width={800} height={500}>
-              <AreaChart
-                width={800}
-                height={500}
-                data={periodEmotion}
-                margin={{
-                  top: 10,
-                  right: 30,
-                  left: 0,
-                  bottom: 0,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" ticks={timeRange} />
-                <YAxis type="number" domain={[0, 100]} tickCount={3} />
-                <Tooltip />
-                {renderAreas()}
-              </AreaChart>
-            </ResponsiveContainer>
+            <div style={{ width: '100%', overflowX: 'auto' }}>
+              <div style={{ minWidth: '600px' }}>
+                {' '}
+                {/* 최소 크기 설정 */}
+                <ResponsiveContainer height={500}>
+                  <AreaChart
+                    data={periodEmotion}
+                    margin={{
+                      top: 10,
+                      right: 30,
+                      left: 0,
+                      bottom: 0,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" ticks={timeRange} />
+                    <YAxis type="number" domain={[0, 100]} tickCount={5} />
+                    <Tooltip />
+                    {renderAreas()}
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </CRow>
         </CCardFooter>
       </CCard>
 
-      <CCard className="mb-4">
-        <CCardBody>
-          <CRow>
-            <CCol sm={5}>
-              <h4 id="traffic" className="card-title mb-0">
-                기간 키워드
-              </h4>
-              <div className="small text-body-secondary">
-                {timeRange[0]}~{timeRange[1]}
-              </div>
-            </CCol>
-          </CRow>
-        </CCardBody>
-        <CCardFooter>
-          <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} lg={{ cols: 4 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <CListGroup className="mb-2">
-                {keywordLoading ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <CSpinner color="primary" />
+      <CRow className="mb-4 align-items-start">
+        <CCol lg={6}>
+          <CCard className="mb-4">
+            <CCardBody>
+              <CRow>
+                <CCol sm={5}>
+                  <h4 id="traffic" className="card-title mb-0">
+                    기간 키워드
+                  </h4>
+                  <div className="small text-body-secondary">
+                    {timeRange[0]}~{timeRange[1]}
                   </div>
-                ) : periodKeyword.length === 0 ? (
-                  <CListGroup className="mb-2" layout={`horizontal`}>
-                    <CListGroupItem
-                      style={{
-                        flex: 1,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      그동안의 키워드 정보가 없습니다.
-                    </CListGroupItem>
+                </CCol>
+              </CRow>
+            </CCardBody>
+            <CCardFooter>
+              <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} lg={{ cols: 4 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <CListGroup className="mb-2">
+                    {keywordLoading ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <CSpinner color="primary" />
+                      </div>
+                    ) : !periodKeyword || periodKeyword.length === 0 ? (
+                      <CListGroup className="mb-2" layout={`horizontal`}>
+                        <CListGroupItem
+                          style={{
+                            flex: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          그동안의 키워드 정보가 없습니다.
+                        </CListGroupItem>
+                      </CListGroup>
+                    ) : (
+                      periodKeyword.reduce((acc, item, index, arr) => {
+                        if (index % 2 === 0) {
+                          const keyword1 = item
+                          const keyword2 = arr[index + 1] ?? '-'
+                          acc.push(
+                            <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                              <CListGroupItem
+                                style={{ flex: 1 }}
+                                className="justify-content-between d-flex"
+                              >
+                                {keyword1}
+                                <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
+                              </CListGroupItem>
+                              <CListGroupItem
+                                style={{ flex: 1 }}
+                                className="justify-content-between d-flex"
+                              >
+                                {keyword2}
+                                <CBadge color="primary">{getRankingText(index + 2)}</CBadge>
+                              </CListGroupItem>
+                            </CListGroup>,
+                          )
+                        }
+                        return acc
+                      }, [])
+                    )}
                   </CListGroup>
-                ) : (
-                  periodKeyword.reduce((acc, item, index, arr) => {
-                    if (index % 2 === 0) {
-                      const keyword1 = item
-                      const keyword2 = arr[index + 1] ?? '-'
-                      acc.push(
-                        <CListGroup className="mb-2" layout={`horizontal`} key={index}>
-                          <CListGroupItem style={{ flex: 1 }}>{keyword1}</CListGroupItem>
-                          <CListGroupItem style={{ flex: 1 }}>{keyword2}</CListGroupItem>
-                        </CListGroup>,
-                      )
-                    }
-                    return acc
-                  }, [])
-                )}
-              </CListGroup>
-            </ResponsiveContainer>
-          </CRow>
-        </CCardFooter>
-      </CCard>
+                </ResponsiveContainer>
+              </CRow>
+            </CCardFooter>
+          </CCard>
+        </CCol>
+        <CCol lg={6}>
+          <CCard className="mb-4">
+            <CCardBody>
+              <CRow>
+                <CCol sm={5}>
+                  <h4 id="traffic" className="card-title mb-0">
+                    기간 감정 순위
+                  </h4>
+                  <div className="small text-body-secondary">
+                    {timeRange[0]}~{timeRange[1]}
+                  </div>
+                </CCol>
+              </CRow>
+            </CCardBody>
+            <CCardFooter>
+              <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} lg={{ cols: 4 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <CListGroup className="mb-2">
+                    {topEmotionsLoading ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <CSpinner color="primary" />
+                      </div>
+                    ) : !periodTopEmotions || periodTopEmotions.length === 0 ? (
+                      <CListGroup className="mb-2" layout={`horizontal`}>
+                        <CListGroupItem
+                          style={{
+                            flex: 1,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          그동안의 감정 정보가 없습니다.
+                        </CListGroupItem>
+                      </CListGroup>
+                    ) : (
+                      periodTopEmotions.reduce((acc, item, index, arr) => {
+                        if (index >= 10) return acc
+                        if (index % 2 === 0) {
+                          const keyword1 = item
+                          const keyword2 = arr[index + 1] ?? '-'
+                          acc.push(
+                            <CListGroup className="mb-2" layout={`horizontal`} key={index}>
+                              <CListGroupItem
+                                style={{ flex: 1 }}
+                                className="justify-content-between d-flex"
+                              >
+                                {keyword1}
+                                <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
+                              </CListGroupItem>
+                              <CListGroupItem
+                                style={{ flex: 1 }}
+                                className="justify-content-between d-flex"
+                              >
+                                {keyword2}
+                                <CBadge color="primary">{getRankingText(index + 2)}</CBadge>
+                              </CListGroupItem>
+                            </CListGroup>,
+                          )
+                        }
+                        return acc
+                      }, [])
+                    )}
+                  </CListGroup>
+                </ResponsiveContainer>
+              </CRow>
+            </CCardFooter>
+          </CCard>
+        </CCol>
+      </CRow>
     </>
   )
 }

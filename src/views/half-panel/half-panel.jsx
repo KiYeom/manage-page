@@ -12,7 +12,7 @@ const HalfPanel = ({ mainText, subText, detailText, width, height, score }) => {
     justify-content: space-between;
     border-radius: 20px;
     padding: 20px;
-    margin: 20px 0px 20px 0px;
+    margin: 10px 0px 10px 0px;
     justify-content: center;
     align-items: center;
     background-color: #222630;

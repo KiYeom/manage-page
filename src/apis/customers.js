@@ -108,6 +108,23 @@ export const periodScoreReport = async (id, startDate, endDate) => {
   }
 }
 
+//[기간] 위험 점수 변화 추이 데이터 분석 조회
+export const periodTotalEmotion = async (id, startDate, endDate) => {
+  try {
+    const res = await instance.get('/v1/analyze/period/emotions', {
+      params: {
+        start_date: startDate,
+        end_date: endDate,
+        customer: id,
+      },
+    })
+    return res.data
+  } catch (error) {
+    console.log('[ERROR] period analyze', error)
+    return
+  }
+}
+
 export const requestReport = async (id) => {
   try {
     const res = await instance.get('/v1/analyze/daily-update', { customer: id })
