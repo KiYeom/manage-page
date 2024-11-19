@@ -123,6 +123,7 @@ const Dashboard = () => {
             score={userScores
               .filter((score) => score !== null)
               .reduce((a, b, _, arr) => a + b / arr.length, 0)}
+            showPie={true}
           />
         </CCol>
         <CCol lg={6}>

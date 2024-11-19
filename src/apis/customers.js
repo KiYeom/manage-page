@@ -127,7 +127,11 @@ export const periodTotalEmotion = async (id, startDate, endDate) => {
 
 export const requestReport = async (id) => {
   try {
-    const res = await instance.get('/v1/analyze/daily-update', { customer: id })
+    const res = await instance.get('/v1/analyze/daily-update', {
+      params: {
+        customer: id,
+      },
+    })
     return res.data
   } catch (error) {
     console.log('[ERROR] request report', error)
