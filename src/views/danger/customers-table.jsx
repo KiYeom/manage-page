@@ -73,8 +73,12 @@ const CustomersTable = ({ data }) => {
           <CTableRow>
             <CTableHeaderCell className="bg-body-tertiary">내담자</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">위험점수</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">일일 리포트</CTableHeaderCell>
-            <CTableHeaderCell className="bg-body-tertiary">기간 리포트</CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">
+              일일 리포트&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </CTableHeaderCell>
+            <CTableHeaderCell className="bg-body-tertiary">
+              기간 리포트&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">감정 분석</CTableHeaderCell>
             <CTableHeaderCell className="bg-body-tertiary">상담 시작 날짜</CTableHeaderCell>
           </CTableRow>
@@ -125,16 +129,16 @@ const CustomersTable = ({ data }) => {
                   {item.highestEmotion ? (
                     <>
                       <div className={'flex-row'} style={{ display: 'flex' }}>
-                        <CBadge textBgColor="info" style={{ margin: '4px' }}>
+                        <CBadge textBgColor="primary" textColor="white" style={{ margin: '4px' }}>
                           {item.highestEmotion}
                         </CBadge>
                         {item.secondEmotion && (
-                          <CBadge textBgColor="info" style={{ margin: '4px' }}>
+                          <CBadge textBgColor="info" textColor="white" style={{ margin: '4px' }}>
                             {item.secondEmotion}
                           </CBadge>
                         )}
                         {item.thirdEmotion && (
-                          <CBadge textBgColor="info" style={{ margin: '4px' }}>
+                          <CBadge textBgColor="warning" textColor="white" style={{ margin: '4px' }}>
                             {item.thirdEmotion}
                           </CBadge>
                         )}

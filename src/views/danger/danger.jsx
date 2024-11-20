@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {
-  CBadge,
   CButton,
   CProgress,
   CTable,
@@ -11,32 +10,9 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import {
-  cibCcAmex,
-  cibCcApplePay,
-  cibCcMastercard,
-  cibCcPaypal,
-  cibCcStripe,
-  cibCcVisa,
-  cibGoogle,
-  cibFacebook,
-  cibLinkedin,
-  cifBr,
-  cifEs,
-  cifFr,
-  cifIn,
-  cifPl,
-  cifUs,
-  cibTwitter,
-  cilUser,
-  cilUserFemale,
-} from '@coreui/icons'
+
 import 'react-date-range/dist/styles.css' // main css file
 import 'react-date-range/dist/theme/default.css' // theme css file
-import react, { useEffect } from 'react'
-import userTableDummy from '../../assets/dummy'
-import { manageUsers } from '../../apis/customers'
 import PropTypes from 'prop-types'
 
 const Danger = ({ userTable }) => {
@@ -115,6 +91,7 @@ const Danger = ({ userTable }) => {
                   </div>
                 </div> */}
               </CTableDataCell>
+
               <CTableDataCell>
                 <CButton color="primary" onClick={() => navigateToReport('daily', item.id)}>
                   일일 리포트

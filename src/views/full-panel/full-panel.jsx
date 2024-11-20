@@ -44,7 +44,7 @@ const PanelText = styled.div`
 `
 
 const MainText = styled.span`
-  font-size: 36px;
+  font-size: 32px;
   color: #ffffff;
   text-align: center;
   margin: 0;
@@ -52,7 +52,7 @@ const MainText = styled.span`
 `
 
 const SubText = styled.span`
-  font-size: 24px;
+  font-size: 22px;
   color: #ffffff;
   text-align: center;
   margin: 0;
@@ -64,7 +64,7 @@ const PanelGraph = styled.div`
   flex-grow: 1;
   justify-content: center;
   align-items: center;
-  width: 30%;
+  width: 25%;
 `
 
 FullPanel.propTypes = {
