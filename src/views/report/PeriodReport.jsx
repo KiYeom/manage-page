@@ -120,6 +120,33 @@ const PeriodReport = () => {
   const [periodTopEmotions, setPeriodTopEmotions] = useState([]) // 기간 상위 감정 분석
   const [topEmotionsLoading, setTopEmotionsLoading] = useState(false) // 상위 감정 로딩 상태
 
+  const requestPeriodKeywords = (startDate, endDate, times = 1) => {
+    if (times > 3) {
+      console.log('키워드 데이터 요청 횟수 초과')
+      setKeywordLoading(false)
+      return
+    }
+    setKeywordLoading(true)
+    periodKeywordReport(id, startDate, endDate)
+      .then((data) => {
+        if (data.keywords && Array.isArray(data.keywords)) {
+          console.log('기간 키워드 데이터', data)
+          setPeriodKeyword(data.keywords)
+        } else {
+          console.log('기간 키워드 형식 오류', data)
+          setPeriodKeyword([])
+          setKeywordLoading(false)
+          requestPeriodKeywords(startDate, endDate, times + 1)
+        }
+      })
+      .catch((error) => {
+        console.log('기간 키워드 에러', error)
+      })
+      .finally(() => {
+        setKeywordLoading(false)
+      })
+  }
+
   useEffect(() => {
     setTimeRange([
       getDateBefore(getServiceYesterdayDate().toString(), 7),
@@ -158,18 +185,7 @@ const PeriodReport = () => {
         console.log('기간 분석 에러', error)
       })
 
-    setKeywordLoading(true)
-    periodKeywordReport(id, timeRange[0], timeRange[1])
-      .then((data) => {
-        console.log('기간 키워드 데이터', data)
-        setPeriodKeyword(data.keywords)
-      })
-      .catch((error) => {
-        console.log('기간 키워드 에러', error)
-      })
-      .finally(() => {
-        setKeywordLoading(false)
-      })
+    requestPeriodKeywords(timeRange[0], timeRange[1])
 
     setTopEmotionsLoading(true)
     periodTotalEmotion(id, timeRange[0], timeRange[1])
@@ -240,7 +256,13 @@ const PeriodReport = () => {
         />
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
           <CDropdown variant="btn-group" autoClose={false} visible={dropdownOpen}>
-            <CDropdownToggle color="primary" onClick={() => setDropdownOpen(!dropdownOpen)}>
+            <CDropdownToggle
+              color="primary"
+              onClick={() => {
+                setDropdownOpen(!dropdownOpen)
+              }}
+              disabled={keywordLoading || topEmotionsLoading}
+            >
               날짜 선택
             </CDropdownToggle>
             <CDropdownMenu style={{ padding: '10px' }}>
