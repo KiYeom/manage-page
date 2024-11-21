@@ -38,6 +38,7 @@ import { DayPicker } from 'react-day-picker'
 import Title from '../base/title/Title'
 import {
   getDateInfo,
+  getServiceTodayDate,
   getServiceYesterdayDate as getServiceYesterdayDate,
   KOREA_TIME_OFFSET_MINUTES,
 } from '../../utils/time'
@@ -150,7 +151,7 @@ const PeriodReport = () => {
   useEffect(() => {
     setTimeRange([
       getDateBefore(getServiceYesterdayDate().toString(), 7),
-      getServiceYesterdayDate().toString(),
+      getServiceTodayDate().toString(),
     ])
 
     analyticsDates(id, '2024')
