@@ -311,10 +311,20 @@ const DailyReport = () => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           padding: '10px 0px',
+          flexWrap: 'wrap',
         }}
       >
         <Title title={`${name} (#${id})`} subtitle={`${nowDate}의 리포트입니다.`} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5em',
+            flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+            width: window.innerWidth <= 768 ? '100%' : 'auto',
+            marginTop: window.innerWidth <= 768 ? '10px' : '0',
+          }}
+        >
           <CDropdown variant="btn-group">
             <CDropdownToggle color="primary">날짜 선택</CDropdownToggle>
             <CDropdownMenu style={{ padding: '10px' }}>
@@ -344,18 +354,16 @@ const DailyReport = () => {
             기간 리포트 확인
           </CButton>
           {nowDate === getServiceTodayDate().toString() && (
-            <>
-              <CButton
-                className="align-self-center"
-                color="primary"
-                as={NavLink}
-                onClick={() => {
-                  setModalVisible(true)
-                }}
-              >
-                <CIcon icon={cilSync} /> 실시간 업데이트하기
-              </CButton>
-            </>
+            <CButton
+              className="align-self-center"
+              color="primary"
+              as={NavLink}
+              onClick={() => {
+                setModalVisible(true)
+              }}
+            >
+              <CIcon icon={cilSync} /> 실시간 업데이트하기
+            </CButton>
           )}
         </div>
       </div>
@@ -411,7 +419,6 @@ const DailyReport = () => {
           </div>
         </CCol>
       </CRow>
-
       <CRow className="mb-4 align-items-start">
         <CCol lg={6}>
           <div style={{ flex: '1', margin: '0px 0px 20px 0px' }}>

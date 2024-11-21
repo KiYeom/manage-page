@@ -248,13 +248,23 @@ const PeriodReport = () => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           padding: '10px 0px',
+          flexWrap: 'wrap',
         }}
       >
         <Title
           title={`${name} (#${id})`}
           subtitle={`${timeRange[0]}~${timeRange[1]}의 리포트입니다.`}
         />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5em' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5em',
+            flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
+            width: window.innerWidth <= 768 ? '100%' : 'auto',
+            marginTop: window.innerWidth <= 768 ? '10px' : '0',
+          }}
+        >
           <CDropdown variant="btn-group" autoClose={false} visible={dropdownOpen}>
             <CDropdownToggle
               color="primary"
