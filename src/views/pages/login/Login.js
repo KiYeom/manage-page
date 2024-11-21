@@ -24,9 +24,9 @@ import CTAButton from '../../buttons/cta-button'
 
 const Login = () => {
   const [loading, setLoading] = React.useState(false)
-  const [email, setEmail] = React.useState('test@test.com')
+  const [email, setEmail] = React.useState('soma@soma.com')
   const [emailError, setEmailError] = React.useState('')
-  const [password, setPassword] = React.useState('testtest')
+  const [password, setPassword] = React.useState('somasoma')
 
   const handleLogin = () => {
     //버튼 비활성화
