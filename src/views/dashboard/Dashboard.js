@@ -114,7 +114,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <Title title="위험 지수" subtitle="전체 내댐자의 위험 상황을 한 눈에 확인할 수 있습니다." />
+      <Title title="위험 지수" subtitle="전체 내담자의 위험 상황을 한 눈에 확인할 수 있습니다." />
       <CRow className="mb-4 align-items-center">
         <CCol lg={6}>
           <HalfPanel
