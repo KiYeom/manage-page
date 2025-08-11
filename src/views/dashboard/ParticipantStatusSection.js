@@ -6,7 +6,7 @@ import HalfPanel from '../half-panel/half-panel'
 import CardDropdown from '../base/cards/CardDropdown'
 import { manageUsers } from '../../apis/customers'
 import Danger from '../danger/danger'
-
+import DashboardUserTableContainer from './component/DashboardUserTableContainer'
 const ParticipantStatusSection = ({userTable}) => {
     return (
         <>
@@ -15,7 +15,7 @@ const ParticipantStatusSection = ({userTable}) => {
                 subtitle="위험한 내담자의 상황을 한 눈에 볼 수 있습니다."
             />
 
-            <Danger userTable={userTable} />
+            <DashboardUserTableContainer userTable={userTable} />
         </>
     )
 }

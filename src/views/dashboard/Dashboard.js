@@ -41,6 +41,7 @@ const Dashboard = () => {
           const scoreB = b.score?.score ?? -Infinity
           return scoreB - scoreA
         })
+        console.log('Sorted user data:', sortedData)
         
         setUserTable(sortedData)
       } catch (err) {

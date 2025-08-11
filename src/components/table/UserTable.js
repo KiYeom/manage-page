@@ -3,7 +3,7 @@
 import React from 'react'
 import { CTable, CTableBody, CTableHead, CTableHeaderCell, CTableRow, CTableDataCell } from '@coreui/react' 
 import { de } from 'react-day-picker/locale';
-const ReusableTable = ({ headers, items, renderRow }) => {
+const UserTable = ({ headers, items, renderRow }) => {
   return (
     <CTable>
       <CTableHead>
@@ -19,4 +19,4 @@ const ReusableTable = ({ headers, items, renderRow }) => {
     </CTable>
   );
 };
-export default ReusableTable;
+export default UserTable;

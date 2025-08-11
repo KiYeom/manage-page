@@ -4,6 +4,7 @@ import { CNavItem, CNavLink } from '@coreui/react'
 import { NavLink } from 'react-router-dom'
 import { CForm, CFormInput, CFormLabel } from '@coreui/react'
 import Title from '../base/title/Title'
+import CustomersTableContainer from './components/CustomersTableContainer'
 
 import {
   CAvatar,
@@ -92,10 +93,11 @@ const Customers = () => {
 
   return (
     <>
-      <Title title="전체 내담자 정보." subtitle="전체 내담자의 정보를 한 눈에 확인할 수 있습니다" />
-      <CTable align="middle" className="mb-0 border" hover responsive>
+      <Title title="전체 내담자 정보" subtitle="전체 내담자의 정보를 한 눈에 확인할 수 있습니다" />
+      {/*<CTable align="middle" className="mb-0 border" hover responsive>
         <CustomersTable data={userTable} />
-      </CTable>
+      </CTable>*/}
+      <CustomersTableContainer data={userTable} />
     </>
   )
 }
