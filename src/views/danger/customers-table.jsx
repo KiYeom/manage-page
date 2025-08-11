@@ -154,7 +154,7 @@ const CustomersTable = ({ data }) => {
               </CTableDataCell>
 
               <CTableDataCell>
-                <div className="fw-semibold text-nowrap">{item.firstTime}</div>
+                <div className="text-nowrap">{item.firstTime}</div>
               </CTableDataCell>
             </CTableRow>
           ))}

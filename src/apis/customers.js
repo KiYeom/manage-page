@@ -6,17 +6,19 @@ export const manageUsers = async () => {
     const res = await instance.get('/v1/users/manage-users')
     return res.data
   } catch (error) {
-    console.log('[ERROR] daily analyze', error)
+    console.log('[ERROR] daily analyze(manageUsers)', error)
     return
   }
 }
 
 export const analyticsDates = async (id, year) => {
   try {
-    const res = await instance.get('/v1/analyze/daily-status', { params: { year, customer: id } })
+    const res = await instance.get('/v1/analyze/daily-status', {
+      params: { year: '2025', customer: id },
+    })
     return res.data
   } catch (error) {
-    console.log('[ERROR] daily analyze', error)
+    console.log('[ERROR] daily analyze(analyticsDates)', error)
     return
   }
 }
@@ -36,7 +38,7 @@ export const dailyAnalyzeReport = async (id, date) => {
     })
     return res.data
   } catch (error) {
-    console.log('[ERROR] daily analyze', error)
+    console.log('[ERROR] daily analyze(dailyAnalyzeReport)', error)
     return
   }
 }

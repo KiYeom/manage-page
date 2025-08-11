@@ -114,6 +114,7 @@ const handleSummaryKeyword = (data) => {
 
 const handleRecordedEmotion = (data) => {
   if (data.isNULL) return []
+  console.log('recorded emotion', data.Keywords)
   return data.Keywords.map((item) => item.keyword)
 }
 
