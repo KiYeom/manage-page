@@ -18,18 +18,39 @@ const DashboardUserTableContainer = ({userTable}) => {
     const headers = ['내담자', '위험 점수', '일일 리포트', '기간 리포트'];
     const renderRow = (item) => (
     <CTableRow key={item.id}>
-      <CTableDataCell>{item.nickname}</CTableDataCell>
+      <CTableDataCell>
+        <div>
+          <span>{item.nickname}</span>
+          <span className="small text-body-secondary text-nowrap">
+            {' '}
+            #{item.id}
+          </span>
+        </div>
+        <div className="small text-body-secondary text-nowrap">
+          마지막 대화: {item.lastTime ? item.lastTime : '정보 없음'}
+        </div>
+      </CTableDataCell>
       <CTableDataCell>
         <div className="fw-semibold">
-          {dangerLevel(item.score?.score)}
+          {item.score === null
+            ? '없음'
+            : `${item.score.score}% ${dangerLevel(item.score.score)}`}
         </div>
-        <CProgress color={getProgressColor(item.score?.score)} value={item.score?.score} />
+        <CProgress
+          thin
+          color={getProgressColor(item.score ? item.score.score : 0)}
+          value={item.score ? item.score.score : 0}
+        />
+        <div className="small text-body-secondary text-nowrap">
+          업데이트:{' '}
+          {item.score?.updateTime ? item.score.updateTime : '정보 없음'}
+        </div>
       </CTableDataCell>
       <CTableDataCell>
-        <CButton color="primary" onClick={() => navigateToReport('daily', item.id)}>일일 리포트</CButton>
+        <CButton className="text-nowrap" color="primary" onClick={() => navigateToReport('daily', item.id)}>일일 리포트</CButton>
       </CTableDataCell>
       <CTableDataCell>
-        <CButton color="primary" onClick={() => navigateToReport('period', item.id)}>기간 리포트</CButton>
+        <CButton className="text-nowrap" color="primary" onClick={() => navigateToReport('period', item.id)}>기간 리포트</CButton>
       </CTableDataCell>
     </CTableRow>
   );

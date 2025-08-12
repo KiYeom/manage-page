@@ -3,7 +3,6 @@ import { CRow, CCol, CSpinner, CAlert } from '@coreui/react'
 import Title from '../base/title/Title'
 import HalfPanel from '../half-panel/half-panel'
 import CardDropdown from '../base/cards/CardDropdown'
-import Danger from '../danger/danger'
 import { manageUsers } from '../../apis/customers'
 import RiskIndexSection from './RiskIndexSection';
 import ParticipantStatusSection from './ParticipantStatusSection';

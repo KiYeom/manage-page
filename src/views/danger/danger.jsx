@@ -1,5 +1,4 @@
-import React from 'react'
-
+/*import React from 'react'
 import {
   CButton,
   CProgress,
@@ -80,16 +79,6 @@ const Danger = ({ userTable }) => {
                 <div className="small text-body-secondary text-nowrap">
                   업데이트: {item.score?.updateTime ? item.score.updateTime : '정보 없음'}
                 </div>
-                {/* <div className="d-flex justify-content-between text-nowrap">
-                  <div className="fw-semibold">
-                    {item.score?.score === null || item.score?.score === undefined
-                      ? '없음'
-                      : `${item.score.score}% ${dangerLevel(item.score.score)}`}
-                  </div>
-                  <div className="small text-body-secondary text-nowrap">
-                    업데이트: {item.lastTime ? item.lastTime : '정보 없음'}
-                  </div>
-                </div> */}
               </CTableDataCell>
 
               <CTableDataCell>
@@ -117,3 +106,4 @@ export default Danger
 Danger.propTypes = {
   userTable: PropTypes.array,
 }
+*/

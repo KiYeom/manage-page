@@ -1,65 +1,47 @@
-//전체 내담자의 정보를 보여주는 UserTable 컴포넌트에
-//필요한 데이터를 처리하고 전달하는 컨테이너 컴포넌트
-import React, { useEffect, useState } from 'react'
-import { dangerLevel, getProgressColor, navigateToReport } from '../../../utils/tableUtils'
+import React, { useMemo, useCallback } from 'react'
+import PropTypes from 'prop-types'
 import UserTable from '../../../components/table/UserTable'
-import {
-    CButton,
-    CProgress,
-    CTableRow,
-    CTableDataCell
-} from '@coreui/react'
-const CustomersTableContainer = ({ data }) => {
-  const headers = ['내담자', '위험 점수', '일일 리포트', '기간 리포트', '감정 분석', '상담 시작 날짜']
-  const renderRow = (item) => (
-    <CTableRow key={item.id}>
-      <CTableDataCell>{item.nickname}</CTableDataCell>
-      <CTableDataCell>
-        <div className="fw-semibold">
-          {dangerLevel(item.score?.score)}
-        </div>
-        <CProgress color={getProgressColor(item.score?.score)} value={item.score?.score} />
-      </CTableDataCell>
-      <CTableDataCell>
-        <CButton color="primary" onClick={() => navigateToReport('daily', item.id)}>일일 리포트</CButton>
-      </CTableDataCell>
-      <CTableDataCell>
-        <CButton color="primary" onClick={() => navigateToReport('period', item.id)}>기간 리포트</CButton>
-      </CTableDataCell>
-    <CTableDataCell>
-                      <div className={'flex-column'} style={{ display: 'flex' }}>
-                        {item.highestEmotion ? (
-                          <>
-                            <div className={'flex-row'} style={{ display: 'flex' }}>
-                              <CBadge textBgColor="primary" textColor="white" style={{ margin: '4px' }}>
-                                {item.highestEmotion}
-                              </CBadge>
-                              {item.secondEmotion && (
-                                <CBadge textBgColor="info" textColor="white" style={{ margin: '4px' }}>
-                                  {item.secondEmotion}
-                                </CBadge>
-                              )}
-                              {item.thirdEmotion && (
-                                <CBadge textBgColor="warning" textColor="white" style={{ margin: '4px' }}>
-                                  {item.thirdEmotion}
-                                </CBadge>
-                              )}
-                            </div>
-                            <div className="small text-body-secondary text-nowrap">
-                              업데이트: {item.emotionUpdateTime ? item.emotionUpdateTime : '정보 없음'}
-                            </div>
-                          </>
-                        ) : (
-                          '정보 없음'
-                        )}
-                      </div>
-    </CTableDataCell>
-      
-    <CTableDataCell>
-        <div className="text-nowrap">{item.firstTime}</div>
-    </CTableDataCell>
-    </CTableRow>
+import UserTableRow from '../../../components/table/UserTableRow'
+import { navigateToReport as navigateToReportUtil } from '../../../utils/tableUtils';
+
+/**
+ * 전체 내담자 테이블 컨테이너
+ * - 데이터 가공/핸들러 바인딩만 담당하고, 행 UI는 UserTableRow에 위임
+ * @param {Object} props
+ * @param {Array<Object>} props.data - 내담자 리스트
+ * @param {Function} [props.onNavigate] - (type, id) => void. 미제공 시 utils의 navigateToReport 사용
+ */
+const CustomersTableContainer = ({ data, onNavigate }) => {
+  const headers = useMemo(
+    () => ['내담자', '위험 점수', '일일 리포트', '기간 리포트', '감정 분석', '상담 시작 날짜'],
+    []
   )
-  return (<UserTable headers={headers} items={data} renderRow={renderRow} />)
+
+  const items = useMemo(() => (Array.isArray(data) ? data : []), [data])
+
+  const handleNavigate = useCallback(
+    (type, id) => {
+      if (typeof onNavigate === 'function') {
+        onNavigate(type, id)
+      } else {
+        // fallback to util
+        navigateToReportUtil(type, id)
+      }
+    },
+    [onNavigate]
+  )
+
+  const renderRow = useCallback(
+    (item) => <UserTableRow key={item.id} item={item} onNavigate={handleNavigate} />,
+    [handleNavigate]
+  )
+
+  return <UserTable headers={headers} items={items} renderRow={renderRow} />
 }
+
+CustomersTableContainer.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onNavigate: PropTypes.func,
+}
+
 export default CustomersTableContainer

@@ -9,13 +9,13 @@ import Title from '../base/title/Title';
 const RiskIndexSection = ({averageScore, userScores}) => {
     return (
         <>
-            <Title 
-                title="위험 지수" 
-                subtitle="전체 내담자의 위험 상황을 한 눈에 확인할 수 있습니다." 
-            />
-            <CRow className="mb-4 align-items-center">
-            <CCol lg={6}>
-            {/* averageScore를 HalfPanel에 전달 */}
+          <Title 
+            title="위험 지수" 
+            subtitle="전체 내담자의 위험 상황을 한 눈에 확인할 수 있습니다." 
+          />
+          <CRow className="mb-4 align-items-center">
+          <CCol lg={6}>
+          {/* averageScore를 HalfPanel에 전달 */}
             <HalfPanel
                 subText="전체 내담자 위험점수"
                 mainText="점"
