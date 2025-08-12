@@ -431,7 +431,7 @@ const DailyReport = () => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  fontSize: '1.3rem',
+                  //fontSize: '1.3rem',
                 }}
               >
                 {pieData.labels.length === 0 ? (
@@ -517,7 +517,7 @@ const DailyReport = () => {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    fontSize: '1.3rem',
+                    //fontSize: '1.3rem',
                   }}
                 >
                   {feeling ? feeling : '이 날의 한 줄 기록이 없습니다.'}
