@@ -37,6 +37,7 @@ import { DayPicker } from 'react-day-picker'
 import styled from '@emotion/styled'
 import CIcon from '@coreui/icons-react'
 import { cilSync } from '@coreui/icons'
+import ListCard from '../../components/listcard/ListCard'
 
 const config = (pieData) => {
   return {
@@ -248,8 +249,10 @@ const DailyReport = () => {
     setModalVisible(false)
   }
 
+  //초기 데이터 로드
   useEffect(() => {
-    analyticsDates(id, '2024')
+    const currentYear = new Date().getFullYear().toString()
+    analyticsDates(id, currentYear)
       .then((data) => {
         setName(data.nickname)
         setAllowedDates(data.dates)
@@ -335,6 +338,9 @@ const DailyReport = () => {
                 timeZone="Asia/Seoul"
                 selected={selected}
                 onSelect={setSelected}
+                onMonthChange={(month) => {
+                  console.log('Selected month:', month)
+                }}
                 disabled={(date) => {
                   return !allowedDates.includes(
                     getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString,
@@ -382,40 +388,35 @@ const DailyReport = () => {
         <CCol lg={6}>
           <div style={{ flex: '1' }}>
             <div>
-              <CCard>
-                <CCardHeader>
-                  <Title title="대화 주제" subtitle="내담자가 많이 언급한 주제입니다." />
-                </CCardHeader>
-                <CListGroup flush className="mb-2">
-                  {dailyKeyword.length === 0 ? (
-                    <>
+              <ListCard title="대화 주제" subtitle="내담자가 많이 언급한 주제입니다!">
+                {dailyKeyword.length === 0 ? (
+                  <>
+                    <CListGroupItem
+                      style={{
+                        flex: 1,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      나눈 대화가 없습니다.
+                    </CListGroupItem>
+                  </>
+                ) : (
+                  dailyKeyword.reduce((acc, item, index, arr) => {
+                    acc.push(
                       <CListGroupItem
-                        style={{
-                          flex: 1,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
+                        style={{ flex: 1 }}
+                        className="d-flex justify-content-between align-items-center"
                       >
-                        나눈 대화가 없습니다.
-                      </CListGroupItem>
-                    </>
-                  ) : (
-                    dailyKeyword.reduce((acc, item, index, arr) => {
-                      acc.push(
-                        <CListGroupItem
-                          style={{ flex: 1 }}
-                          className="d-flex justify-content-between align-items-center"
-                        >
-                          {item}
-                          <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
-                        </CListGroupItem>,
-                      )
-                      return acc
-                    }, [])
-                  )}
-                </CListGroup>
-              </CCard>
+                        {item}
+                        <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
+                      </CListGroupItem>,
+                    )
+                    return acc
+                  }, [])
+                )}
+              </ListCard>
             </div>
           </div>
         </CCol>
@@ -423,14 +424,93 @@ const DailyReport = () => {
       <CRow className="mb-4 align-items-start">
         <CCol lg={6}>
           <div style={{ flex: '1', margin: '0px 0px 20px 0px' }}>
-            <CCard>
-              <CCardHeader>
-                <Title
-                  title="내담자 감정 분석 결과"
-                  subtitle="대화를 통해 분석한 내담자의 감정입니다."
-                />
-              </CCardHeader>
-              <CListGroup flush>
+            <ListCard title="감정 분석 결과" subtitle="대화를 통해 분석한 내담자의 감정입니다.">
+              <CListGroupItem
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  fontSize: '1.3rem',
+                }}
+              >
+                {pieData.labels.length === 0 ? (
+                  <div
+                    style={{
+                      display: 'flex', // Flexbox 적용
+                      flexDirection: 'column', // 세로 방향 정렬
+                      justifyContent: 'center', // 수직 정렬
+                      alignItems: 'center', // 가로 정렬
+                      textAlign: 'center', // 텍스트 중앙 정렬
+                      height: '100%', // 필요한 경우 부모 높이에 맞게 설정
+                    }}
+                  >
+                    <p>대화 양이 부족하여 감정 분석이 제공되지 않습니다.</p>
+                    {nowDate === getServiceTodayDate().toString() && (
+                      <>
+                        <CButton
+                          className="align-self-center"
+                          color="primary"
+                          as={NavLink}
+                          onClick={() => {
+                            setModalVisible(true)
+                          }}
+                        >
+                          <CIcon icon={cilSync} /> 실시간 업데이트하기
+                        </CButton>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <CChartDoughnut {...config(pieData)} />
+                  </ResponsiveContainer>
+                )}
+              </CListGroupItem>
+            </ListCard>
+          </div>
+        </CCol>
+        <CCol lg={6}>
+          <div style={{ flex: '1', margin: '0px 0px 20px 0px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <ListCard
+                title="내담자가 기록한 감정!"
+                subtitle="내담자가 직접 선택한 감정 단어입니다."
+              >
+                {dailyRecordedEmotion.length === 0 ? (
+                  <CListGroupItem
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    기록한 감정이 없습니다.
+                  </CListGroupItem>
+                ) : (
+                  dailyRecordedEmotion.reduce((acc, item, index, arr) => {
+                    acc.push(
+                      <CListGroupItem
+                        style={{ flex: 1 }}
+                        className="d-flex justify-content-between align-items-center"
+                      >
+                        {item}
+                        <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
+                      </CListGroupItem>,
+                    )
+                    return acc
+                  }, [])
+                )}
+              </ListCard>
+            </div>
+          </div>
+          <div style={{ flex: '1', margin: '0px 0px 20px 0px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <ListCard
+                title="오늘의 한 줄 기록"
+                subtitle="내담자가 작성한 오늘의 한 줄 기록입니다."
+              >
                 <CListGroupItem
                   style={{
                     flex: 1,
@@ -440,106 +520,9 @@ const DailyReport = () => {
                     fontSize: '1.3rem',
                   }}
                 >
-                  {pieData.labels.length === 0 ? (
-                    <div
-                      style={{
-                        display: 'flex', // Flexbox 적용
-                        flexDirection: 'column', // 세로 방향 정렬
-                        justifyContent: 'center', // 수직 정렬
-                        alignItems: 'center', // 가로 정렬
-                        textAlign: 'center', // 텍스트 중앙 정렬
-                        height: '100%', // 필요한 경우 부모 높이에 맞게 설정
-                      }}
-                    >
-                      <p>대화 양이 부족하여 감정 분석이 제공되지 않습니다.</p>
-                      {nowDate === getServiceTodayDate().toString() && (
-                        <>
-                          <CButton
-                            className="align-self-center"
-                            color="primary"
-                            as={NavLink}
-                            onClick={() => {
-                              setModalVisible(true)
-                            }}
-                          >
-                            <CIcon icon={cilSync} /> 실시간 업데이트하기
-                          </CButton>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <CChartDoughnut {...config(pieData)} />
-                    </ResponsiveContainer>
-                  )}
+                  {feeling ? feeling : '이 날의 한 줄 기록이 없습니다.'}
                 </CListGroupItem>
-              </CListGroup>
-            </CCard>
-          </div>
-        </CCol>
-        <CCol lg={6}>
-          <div style={{ flex: '1', margin: '0px 0px 20px 0px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <CCard>
-                <CCardHeader>
-                  <Title
-                    title="내담자가 기록한 감정"
-                    subtitle="내담자가 직접 선택한 감정 단어입니다."
-                  />
-                </CCardHeader>
-                <CListGroup flush className="mb-2">
-                  {dailyRecordedEmotion.length === 0 ? (
-                    <CListGroupItem
-                      style={{
-                        flex: 1,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      기록한 감정이 없습니다.
-                    </CListGroupItem>
-                  ) : (
-                    dailyRecordedEmotion.reduce((acc, item, index, arr) => {
-                      acc.push(
-                        <CListGroupItem
-                          style={{ flex: 1 }}
-                          className="d-flex justify-content-between align-items-center"
-                        >
-                          {item}
-                          <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
-                        </CListGroupItem>,
-                      )
-                      return acc
-                    }, [])
-                  )}
-                </CListGroup>
-              </CCard>
-            </div>
-          </div>
-          <div style={{ flex: '1', margin: '0px 0px 20px 0px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <CCard>
-                <CCardHeader>
-                  <Title
-                    title="내담자의 한 줄 기록"
-                    subtitle="내담자가 직접 작성한 한 줄 기록입니다."
-                  />
-                </CCardHeader>
-                <CListGroup flush>
-                  <CListGroupItem
-                    style={{
-                      flex: 1,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      fontSize: '1.3rem',
-                    }}
-                  >
-                    {feeling ? feeling : '이 날의 한 줄 기록이 없습니다.'}
-                  </CListGroupItem>
-                </CListGroup>
-              </CCard>
+              </ListCard>
             </div>
           </div>
         </CCol>
@@ -547,10 +530,5 @@ const DailyReport = () => {
     </>
   )
 }
-
-const CalenderContainer = styled.div`
-  display: flex;
-  justify-content: right;
-`
 
 export default DailyReport
