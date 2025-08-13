@@ -15,19 +15,11 @@ import {
   CDropdownToggle,
   CDropdownMenu,
   CBadge,
+  CCollapse,
 } from '@coreui/react'
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
-import axios from 'axios'
+import CIcon from '@coreui/icons-react'
+import { cilMenu } from '@coreui/icons'
 import palette from '../../assets/styles/theme'
-import userTableDummy from '../../assets/dummy' // 더미 데이터를 import
 import {
   analyticsDates,
   periodEmotionReport,
@@ -66,6 +58,7 @@ const PeriodReport = () => {
   const [clickedBtn, setClickedBtn] = useState(0)
   const [dateClicked, setDateClicked] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false) // 모바일 메뉴 상태 추가
   const { id } = useParams()
   const [name, setName] = useState('')
   const [allowedDates, setAllowedDates] = useState([])
@@ -166,24 +159,19 @@ const PeriodReport = () => {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
+          alignItems: 'center',
           padding: '10px 0px',
           flexWrap: 'wrap',
+          gap: '1rem',
         }}
       >
         <Title
           title={`${name} (#${id})`}
           subtitle={`${timeRange[0]}~${timeRange[1]}의 리포트입니다.`}
         />
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5em',
-            flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
-            width: window.innerWidth <= 768 ? '100%' : 'auto',
-            marginTop: window.innerWidth <= 768 ? '10px' : '0',
-          }}
-        >
+
+        {/* 데스크탑 버튼 그룹 */}
+        <div className="d-none d-md-flex align-items-center" style={{ gap: '0.75rem' }}>
           <CDropdown variant="btn-group" autoClose={false} visible={dropdownOpen}>
             <CDropdownToggle
               color="primary"
@@ -191,6 +179,12 @@ const PeriodReport = () => {
                 setDropdownOpen(!dropdownOpen)
               }}
               disabled={keywordLoading || topEmotionsLoading}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                whiteSpace: 'nowrap',
+              }}
             >
               날짜 선택
             </CDropdownToggle>
@@ -220,18 +214,110 @@ const PeriodReport = () => {
               </div>
             </CDropdownMenu>
           </CDropdown>
+
           <CButton
             color="primary"
             to={`/customers/daily-report/${id}`}
             as={NavLink}
-            onClick={() => {
-              console.log('버튼 클릭')
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              whiteSpace: 'nowrap',
             }}
           >
             일일 리포트 확인
           </CButton>
         </div>
+
+        {/* 모바일 메뉴 토글 버튼 */}
+        <CButton
+          className="d-md-none"
+          color="primary"
+          variant="outline"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0.375rem 0.75rem',
+          }}
+        >
+          <CIcon icon={cilMenu} size="lg" />
+        </CButton>
       </div>
+
+      {/* 모바일 접이식 메뉴 */}
+      <CCollapse visible={mobileMenuOpen} className="d-md-none mb-3">
+        <div
+          style={{
+            backgroundColor: '#f8f9fa',
+            padding: '1rem',
+            borderRadius: '0.375rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.75rem',
+          }}
+        >
+          <CDropdown variant="btn-group" autoClose={false} visible={dropdownOpen}>
+            <CDropdownToggle
+              color="primary"
+              onClick={() => {
+                setDropdownOpen(!dropdownOpen)
+              }}
+              disabled={keywordLoading || topEmotionsLoading}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              날짜 선택
+            </CDropdownToggle>
+            <CDropdownMenu style={{ padding: '10px', width: '100%' }}>
+              <DayPicker
+                captionLayout="dropdown"
+                mode="range"
+                timeZone="Asia/Seoul"
+                selected={selected}
+                onSelect={setSelected}
+                disabled={(date) => {
+                  return !allowedDates.includes(
+                    getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString,
+                  )
+                }}
+              />
+              <div className="d-grid gap-2">
+                <CButton
+                  color="primary"
+                  onClick={() => {
+                    setDateClicked(!dateClicked)
+                    setDropdownOpen(false)
+                  }}
+                >
+                  날짜 선택 완료
+                </CButton>
+              </div>
+            </CDropdownMenu>
+          </CDropdown>
+
+          <CButton
+            color="primary"
+            to={`/customers/daily-report/${id}`}
+            as={NavLink}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            일일 리포트 확인
+          </CButton>
+        </div>
+      </CCollapse>
 
       {/* 6가지 감정 차트*/}
       <EmotionChart
