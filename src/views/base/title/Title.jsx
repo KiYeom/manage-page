@@ -7,14 +7,10 @@ import palette from '../../../assets/styles/theme'
 const Title = ({ title, subtitle }) => {
   return (
     <div>
-      <h3>{title}</h3>
-      <h6
-        style={{
-          color: palette.web[50],
-        }}
-      >
-        {subtitle}
-      </h6>
+      <h4 id="traffic" className="card-title mb-0">
+        {title}
+      </h4>
+      <div className="small text-body-secondary">{subtitle}</div>
     </div>
   )
 }

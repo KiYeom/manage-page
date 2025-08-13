@@ -1,142 +1,83 @@
-import React from 'react'
-import classNames from 'classnames'
-import { NavLink } from 'react-router-dom'
-import Card from '../base/cards/Card'
-import CardDropdown from '../base/cards/CardDropdown'
-import Warning from '../warning/Warning'
+import React, { useEffect, useState, useMemo } from 'react'
+import { CRow, CCol, CSpinner, CAlert } from '@coreui/react'
 import Title from '../base/title/Title'
-import {
-  CAvatar,
-  CBadge,
-  CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardFooter,
-  CCardHeader,
-  CCol,
-  CProgress,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-  CFormInput,
-  CForm,
-  CFormLabel,
-  CNavLink,
-} from '@coreui/react'
-import Icon from '../../components/icon/icons'
-import CIcon from '@coreui/icons-react'
-import { CNavItem } from '@coreui/react'
-import {
-  cibCcAmex,
-  cibCcApplePay,
-  cibCcMastercard,
-  cibCcPaypal,
-  cibCcStripe,
-  cibCcVisa,
-  cibGoogle,
-  cibFacebook,
-  cibLinkedin,
-  cifBr,
-  cifEs,
-  cifFr,
-  cifIn,
-  cifPl,
-  cifUs,
-  cibTwitter,
-  cilCloudDownload,
-  cilPeople,
-  cilUser,
-  cilUserFemale,
-} from '@coreui/icons'
-
-import avatar1 from 'src/assets/images/avatars/1.jpg'
-import avatar2 from 'src/assets/images/avatars/2.jpg'
-import avatar3 from 'src/assets/images/avatars/3.jpg'
-import avatar4 from 'src/assets/images/avatars/4.jpg'
-import avatar5 from 'src/assets/images/avatars/5.jpg'
-import avatar6 from 'src/assets/images/avatars/6.jpg'
-
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
-import MainChart from './MainChart'
-import Danger from '../danger/danger'
-import { manageUsers } from '../../apis/customers'
-import { useEffect } from 'react'
-import EmotionContainer from '../emotion/EmotionContainer'
-import WarningTest from '../half-panel/half-pie'
 import HalfPanel from '../half-panel/half-panel'
-import FullPanel from '../full-panel/full-panel'
-
-const getScoreArray = (userTable) => {
-  const scores = []
-  for (let i = 0; i < userTable.length; i++) {
-    const user = userTable[i]
-    if (user.score !== null && user.score.score !== null) {
-      scores.push(user.score.score)
-    } else {
-      scores.push(null)
-    }
-  }
-  // return [96, 92, 85, 82, 73, 25, null, 99, 2]
-  return scores
-}
+import CardDropdown from '../base/cards/CardDropdown'
+import { manageUsers } from '../../apis/customers'
+import RiskIndexSection from './RiskIndexSection';
+import ParticipantStatusSection from './ParticipantStatusSection';
 
 const Dashboard = () => {
-  const [userTable, setUserTable] = React.useState([])
-  const [userScores, setUserScores] = React.useState([])
+  const [userTable, setUserTable] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // userScores를 useMemo로 계산
+  const userScores = useMemo(() => {
+    return userTable.map(user => user.score?.score ?? null)
+  }, [userTable])
+
+  // 평균 점수 계산
+  const averageScore = useMemo(() => {
+    const validScores = userScores.filter(score => score !== null)
+    if (validScores.length === 0) return 0
+    
+    const sum = validScores.reduce((acc, score) => acc + score, 0)
+    return sum / validScores.length
+  }, [userScores])
+
   useEffect(() => {
-    manageUsers()
-      .then((data) => {
-        const userData = data.sort((a, b) => {
-          if (a.score === null && b.score === null) {
-            return 0 // 둘 다 score가 null인 경우 원래 순서 유지
-          }
-          if (a.score === null) {
-            return 1 // a의 score가 null이면 b보다 뒤로
-          }
-          if (b.score === null) {
-            return -1 // b의 score가 null이면 a보다 뒤로
-          }
-          return b.score.score - a.score.score // score 값이 있는 경우 큰 값이 먼저 오도록 정렬
+    const fetchUsers = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const data = await manageUsers()
+        
+        // 정렬 로직 단순화
+        const sortedData = data.sort((a, b) => {
+          const scoreA = a.score?.score ?? -Infinity
+          const scoreB = b.score?.score ?? -Infinity
+          return scoreB - scoreA
         })
-        setUserTable(userData)
-        setUserScores(getScoreArray(userData))
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+        console.log('Sorted user data:', sortedData)
+        
+        setUserTable(sortedData)
+      } catch (err) {
+        console.error('사용자 데이터 로드 실패:', err)
+        setError('데이터를 불러오는 중 문제가 발생했습니다.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUsers()
   }, [])
+
+  if (loading) {
+    return (
+      <div className="text-center p-5">
+        <CSpinner color="primary" />
+        <p className="mt-2">데이터를 불러오는 중...</p>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <CAlert color="danger" dismissible onClose={() => setError(null)}>
+        {error}
+      </CAlert>
+    )
+  }
 
   return (
     <>
-      <Title title="위험 지수" subtitle="전체 내담자의 위험 상황을 한 눈에 확인할 수 있습니다." />
-      <CRow className="mb-4 align-items-center">
-        <CCol lg={6}>
-          <HalfPanel
-            subText="전체 내담자 위험점수"
-            mainText="점"
-            score={userScores
-              .filter((score) => score !== null)
-              .reduce((a, b, _, arr) => a + b / arr.length, 0)}
-            showPie={true}
-          />
-        </CCol>
-        <CCol lg={6}>
-          <CardDropdown scores={userScores} />
-        </CCol>
-      </CRow>
+      <RiskIndexSection averageScore={averageScore} userScores={userScores} />
 
       <br />
-      <Title
-        title="내담자 상태 파악하기"
-        subtitle="위험한 내담자의 상황을 한 눈에 볼 수 있습니다."
-      />
-      <Danger userTable={userTable} />
+      
+      <ParticipantStatusSection userTable={userTable} />
     </>
   )
 }

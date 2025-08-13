@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { CContainer, CSpinner } from '@coreui/react'
-import Authorization from '../components/authorization'
+import Authorization from '../components/Authorization'
 
 // routes config
 import routes from '../routes'
