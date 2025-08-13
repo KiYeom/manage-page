@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, NavLink } from 'react-router-dom'
 import {
   CButton,
@@ -14,12 +14,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilMenu } from '@coreui/icons'
 import palette from '../../assets/styles/theme'
-import {
-  analyticsDates,
-  periodEmotionReport,
-  periodKeywordReport,
-  periodTotalEmotion,
-} from '../../apis/customers'
+import { analyticsDates, periodKeywordReport } from '../../apis/customers'
 import { DayPicker } from 'react-day-picker'
 import Title from '../base/title/Title'
 import {
@@ -30,50 +25,49 @@ import {
 } from '../../utils/time'
 import ListCard from '../../components/listcard/ListCard'
 import { getDateBefore } from '../../utils/dateHelpers'
-import { transformPeriodChartData } from '../../utils/dataTransformers'
 import EmotionChart from './components/EmotionChart'
+import { usePeriodReportData, useInitialData } from '../../hooks/usePeriodReportData'
 
 const PeriodReport = () => {
   const [clickedBtn, setClickedBtn] = useState(0)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false) // 모바일 메뉴 상태 추가
   const { id } = useParams()
-  const [name, setName] = useState('')
-  const [allowedDates, setAllowedDates] = useState([])
+  const { name, allowedDates, loading: initialLoading } = useInitialData(id)
+
   const [selected, setSelected] = useState()
   const [timeRange, setTimeRange] = useState([])
-  const [periodEmotion, setPeriodEmotion] = useState([]) // 기간 감정분석
-  const [periodKeyword, setPeriodKeyword] = useState([]) // 기간 키워드 분석
-  const [keywordLoading, setKeywordLoading] = useState(false) //로딩 상태
-  const [periodTopEmotions, setPeriodTopEmotions] = useState([]) // 기간 상위 감정 분석
-  const [topEmotionsLoading, setTopEmotionsLoading] = useState(false) // 상위 감정 로딩 상태
-
-  const requestPeriodKeywords = (startDate, endDate, times = 1) => {
-    if (times > 3) {
-      console.log('키워드 데이터 요청 횟수 초과')
-      setKeywordLoading(false)
-      return
-    }
-    setKeywordLoading(true)
-    periodKeywordReport(id, startDate, endDate)
-      .then((data) => {
-        if (data.keywords && Array.isArray(data.keywords)) {
-          console.log('기간 키워드 데이터', data)
-          setPeriodKeyword(data.keywords)
-        } else {
-          console.log('기간 키워드 형식 오류', data)
-          setPeriodKeyword([])
-          setKeywordLoading(false)
-          requestPeriodKeywords(startDate, endDate, times + 1)
-        }
-      })
-      .catch((error) => {
-        console.log('기간 키워드 에러', error)
-      })
-      .finally(() => {
+  const { periodEmotion, periodKeyword, periodTopEmotions, keywordLoading, topEmotionsLoading } =
+    usePeriodReportData(id, timeRange)
+  const requestPeriodKeywords = useCallback(
+    (startDate, endDate, times = 1) => {
+      if (times > 3) {
+        console.log('키워드 데이터 요청 횟수 초과')
         setKeywordLoading(false)
-      })
-  }
+        return
+      }
+      setKeywordLoading(true)
+      periodKeywordReport(id, startDate, endDate)
+        .then((data) => {
+          if (data.keywords && Array.isArray(data.keywords)) {
+            console.log('기간 키워드 데이터', data)
+            setPeriodKeyword(data.keywords)
+          } else {
+            console.log('기간 키워드 형식 오류', data)
+            setPeriodKeyword([])
+            setKeywordLoading(false)
+            requestPeriodKeywords(startDate, endDate, times + 1)
+          }
+        })
+        .catch((error) => {
+          console.log('기간 키워드 에러', error)
+        })
+        .finally(() => {
+          setKeywordLoading(false)
+        })
+    },
+    [id],
+  )
 
   useEffect(() => {
     const year = new Date().getFullYear()
@@ -92,7 +86,7 @@ const PeriodReport = () => {
       })
   }, [])
 
-  const handleDateSelection = () => {
+  const handleDateSelection = useCallback(() => {
     if (selected && selected.from && selected.to) {
       setTimeRange([
         getDateInfo(selected.from, KOREA_TIME_OFFSET_MINUTES).dateString,
@@ -100,37 +94,14 @@ const PeriodReport = () => {
       ])
     }
     setDropdownOpen(false)
-  }
+  }, [selected])
 
-  useEffect(() => {
-    if (timeRange.length === 0) return
-    console.log('startDate: ', timeRange[0])
-    console.log('endDate: ', timeRange[1])
-
-    periodEmotionReport(id, timeRange[0], timeRange[1])
-      .then((data) => {
-        console.log('기간 분석 데이터', data)
-        setPeriodEmotion(transformPeriodChartData(data.charts))
-      })
-      .catch((error) => {
-        console.log('기간 분석 에러', error)
-      })
-
-    requestPeriodKeywords(timeRange[0], timeRange[1])
-
-    setTopEmotionsLoading(true)
-    periodTotalEmotion(id, timeRange[0], timeRange[1])
-      .then((data) => {
-        console.log('기간 탑 감정 데이터', data)
-        setPeriodTopEmotions(data.emotions)
-      })
-      .catch((error) => {
-        console.log('기간 탑 감정 데이터 에러', error)
-      })
-      .finally(() => {
-        setTopEmotionsLoading(false)
-      })
-  }, [timeRange])
+  const isDateDisabled = useCallback(
+    (date) => {
+      return !allowedDates.includes(getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString)
+    },
+    [allowedDates],
+  )
 
   return (
     <>
@@ -175,11 +146,7 @@ const PeriodReport = () => {
                 timeZone="Asia/Seoul"
                 selected={selected}
                 onSelect={setSelected}
-                disabled={(date) => {
-                  return !allowedDates.includes(
-                    getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString,
-                  )
-                }}
+                disabled={isDateDisabled}
               />
               <div className="d-grid gap-2">
                 <CButton color="primary" onClick={handleDateSelection}>
@@ -256,11 +223,7 @@ const PeriodReport = () => {
                 timeZone="Asia/Seoul"
                 selected={selected}
                 onSelect={setSelected}
-                disabled={(date) => {
-                  return !allowedDates.includes(
-                    getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString,
-                  )
-                }}
+                disabled={isDateDisabled}
               />
               <div className="d-grid gap-2">
                 <CButton color="primary" onClick={handleDateSelection}>
@@ -322,14 +285,6 @@ const PeriodReport = () => {
                     padding: '14px 20px',
                     transition: 'all 0.2s ease',
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#e8f4f8'
-                    e.currentTarget.style.transform = 'translateX(4px)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#f8f9fa' : 'white'
-                    e.currentTarget.style.transform = 'translateX(0)'
-                  }}
                 >
                   <span
                     style={{
@@ -372,16 +327,6 @@ const PeriodReport = () => {
                       padding: '14px 20px',
                       transition: 'all 0.2s ease',
                       cursor: 'default',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#e8f4f8'
-                      e.currentTarget.style.transform = 'translateX(4px)'
-                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#f8f9fa' : 'white'
-                      e.currentTarget.style.transform = 'translateX(0)'
-                      e.currentTarget.style.boxShadow = 'none'
                     }}
                   >
                     <span
