@@ -6,6 +6,8 @@ import {
   periodTotalEmotion,
 } from '../apis/customers'
 import { transformPeriodChartData } from '../utils/dataTransformers'
+import { getServiceTodayDate, getServiceYesterdayDate } from '../utils/time'
+import { getDateBefore } from '../utils/dateHelpers'
 
 export const usePeriodReportData = (id, timeRange) => {
   const [periodEmotion, setPeriodEmotion] = useState([])
@@ -109,4 +111,8 @@ export const useInitialData = (id) => {
   }, [id])
 
   return { name, allowedDates, loading }
+}
+
+export const useDefaultTimeRange = () => {
+  return [getDateBefore(getServiceYesterdayDate().toString(), 7), getServiceTodayDate().toString()]
 }

@@ -19,6 +19,7 @@ import {
   CRow,
   CCol,
   CProgress,
+  CCollapse,
 } from '@coreui/react'
 import { NavLink } from 'react-router-dom'
 import { ResponsiveContainer } from 'recharts'
@@ -35,9 +36,9 @@ import {
 } from '../../utils/time'
 import { DayPicker } from 'react-day-picker'
 import styled from '@emotion/styled'
-import CIcon from '@coreui/icons-react'
-import { cilSync } from '@coreui/icons'
 import ListCard from '../../components/listcard/ListCard'
+import CIcon from '@coreui/icons-react'
+import { cilSync, cilMenu } from '@coreui/icons'
 
 const config = (pieData) => {
   return {
@@ -160,6 +161,8 @@ const DailyReport = () => {
   const [refreshText, setRefreshText] = useState('업데이트하기')
   const [barValue, setBarValue] = useState(0)
   const barRef = useRef(null)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const fetchDailyReport = () => {
     if (!nowDate) return
@@ -271,6 +274,8 @@ const DailyReport = () => {
     fetchDailyReport() // 일일 리포트 데이터 갱신 함수 호출
   }, [nowDate])
 
+  const isToday = nowDate === getServiceTodayDate().toString()
+
   return (
     <>
       <CModal
@@ -308,71 +313,176 @@ const DailyReport = () => {
           </CButton>
         </CModalFooter>
       </CModal>
+      {/* 상단 헤더: 데스크탑 버튼 + 모바일 햄버거 */}
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
           padding: '10px 0px',
+          alignItems: 'center',
           flexWrap: 'wrap',
+          gap: '1rem',
         }}
       >
         <Title title={`${name} (#${id})`} subtitle={`${nowDate}의 리포트입니다.`} />
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5em',
-            flexDirection: window.innerWidth <= 768 ? 'column' : 'row',
-            width: window.innerWidth <= 768 ? '100%' : 'auto',
-            marginTop: window.innerWidth <= 768 ? '10px' : '0',
-          }}
-        >
-          <CDropdown variant="btn-group">
-            <CDropdownToggle color="primary">날짜 선택</CDropdownToggle>
+        {/* 데스크탑 버튼 그룹 */}
+        <div className="d-none d-md-flex align-items-center" style={{ gap: '0.75rem' }}>
+          <CDropdown variant="btn-group" autoClose={false} visible={dropdownOpen}>
+            <CDropdownToggle
+              color="primary"
+              onClick={() => setDropdownOpen((v) => !v)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              날짜 선택
+            </CDropdownToggle>
             <CDropdownMenu style={{ padding: '10px' }}>
               <DayPicker
                 captionLayout="dropdown"
                 mode="single"
                 timeZone="Asia/Seoul"
                 selected={selected}
-                onSelect={setSelected}
-                onMonthChange={(month) => {
-                  console.log('Selected month:', month)
+                onSelect={(val) => {
+                  setSelected(val)
+                  // 단일 선택은 즉시 닫아도 UX 나쁠 수 있어 유지. 필요 시 아래 주석 해제
+                  // setDropdownOpen(false)
                 }}
-                disabled={(date) => {
-                  return !allowedDates.includes(
-                    getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString,
-                  )
-                }}
+                disabled={(date) =>
+                  !allowedDates.includes(getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString)
+                }
               />
             </CDropdownMenu>
           </CDropdown>
+
           <CButton
-            className="align-self-center"
             color="primary"
             to={`/customers/period-report/${id}`}
             as={NavLink}
-            onClick={() => {
-              console.log('버튼 클릭')
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              whiteSpace: 'nowrap',
             }}
           >
             기간 리포트 확인
           </CButton>
-          {nowDate === getServiceTodayDate().toString() && (
+
+          {isToday && (
             <CButton
-              className="align-self-center"
               color="primary"
-              as={NavLink}
-              onClick={() => {
-                setModalVisible(true)
+              onClick={() => setModalVisible(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                whiteSpace: 'nowrap',
+                gap: '0.375rem',
               }}
             >
-              <CIcon icon={cilSync} /> 실시간 업데이트하기
+              <CIcon icon={cilSync} />
+              실시간 업데이트하기
             </CButton>
           )}
         </div>
+
+        {/* 모바일 메뉴 토글 버튼 */}
+        <CButton
+          className="d-md-none"
+          color="primary"
+          variant="outline"
+          onClick={() => setMobileMenuOpen((v) => !v)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0.375rem 0.75rem',
+          }}
+        >
+          <CIcon icon={cilMenu} size="lg" />
+        </CButton>
       </div>
+
+      {/* 모바일 접이식 메뉴 */}
+      <CCollapse visible={mobileMenuOpen} className="d-md-none mb-3">
+        <div
+          style={{
+            backgroundColor: '#f8f9fa',
+            padding: '1rem',
+            borderRadius: '0.375rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.75rem',
+          }}
+        >
+          <CDropdown variant="btn-group" autoClose={false} visible={dropdownOpen}>
+            <CDropdownToggle
+              color="primary"
+              onClick={() => setDropdownOpen((v) => !v)}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              날짜 선택
+            </CDropdownToggle>
+            <CDropdownMenu style={{ padding: '10px', width: '100%' }}>
+              <DayPicker
+                captionLayout="dropdown"
+                mode="single"
+                timeZone="Asia/Seoul"
+                selected={selected}
+                onSelect={(val) => setSelected(val)}
+                disabled={(date) =>
+                  !allowedDates.includes(getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString)
+                }
+              />
+            </CDropdownMenu>
+          </CDropdown>
+
+          <CButton
+            color="primary"
+            to={`/customers/period-report/${id}`}
+            as={NavLink}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            기간 리포트 확인
+          </CButton>
+
+          {isToday && (
+            <CButton
+              color="primary"
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.375rem',
+              }}
+              onClick={() => {
+                setMobileMenuOpen(false)
+                setModalVisible(true)
+              }}
+            >
+              <CIcon icon={cilSync} />
+              실시간 업데이트하기
+            </CButton>
+          )}
+        </div>
+      </CCollapse>
 
       <CRow className="mb-4 align-items-center">
         <CCol lg={6}>
@@ -387,7 +497,7 @@ const DailyReport = () => {
         <CCol lg={6}>
           <div style={{ flex: '1' }}>
             <div>
-              <ListCard title="대화 주제" subtitle="내담자가 많이 언급한 주제입니다!">
+              <ListCard title="대화 주제" subtitle="내담자가 많이 언급한 주제입니다">
                 {dailyKeyword.length === 0 ? (
                   <>
                     <CListGroupItem
@@ -473,7 +583,7 @@ const DailyReport = () => {
           <div style={{ flex: '1', margin: '0px 0px 20px 0px' }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <ListCard
-                title="내담자가 기록한 감정!"
+                title="내담자가 기록한 감정"
                 subtitle="내담자가 직접 선택한 감정 단어입니다."
               >
                 {dailyRecordedEmotion.length === 0 ? (

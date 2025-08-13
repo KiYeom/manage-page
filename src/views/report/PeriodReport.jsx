@@ -14,19 +14,16 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilMenu } from '@coreui/icons'
 import palette from '../../assets/styles/theme'
-import { analyticsDates, periodKeywordReport } from '../../apis/customers'
 import { DayPicker } from 'react-day-picker'
 import Title from '../base/title/Title'
-import {
-  getDateInfo,
-  getServiceTodayDate,
-  getServiceYesterdayDate as getServiceYesterdayDate,
-  KOREA_TIME_OFFSET_MINUTES,
-} from '../../utils/time'
+import { getDateInfo, KOREA_TIME_OFFSET_MINUTES } from '../../utils/time'
 import ListCard from '../../components/listcard/ListCard'
-import { getDateBefore } from '../../utils/dateHelpers'
 import EmotionChart from './components/EmotionChart'
-import { usePeriodReportData, useInitialData } from '../../hooks/usePeriodReportData'
+import {
+  usePeriodReportData,
+  useInitialData,
+  useDefaultTimeRange,
+} from '../../hooks/usePeriodReportData'
 
 const PeriodReport = () => {
   const [clickedBtn, setClickedBtn] = useState(0)
@@ -36,55 +33,11 @@ const PeriodReport = () => {
   const { name, allowedDates, loading: initialLoading } = useInitialData(id)
 
   const [selected, setSelected] = useState()
-  const [timeRange, setTimeRange] = useState([])
+  const defaultTimeRange = useDefaultTimeRange()
+  const [timeRange, setTimeRange] = useState(defaultTimeRange)
+
   const { periodEmotion, periodKeyword, periodTopEmotions, keywordLoading, topEmotionsLoading } =
     usePeriodReportData(id, timeRange)
-  const requestPeriodKeywords = useCallback(
-    (startDate, endDate, times = 1) => {
-      if (times > 3) {
-        console.log('키워드 데이터 요청 횟수 초과')
-        setKeywordLoading(false)
-        return
-      }
-      setKeywordLoading(true)
-      periodKeywordReport(id, startDate, endDate)
-        .then((data) => {
-          if (data.keywords && Array.isArray(data.keywords)) {
-            console.log('기간 키워드 데이터', data)
-            setPeriodKeyword(data.keywords)
-          } else {
-            console.log('기간 키워드 형식 오류', data)
-            setPeriodKeyword([])
-            setKeywordLoading(false)
-            requestPeriodKeywords(startDate, endDate, times + 1)
-          }
-        })
-        .catch((error) => {
-          console.log('기간 키워드 에러', error)
-        })
-        .finally(() => {
-          setKeywordLoading(false)
-        })
-    },
-    [id],
-  )
-
-  useEffect(() => {
-    const year = new Date().getFullYear()
-    setTimeRange([
-      getDateBefore(getServiceYesterdayDate().toString(), 7),
-      getServiceTodayDate().toString(),
-    ])
-
-    analyticsDates(id, `${year}`)
-      .then((data) => {
-        setName(data.nickname)
-        setAllowedDates(data.dates)
-      })
-      .catch((error) => {
-        console.log('날짜 에러', error)
-      })
-  }, [])
 
   const handleDateSelection = useCallback(() => {
     if (selected && selected.from && selected.to) {
