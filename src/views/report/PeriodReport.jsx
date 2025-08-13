@@ -105,12 +105,13 @@ const PeriodReport = () => {
   }
 
   useEffect(() => {
+    const year = new Date().getFullYear()
     setTimeRange([
       getDateBefore(getServiceYesterdayDate().toString(), 7),
       getServiceTodayDate().toString(),
     ])
 
-    analyticsDates(id, '2024')
+    analyticsDates(id, `${year}`)
       .then((data) => {
         setName(data.nickname)
         setAllowedDates(data.dates)
@@ -157,45 +158,6 @@ const PeriodReport = () => {
         setTopEmotionsLoading(false)
       })
   }, [timeRange])
-
-  const renderAreas = () => {
-    if (clickedBtn === 0) {
-      // 'all'을 클릭했을 때 모든 감정 데이터를 보여줌
-      return emotionList
-        .slice(1)
-        .map((emotion, index) => (
-          <Area
-            key={emotion}
-            type="monotone"
-            dataKey={emotion}
-            stroke={palette.graph[(index + 1) * 100]}
-            fillOpacity={0.3}
-            fill={palette.graph[(index + 1) * 100]}
-          />
-        ))
-    } else {
-      // 특정 감정을 선택했을 때 해당 감정만 보여줌
-      return (
-        <Area
-          type="monotone"
-          dataKey={emotionList[clickedBtn]}
-          stroke={palette.graph[clickedBtn * 100]}
-          fill={palette.graph[clickedBtn * 100]}
-          fillOpacity={0.3}
-        />
-      )
-    }
-  }
-
-  // if (loading) {
-  //   return (
-  //     <div
-  //       style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
-  //     >
-  //       <CSpinner color="primary" style={{ width: '4rem', height: '4rem' }} />
-  //     </div>
-  //   )
-  // }
 
   return (
     <>
@@ -284,7 +246,7 @@ const PeriodReport = () => {
           <ListCard
             title="기간 키워드"
             subtitle={`${timeRange[0]}~${timeRange[1]}`}
-            listProps={{ layout: 'horizontal' }} // 가로형 필요 시
+            listProps={{ layout: 'vertical' }} // vertical로 변경
           >
             {keywordLoading ? (
               <CListGroupItem className="d-flex justify-content-center">
@@ -295,26 +257,38 @@ const PeriodReport = () => {
                 그동안의 키워드 정보가 없습니다.
               </CListGroupItem>
             ) : (
-              // 2개씩 한 줄에 보여주기
-              periodKeyword.reduce((acc, item, index, arr) => {
-                if (index % 2 === 0) {
-                  const keyword1 = item
-                  const keyword2 = arr[index + 1] ?? '-'
-                  acc.push(
-                    <React.Fragment key={index}>
-                      <CListGroupItem className="d-flex justify-content-between flex-fill">
-                        {keyword1}
-                        <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
-                      </CListGroupItem>
-                      <CListGroupItem className="d-flex justify-content-between flex-fill">
-                        {keyword2}
-                        <CBadge color="primary">{getRankingText(index + 2)}</CBadge>
-                      </CListGroupItem>
-                    </React.Fragment>,
-                  )
-                }
-                return acc
-              }, [])
+              periodKeyword.map((keyword, index) => (
+                <CListGroupItem
+                  key={index}
+                  className="d-flex justify-content-between align-items-center"
+                  style={{
+                    borderLeft: `4px solid ${palette.primary || '#5856D6'}`,
+                    backgroundColor: index % 2 === 0 ? '#f8f9fa' : 'white',
+                    marginBottom: '4px',
+                    padding: '14px 20px',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#e8f4f8'
+                    e.currentTarget.style.transform = 'translateX(4px)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#f8f9fa' : 'white'
+                    e.currentTarget.style.transform = 'translateX(0)'
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: '500',
+                      color: '#2c3e50',
+                      letterSpacing: '0.5px',
+                    }}
+                  >
+                    {keyword}
+                  </span>
+                </CListGroupItem>
+              ))
             )}
           </ListCard>
         </CCol>
@@ -322,7 +296,7 @@ const PeriodReport = () => {
           <ListCard
             title="기간 감정 순위"
             subtitle={`${timeRange[0]}~${timeRange[1]}`}
-            listProps={{ layout: 'horizontal' }}
+            listProps={{ layout: 'vertical' }} // vertical로 변경
           >
             {topEmotionsLoading ? (
               <CListGroupItem className="d-flex justify-content-center">
@@ -333,25 +307,58 @@ const PeriodReport = () => {
                 그동안의 감정 정보가 없습니다.
               </CListGroupItem>
             ) : (
-              periodTopEmotions.slice(0, 10).reduce((acc, item, index, arr) => {
-                if (index % 2 === 0) {
-                  const emo1 = item
-                  const emo2 = arr[index + 1] ?? '-'
-                  acc.push(
-                    <React.Fragment key={index}>
-                      <CListGroupItem className="d-flex justify-content-between flex-fill">
-                        {emo1}
-                        <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
-                      </CListGroupItem>
-                      <CListGroupItem className="d-flex justify-content-between flex-fill">
-                        {emo2}
-                        <CBadge color="primary">{getRankingText(index + 2)}</CBadge>
-                      </CListGroupItem>
-                    </React.Fragment>,
-                  )
+              periodTopEmotions.slice(0, 10).map((emotion, index) => {
+                // 감정에 따른 색상 매핑
+                const getEmotionColor = (emotion) => {
+                  const emotionColors = {
+                    분노: '#e74c3c',
+                    슬픔: '#3498db',
+                    불안: '#9b59b6',
+                    상처: '#e67e22',
+                    당황: '#f39c12',
+                    기쁨: '#2ecc71',
+                    충격: '#34495e',
+                    흥미: '#16a085',
+                  }
+                  return emotionColors[emotion] || palette.primary || '#5856D6'
                 }
-                return acc
-              }, [])
+
+                return (
+                  <CListGroupItem
+                    key={index}
+                    className="d-flex justify-content-between align-items-center"
+                    style={{
+                      borderLeft: `4px solid ${getEmotionColor(emotion)}`,
+                      backgroundColor: index % 2 === 0 ? '#f8f9fa' : 'white',
+                      marginBottom: '4px',
+                      padding: '14px 20px',
+                      transition: 'all 0.2s ease',
+                      cursor: 'default',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#e8f4f8'
+                      e.currentTarget.style.transform = 'translateX(4px)'
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = index % 2 === 0 ? '#f8f9fa' : 'white'
+                      e.currentTarget.style.transform = 'translateX(0)'
+                      e.currentTarget.style.boxShadow = 'none'
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: '#2c3e50',
+                        letterSpacing: '0.3px',
+                      }}
+                    >
+                      {emotion}
+                    </span>
+                  </CListGroupItem>
+                )
+              })
             )}
           </ListCard>
         </CCol>

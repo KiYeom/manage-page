@@ -1,4 +1,3 @@
-// components/EmotionChart.jsx - Card를 사용하도록 수정
 import React from 'react'
 import { CButton, CButtonGroup, CCol, CRow } from '@coreui/react'
 import {
@@ -12,6 +11,7 @@ import {
 } from 'recharts'
 import Card from '../../../components/card/Card'
 import palette from '../../../assets/styles/theme'
+import Title from '../../base/title/Title'
 
 const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
 const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨']
@@ -52,12 +52,7 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
   const headerContent = (
     <CRow>
       <CCol sm={5}>
-        <h4 id="traffic" className="card-title mb-0">
-          감정 변화 추이
-        </h4>
-        <div className="small text-body-secondary">
-          {timeRange[0]}~{timeRange[1]}
-        </div>
+        <Title title="감정 변화 추이" subtitle={`${timeRange[0]}~${timeRange[1]}`} />
       </CCol>
       <CCol sm={7} className="d-none d-md-block">
         <CButtonGroup role="group" className="float-end me-3">
