@@ -519,7 +519,6 @@ const DailyReport = () => {
                         className="d-flex justify-content-between align-items-center"
                       >
                         {item}
-                        <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
                       </CListGroupItem>,
                     )
                     return acc
@@ -538,8 +537,8 @@ const DailyReport = () => {
                 style={{
                   flex: 1,
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  //justifyContent: 'center',
+                  //alignItems: 'center',
                   //fontSize: '1.3rem',
                 }}
               >
@@ -551,7 +550,8 @@ const DailyReport = () => {
                       justifyContent: 'center', // 수직 정렬
                       alignItems: 'center', // 가로 정렬
                       textAlign: 'center', // 텍스트 중앙 정렬
-                      height: '100%', // 필요한 경우 부모 높이에 맞게 설정
+                      width: '100%',
+                      minHeight: 280,
                     }}
                   >
                     <p>대화 양이 부족하여 감정 분석이 제공되지 않습니다.</p>
@@ -605,7 +605,6 @@ const DailyReport = () => {
                         className="d-flex justify-content-between align-items-center"
                       >
                         {item}
-                        <CBadge color="primary">{getRankingText(index + 1)}</CBadge>
                       </CListGroupItem>,
                     )
                     return acc
@@ -616,10 +615,7 @@ const DailyReport = () => {
           </div>
           <div style={{ flex: '1', margin: '0px 0px 20px 0px' }}>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <ListCard
-                title="오늘의 한 줄 기록"
-                subtitle="내담자가 작성한 오늘의 한 줄 기록입니다."
-              >
+              <ListCard title="오늘의 일기" subtitle="내담자가 작성한 일기입니다.">
                 <CListGroupItem
                   style={{
                     flex: 1,
