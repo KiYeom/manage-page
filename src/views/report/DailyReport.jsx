@@ -143,7 +143,6 @@ const handleEmotionsData = (data) => {
 }
 
 // 일일 리포트를 처음 들어올 때는 들어온 날의 날짜를 보여줘야 함
-// 지금은 예시로 698번의 2024-10-08일의 리포트를 보여주는 것으로 설정
 const DailyReport = () => {
   const { id } = useParams()
   const [name, setName] = useState('')

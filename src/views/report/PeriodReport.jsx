@@ -2,19 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useParams, NavLink } from 'react-router-dom'
 import {
   CButton,
-  CButtonGroup,
-  CCard,
-  CCardBody,
-  CCardFooter,
   CCol,
   CRow,
-  CListGroup,
   CListGroupItem,
   CSpinner,
   CDropdown,
   CDropdownToggle,
   CDropdownMenu,
-  CBadge,
   CCollapse,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -35,28 +29,12 @@ import {
   KOREA_TIME_OFFSET_MINUTES,
 } from '../../utils/time'
 import ListCard from '../../components/listcard/ListCard'
-import { EMOTION_TYPES, EMOTION_LABELS } from '../../utils/emotion'
 import { getDateBefore } from '../../utils/dateHelpers'
 import { transformPeriodChartData } from '../../utils/dataTransformers'
 import EmotionChart from './components/EmotionChart'
 
-const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
-const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨']
-
-const getValueKorean = (value) => {
-  return emotionListKorean[emotionList.indexOf(value)]
-}
-
-const getRankingText = (rank) => {
-  if (rank === 1) return '1st'
-  if (rank === 2) return '2nd'
-  if (rank === 3) return '3rd'
-  return `${rank}th`
-}
-
 const PeriodReport = () => {
   const [clickedBtn, setClickedBtn] = useState(0)
-  const [dateClicked, setDateClicked] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false) // 모바일 메뉴 상태 추가
   const { id } = useParams()
@@ -114,13 +92,15 @@ const PeriodReport = () => {
       })
   }, [])
 
-  useEffect(() => {
-    if (selected === undefined || !selected.from || !selected.to) return
-    setTimeRange([
-      getDateInfo(selected.from, KOREA_TIME_OFFSET_MINUTES).dateString,
-      getDateInfo(selected.to, KOREA_TIME_OFFSET_MINUTES).dateString,
-    ])
-  }, [dateClicked])
+  const handleDateSelection = () => {
+    if (selected && selected.from && selected.to) {
+      setTimeRange([
+        getDateInfo(selected.from, KOREA_TIME_OFFSET_MINUTES).dateString,
+        getDateInfo(selected.to, KOREA_TIME_OFFSET_MINUTES).dateString,
+      ])
+    }
+    setDropdownOpen(false)
+  }
 
   useEffect(() => {
     if (timeRange.length === 0) return
@@ -202,13 +182,7 @@ const PeriodReport = () => {
                 }}
               />
               <div className="d-grid gap-2">
-                <CButton
-                  color="primary"
-                  onClick={() => {
-                    setDateClicked(!dateClicked)
-                    setDropdownOpen(false)
-                  }}
-                >
+                <CButton color="primary" onClick={handleDateSelection}>
                   날짜 선택 완료
                 </CButton>
               </div>
@@ -289,13 +263,7 @@ const PeriodReport = () => {
                 }}
               />
               <div className="d-grid gap-2">
-                <CButton
-                  color="primary"
-                  onClick={() => {
-                    setDateClicked(!dateClicked)
-                    setDropdownOpen(false)
-                  }}
-                >
+                <CButton color="primary" onClick={handleDateSelection}>
                   날짜 선택 완료
                 </CButton>
               </div>
@@ -394,27 +362,11 @@ const PeriodReport = () => {
               </CListGroupItem>
             ) : (
               periodTopEmotions.slice(0, 10).map((emotion, index) => {
-                // 감정에 따른 색상 매핑
-                const getEmotionColor = (emotion) => {
-                  const emotionColors = {
-                    분노: '#e74c3c',
-                    슬픔: '#3498db',
-                    불안: '#9b59b6',
-                    상처: '#e67e22',
-                    당황: '#f39c12',
-                    기쁨: '#2ecc71',
-                    충격: '#34495e',
-                    흥미: '#16a085',
-                  }
-                  return emotionColors[emotion] || palette.primary || '#5856D6'
-                }
-
                 return (
                   <CListGroupItem
                     key={index}
                     className="d-flex justify-content-between align-items-center"
                     style={{
-                      borderLeft: `4px solid ${getEmotionColor(emotion)}`,
                       backgroundColor: index % 2 === 0 ? '#f8f9fa' : 'white',
                       marginBottom: '4px',
                       padding: '14px 20px',
