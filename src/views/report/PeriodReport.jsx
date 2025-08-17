@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { useParams, NavLink } from 'react-router-dom'
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, NavLink } from 'react-router-dom';
 import {
   CButton,
   CCol,
@@ -10,51 +10,51 @@ import {
   CDropdownToggle,
   CDropdownMenu,
   CCollapse,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilMenu } from '@coreui/icons'
-import palette from '../../assets/styles/theme'
-import { DayPicker } from 'react-day-picker'
-import Title from '../base/title/Title'
-import { getDateInfo, KOREA_TIME_OFFSET_MINUTES } from '../../utils/time'
-import ListCard from '../../components/listcard/ListCard'
-import EmotionChart from './components/EmotionChart'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { cilMenu } from '@coreui/icons';
+import palette from '../../assets/styles/theme';
+import { DayPicker } from 'react-day-picker';
+import Title from '../base/title/Title';
+import { getDateInfo, KOREA_TIME_OFFSET_MINUTES } from '../../utils/time';
+import ListCard from '../../components/listcard/ListCard';
+import EmotionChart from './components/EmotionChart';
 import {
   usePeriodReportData,
   useInitialData,
   useDefaultTimeRange,
-} from '../../hooks/usePeriodReportData'
+} from '../../hooks/usePeriodReportData';
 
 const PeriodReport = () => {
-  const [clickedBtn, setClickedBtn] = useState(0)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false) // 모바일 메뉴 상태 추가
-  const { id } = useParams()
-  const { name, allowedDates, loading: initialLoading } = useInitialData(id)
+  const [clickedBtn, setClickedBtn] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // 모바일 메뉴 상태 추가
+  const { id } = useParams();
+  const { name, allowedDates, loading: initialLoading } = useInitialData(id);
 
-  const [selected, setSelected] = useState()
-  const defaultTimeRange = useDefaultTimeRange()
-  const [timeRange, setTimeRange] = useState(defaultTimeRange)
+  const [selected, setSelected] = useState();
+  const defaultTimeRange = useDefaultTimeRange();
+  const [timeRange, setTimeRange] = useState(defaultTimeRange);
 
   const { periodEmotion, periodKeyword, periodTopEmotions, keywordLoading, topEmotionsLoading } =
-    usePeriodReportData(id, timeRange)
+    usePeriodReportData(id, timeRange);
 
   const handleDateSelection = useCallback(() => {
     if (selected && selected.from && selected.to) {
       setTimeRange([
         getDateInfo(selected.from, KOREA_TIME_OFFSET_MINUTES).dateString,
         getDateInfo(selected.to, KOREA_TIME_OFFSET_MINUTES).dateString,
-      ])
+      ]);
     }
-    setDropdownOpen(false)
-  }, [selected])
+    setDropdownOpen(false);
+  }, [selected]);
 
   const isDateDisabled = useCallback(
     (date) => {
-      return !allowedDates.includes(getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString)
+      return !allowedDates.includes(getDateInfo(date, KOREA_TIME_OFFSET_MINUTES).dateString);
     },
-    [allowedDates],
-  )
+    [allowedDates]
+  );
 
   return (
     <>
@@ -80,7 +80,7 @@ const PeriodReport = () => {
             <CDropdownToggle
               color="primary"
               onClick={() => {
-                setDropdownOpen(!dropdownOpen)
+                setDropdownOpen(!dropdownOpen);
               }}
               disabled={keywordLoading || topEmotionsLoading}
               style={{
@@ -157,7 +157,7 @@ const PeriodReport = () => {
             <CDropdownToggle
               color="primary"
               onClick={() => {
-                setDropdownOpen(!dropdownOpen)
+                setDropdownOpen(!dropdownOpen);
               }}
               disabled={keywordLoading || topEmotionsLoading}
               style={{
@@ -293,14 +293,14 @@ const PeriodReport = () => {
                       {emotion}
                     </span>
                   </CListGroupItem>
-                )
+                );
               })
             )}
           </ListCard>
         </CCol>
       </CRow>
     </>
-  )
-}
+  );
+};
 
-export default PeriodReport
+export default PeriodReport;

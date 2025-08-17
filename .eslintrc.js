@@ -1,4 +1,4 @@
-module.exports = {
+/*module.exports = {
   parser: '@typescript-eslint/parser', // Specifies the ESLint parser
   parserOptions: {
     ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
@@ -30,3 +30,35 @@ module.exports = {
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },
 }
+*/
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+  },
+  parserOptions: {
+    ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
+    sourceType: 'module', // Allows for the use of imports
+    ecmaFeatures: {
+      jsx: true, // Allows for the parsing of JSX
+    },
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:react-hooks/recommended',
+    'plugin:prettier/recommended',
+  ],
+  plugins: ['react', 'react-hooks', 'prettier'],
+  rules: {
+    'prettier/prettier': 'error', // Prettier 포맷 위반을 ESLint 오류로 표시
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-uses-react': 'off',
+  },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
+};

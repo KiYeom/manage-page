@@ -1,5 +1,5 @@
-import React from 'react'
-import { CButton, CButtonGroup, CCol, CRow } from '@coreui/react'
+import React from 'react';
+import { CButton, CButtonGroup, CCol, CRow } from '@coreui/react';
 import {
   AreaChart,
   Area,
@@ -8,20 +8,20 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts'
-import Card from '../../../components/card/Card'
-import palette from '../../../assets/styles/theme'
-import Title from '../../base/title/Title'
+} from 'recharts';
+import Card from '../../../components/card/Card';
+import palette from '../../../assets/styles/theme';
+import Title from '../../base/title/Title';
 
-const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
-const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨']
+const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy'];
+const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨'];
 
 const getValueKorean = (value) => {
-  return emotionListKorean[emotionList.indexOf(value)]
-}
+  return emotionListKorean[emotionList.indexOf(value)];
+};
 
 const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSelect }) => {
-  console.log('EmotionChart data:', periodEmotion)
+  console.log('EmotionChart data:', periodEmotion);
   const renderAreas = () => {
     if (selectedEmotion === 0) {
       return emotionList
@@ -35,7 +35,7 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
             fillOpacity={0.3}
             fill={palette.graph[(index + 1) * 100]}
           />
-        ))
+        ));
     } else {
       return (
         <Area
@@ -45,9 +45,9 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
           fill={palette.graph[selectedEmotion * 100]}
           fillOpacity={0.3}
         />
-      )
+      );
     }
-  }
+  };
 
   const headerContent = (
     <CRow>
@@ -70,7 +70,7 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
         </CButtonGroup>
       </CCol>
     </CRow>
-  )
+  );
 
   const chartContent = (
     <CRow
@@ -102,7 +102,7 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
         </div>
       </div>
     </CRow>
-  )
+  );
 
   return (
     <Card
@@ -112,7 +112,7 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
     >
       {chartContent}
     </Card>
-  )
-}
+  );
+};
 
-export default EmotionChart
+export default EmotionChart;

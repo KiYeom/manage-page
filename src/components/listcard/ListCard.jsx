@@ -1,7 +1,7 @@
-import { CCard, CCardHeader, CListGroup } from '@coreui/react'
-import React from 'react'
-import Title from '../../views/base/title/Title'
-import Card from '../card/Card'
+import { CCard, CCardHeader, CListGroup } from '@coreui/react';
+import React from 'react';
+import Title from '../../views/base/title/Title';
+import Card from '../card/Card';
 
 const ListCard = ({ title, subtitle, children, listProps }) => {
   return (
@@ -10,6 +10,6 @@ const ListCard = ({ title, subtitle, children, listProps }) => {
         {children}
       </CListGroup>
     </Card>
-  )
-}
-export default ListCard
+  );
+};
+export default ListCard;
