@@ -2,7 +2,8 @@ import React from 'react';
 
 //const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
 const Dashboard = React.lazy(() => import('./page/DashBoard'));
-const Customers = React.lazy(() => import('./views/customers/Customers'));
+//const Customers = React.lazy(() => import('./views/customers/Customers'));
+const Customers = React.lazy(() => import('./page/Customer'));
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'));
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'));
 const DailyReport = React.lazy(() => import('./views/report/DailyReport'));
