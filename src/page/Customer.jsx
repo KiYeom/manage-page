@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback } from 'react';
-import Title from '../views/base/title/Title';
 import CustomersContainer from '../container/customer/CustomersContainer';
 import { manageUsers } from '../apis/customers';
 
