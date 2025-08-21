@@ -1,5 +1,4 @@
-// src/views/report/PeriodReport.js
-
+// 각 고객의 기간별 리포트 페이지
 import React, { useState, useCallback, useMemo } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { CButton, CCol, CRow, CListGroupItem, CSpinner } from '@coreui/react';

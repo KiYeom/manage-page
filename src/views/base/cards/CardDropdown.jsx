@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react'
-import PropTypes from 'prop-types'
-import Warning from '../../warning/Warning'
-import EmotionContainer from '../../emotion/EmotionContainer'
+import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import Warning from '../../warning/Warning';
+import EmotionContainer from '../../emotion/EmotionContainer';
 import {
   CRow,
   CCol,
@@ -10,43 +10,43 @@ import {
   CDropdownItem,
   CDropdownToggle,
   CWidgetStatsA,
-} from '@coreui/react'
-import Card from './Card'
-import { getStyle } from '@coreui/utils'
-import { CChartBar, CChartLine } from '@coreui/react-chartjs'
-import CIcon from '@coreui/icons-react'
-import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
-import FullPie from '../../full-panel/full-pie'
-import { ResponsiveContainer } from 'recharts'
-import FullPanel from '../../full-panel/full-panel'
+} from '@coreui/react';
+import Card from './Card';
+import { getStyle } from '@coreui/utils';
+import { CChartBar, CChartLine } from '@coreui/react-chartjs';
+import CIcon from '@coreui/icons-react';
+import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons';
+import FullPie from '../../full-panel/full-pie';
+import { ResponsiveContainer } from 'recharts';
+import FullPanel from '../../full-panel/full-panel';
 
 const CardDropdown = ({ scores }) => {
-  const widgetChartRef1 = useRef(null)
-  const widgetChartRef2 = useRef(null)
+  const widgetChartRef1 = useRef(null);
+  const widgetChartRef2 = useRef(null);
 
   useEffect(() => {
     document.documentElement.addEventListener('ColorSchemeChange', () => {
       if (widgetChartRef1.current) {
         setTimeout(() => {
-          widgetChartRef1.current.data.datasets[0].pointBackgroundColor = getStyle('--cui-primary')
-          widgetChartRef1.current.update()
-        })
+          widgetChartRef1.current.data.datasets[0].pointBackgroundColor = getStyle('--cui-primary');
+          widgetChartRef1.current.update();
+        });
       }
 
       if (widgetChartRef2.current) {
         setTimeout(() => {
-          widgetChartRef2.current.data.datasets[0].pointBackgroundColor = getStyle('--cui-info')
-          widgetChartRef2.current.update()
-        })
+          widgetChartRef2.current.data.datasets[0].pointBackgroundColor = getStyle('--cui-info');
+          widgetChartRef2.current.update();
+        });
       }
-    })
-  }, [widgetChartRef1, widgetChartRef2])
+    });
+  }, [widgetChartRef1, widgetChartRef2]);
 
-  const veryRiskClients = scores.filter((score) => score >= 85).length
-  const riskClients = scores.filter((score) => score >= 60 && score < 85).length
-  const safeClients = scores.filter((score) => score < 60).length
-  const noRecordClients = scores.filter((score) => score === null).length
-  const totalClients = scores.length
+  const veryRiskClients = scores.filter((score) => score >= 85).length;
+  const riskClients = scores.filter((score) => score >= 60 && score < 85).length;
+  const safeClients = scores.filter((score) => score < 60).length;
+  const noRecordClients = scores.filter((score) => score === null).length;
+  const totalClients = scores.length;
   const totalPieData = [
     {
       name: '매우 위험',
@@ -60,7 +60,7 @@ const CardDropdown = ({ scores }) => {
       name: '안전',
       value: safeClients,
     },
-  ]
+  ];
 
   return (
     <div style={{ padding: '10px' }}>
@@ -106,11 +106,11 @@ const CardDropdown = ({ scores }) => {
         </CCol>
       </CRow>
     </div>
-  )
-}
+  );
+};
 
 CardDropdown.propTypes = {
   scores: PropTypes.array,
-}
+};
 
-export default CardDropdown
+export default CardDropdown;

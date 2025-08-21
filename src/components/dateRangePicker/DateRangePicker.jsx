@@ -1,22 +1,47 @@
+// src/components/dateRangePicker/DateRangePicker.js
+
 import React, { useState, useCallback } from 'react';
 import { CDropdown, CDropdownToggle, CDropdownMenu, CButton } from '@coreui/react';
 import { DayPicker } from 'react-day-picker';
 import { getDateInfo, KOREA_TIME_OFFSET_MINUTES } from '../../utils/time';
 
-const DateRangePicker = ({ defaultTimeRange, onConfirm, isDateDisabled, isLoading }) => {
-  // 1. 자체적인 UI 상태 관리 (드롭다운 열림/닫힘, 현재 선택 중인 날짜)
+const DateRangePicker = ({
+  defaultTimeRange,
+  onConfirm,
+  isDateDisabled,
+  isLoading,
+  mode = 'range',
+}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selected, setSelected] = useState({
-    from: new Date(defaultTimeRange[0]),
-    to: new Date(defaultTimeRange[1]),
-  });
 
-  // 2. 날짜 선택이 '완료'되었을 때만 부모에게 알림
-  const handleDateSelectionConfirm = useCallback(() => {
+  const initialSelected =
+    mode === 'single'
+      ? new Date(defaultTimeRange[0])
+      : { from: new Date(defaultTimeRange[0]), to: new Date(defaultTimeRange[1]) };
+
+  const [selected, setSelected] = useState(initialSelected);
+
+  // 날짜 선택 시 호출되는 콜백
+  const handleDaySelect = useCallback(
+    (value) => {
+      setSelected(value);
+
+      // mode가 'single'일 경우, 날짜 선택과 동시에 부모에게 알림
+      if (mode === 'single' && value) {
+        const resultDate = [getDateInfo(value, KOREA_TIME_OFFSET_MINUTES).dateString];
+        onConfirm(resultDate);
+        setDropdownOpen(false);
+      }
+    },
+    [mode, onConfirm]
+  );
+
+  // '기간 선택 완료' 버튼 클릭 시
+  const handleConfirm = useCallback(() => {
     if (selected && selected.from && selected.to) {
       const fromDate = getDateInfo(selected.from, KOREA_TIME_OFFSET_MINUTES).dateString;
       const toDate = getDateInfo(selected.to, KOREA_TIME_OFFSET_MINUTES).dateString;
-      onConfirm([fromDate, toDate]); // 부모에게 최종 결과만 전달
+      onConfirm([fromDate, toDate]);
     }
     setDropdownOpen(false);
   }, [selected, onConfirm]);
@@ -33,17 +58,20 @@ const DateRangePicker = ({ defaultTimeRange, onConfirm, isDateDisabled, isLoadin
       <CDropdownMenu style={{ padding: '10px' }}>
         <DayPicker
           captionLayout="dropdown"
-          mode="range"
+          mode={mode}
           timeZone="Asia/Seoul"
           selected={selected}
-          onSelect={setSelected}
+          onSelect={handleDaySelect} // onSelect를 새로운 핸들러로 변경
           disabled={isDateDisabled}
         />
-        <div className="d-grid gap-2">
-          <CButton color="primary" onClick={handleDateSelectionConfirm}>
-            날짜 선택 완료
-          </CButton>
-        </div>
+        {/* 'single' 모드일 때는 버튼을 숨김 */}
+        {mode === 'range' && (
+          <div className="d-grid gap-2">
+            <CButton color="primary" onClick={handleConfirm}>
+              기간 선택 완료
+            </CButton>
+          </div>
+        )}
       </CDropdownMenu>
     </CDropdown>
   );

@@ -6,8 +6,9 @@ const Dashboard = React.lazy(() => import('./page/DashBoard'));
 const Customers = React.lazy(() => import('./page/Customer'));
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'));
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'));
-const DailyReport = React.lazy(() => import('./views/report/DailyReport'));
+//const DailyReport = React.lazy(() => import('./views/report/DailyReport'));
 //const PeriodReport = React.lazy(() => import('./views/report/PeriodReport'));
+const DailyReport = React.lazy(() => import('./page/DailyReport'));
 const PeriodReport = React.lazy(() => import('./page/PeriodReport'));
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'));
