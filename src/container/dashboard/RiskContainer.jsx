@@ -4,7 +4,7 @@ import HalfPanel from '../../views/half-panel/half-panel';
 import CardDropdown from '../../views/base/cards/CardDropdown';
 import Title from '../../views/base/title/Title';
 
-const RiskContainer = ({ averageScore, userScores }) => {
+const RiskContainer = ({ metrics }) => {
   return (
     <>
       <Title title="위험 지수" subtitle="전체 내담자의 위험 상황을 한 눈에 확인할 수 있습니다." />
@@ -14,13 +14,19 @@ const RiskContainer = ({ averageScore, userScores }) => {
           <HalfPanel
             subText="전체 내담자 위험점수"
             mainText="점"
-            score={averageScore}
+            score={metrics.average}
             showPie={true}
           />
         </CCol>
         <CCol lg={6}>
           {/* userScores를 CardDropdown에 전달 */}
-          <CardDropdown scores={userScores} />
+          <CardDropdown
+            totalClients={metrics.totalClients}
+            veryRiskClients={metrics.veryRiskClients}
+            riskClients={metrics.riskClients}
+            safeClients={metrics.safeClients}
+            noRecordClients={metrics.noRecordClients}
+          />
         </CCol>
       </CRow>
     </>

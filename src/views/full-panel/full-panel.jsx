@@ -1,7 +1,7 @@
-import React from 'react'
-import styled from '@emotion/styled'
-import propTypes from 'prop-types'
-import FullPie from './full-pie'
+import React from 'react';
+import styled from '@emotion/styled';
+import propTypes from 'prop-types';
+import FullPie from './full-pie';
 
 const FullPanel = ({ mainText, subText, score, width, height, pieData, highlight }) => {
   const PanelContainer = styled.div`
@@ -16,7 +16,7 @@ const FullPanel = ({ mainText, subText, score, width, height, pieData, highlight
     justify-content: center;
     align-items: center;
     background-color: #222630;
-  `
+  `;
 
   return (
     <PanelContainer>
@@ -31,8 +31,8 @@ const FullPanel = ({ mainText, subText, score, width, height, pieData, highlight
         <FullPie data={pieData} highlight={highlight % pieData.length} />
       </PanelGraph>
     </PanelContainer>
-  )
-}
+  );
+};
 
 const PanelText = styled.div`
   display: flex;
@@ -41,7 +41,7 @@ const PanelText = styled.div`
   justify-content: center;
   align-items: center;
   width: 50%;
-`
+`;
 
 const MainText = styled.span`
   font-size: 32px;
@@ -49,7 +49,7 @@ const MainText = styled.span`
   text-align: center;
   margin: 0;
   padding: 0;
-`
+`;
 
 const SubText = styled.span`
   font-size: 22px;
@@ -57,7 +57,7 @@ const SubText = styled.span`
   text-align: center;
   margin: 0;
   padding: 0;
-`
+`;
 
 const PanelGraph = styled.div`
   display: flex;
@@ -65,7 +65,7 @@ const PanelGraph = styled.div`
   justify-content: center;
   align-items: center;
   width: 25%;
-`
+`;
 
 FullPanel.propTypes = {
   mainText: propTypes.string,
@@ -75,6 +75,6 @@ FullPanel.propTypes = {
   height: propTypes.string,
   pieData: propTypes.array,
   highlight: propTypes.number,
-}
+};
 
-export default FullPanel
+export default FullPanel;
