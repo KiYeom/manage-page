@@ -33,7 +33,7 @@ import { useDailyReportData } from '../hooks/useDailyReportData';
 import DailyDoughnutChart from '../components/dailyReport/DailyDoughnutChart';
 import { ResponsiveContainer } from 'recharts';
 import palette from '../assets/styles/theme';
-
+import { navigateToReport } from '../utils/tableUtils';
 const DailyReport = () => {
   const { id } = useParams();
   const today = getServiceTodayDate().toString();
@@ -158,7 +158,7 @@ const DailyReport = () => {
           isDateDisabled={isDateDisabled}
           mode="single"
         />
-        <CButton color="primary" component={NavLink} to={`/customers/period-report/${id}`}>
+        <CButton color="primary" onClick={() => navigateToReport('period', id)}>
           기간 리포트 확인
         </CButton>
       </ReportHeader>

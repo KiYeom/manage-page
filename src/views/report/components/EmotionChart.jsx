@@ -50,26 +50,22 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
   };
 
   const headerContent = (
-    <CRow>
-      <CCol sm={5}>
-        <Title title="감정 변화 추이" subtitle={`${timeRange[0]}~${timeRange[1]}`} />
-      </CCol>
-      <CCol sm={7} className="d-none d-md-block">
-        <CButtonGroup role="group" className="float-end me-3">
-          {emotionList.map((value, index) => (
-            <CButton
-              color="outline-secondary"
-              key={value}
-              className="mx-0"
-              active={index === selectedEmotion}
-              onClick={() => onEmotionSelect(index)}
-            >
-              {getValueKorean(value)}
-            </CButton>
-          ))}
-        </CButtonGroup>
-      </CCol>
-    </CRow>
+    <>
+      <Title title="감정 변화 추이" subtitle={`${timeRange[0]}~${timeRange[1]}`} />
+      <CButtonGroup role="group" className="float-end me-3">
+        {emotionList.map((value, index) => (
+          <CButton
+            color="outline-secondary"
+            key={value}
+            className="mx-0"
+            active={index === selectedEmotion}
+            onClick={() => onEmotionSelect(index)}
+          >
+            {getValueKorean(value)}
+          </CButton>
+        ))}
+      </CButtonGroup>
+    </>
   );
 
   const chartContent = (
@@ -109,6 +105,7 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
       title={null} // headerContent에서 직접 처리
       subtitle={null}
       header={headerContent}
+      noBodyPadding={true}
     >
       {chartContent}
     </Card>

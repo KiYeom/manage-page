@@ -13,6 +13,7 @@ import {
   useInitialData,
   useDefaultTimeRange,
 } from '../hooks/usePeriodReportData';
+import { navigateToReport } from '../utils/tableUtils';
 
 const PeriodReport = () => {
   const { id } = useParams();
@@ -91,21 +92,23 @@ const PeriodReport = () => {
           isDateDisabled={isDateDisabled}
           isLoading={isLoading}
         />
-        <CButton color="primary" component={NavLink} to={`/customers/daily-report/${id}`}>
+        <CButton color="primary" onClick={() => navigateToReport('daily', id)}>
           일일 리포트 확인
         </CButton>
       </ReportHeader>
-
       {/* 6가지 감정 차트 */}
-      <EmotionChart
-        periodEmotion={periodEmotion}
-        timeRange={timeRange}
-        selectedEmotion={clickedBtn}
-        onEmotionSelect={setClickedBtn}
-      />
-
+      <CRow className="mb-4">
+        <CCol lg={12}>
+          <EmotionChart
+            periodEmotion={periodEmotion}
+            timeRange={timeRange}
+            selectedEmotion={clickedBtn}
+            onEmotionSelect={setClickedBtn}
+          />
+        </CCol>
+      </CRow>
       {/* 기간 키워드 & 감정 순위 리스트 */}
-      <CRow className="mb-4 align-items-start">
+      <CRow className="mb-4">
         <CCol lg={6}>
           <ListCard
             title="기간 키워드"
