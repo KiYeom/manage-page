@@ -109,7 +109,7 @@ const PeriodReport = () => {
       </CRow>
       {/* 기간 키워드 & 감정 순위 리스트 */}
       <CRow className="mb-4">
-        <CCol lg={6}>
+        <CCol lg={6} className="mb-3 mb-lg-0">
           <ListCard
             title="기간 키워드"
             subtitle={`${timeRange[0]}~${timeRange[1]}`}

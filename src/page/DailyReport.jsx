@@ -165,7 +165,7 @@ const DailyReport = () => {
 
       {/* 첫 번째 행: 대화 주제 & 감정 분석 결과 */}
       <CRow className="mb-4">
-        <CCol lg={6} className="d-flex">
+        <CCol lg={6} className="d-flex mb-3 mb-lg-0">
           <ListCard
             title="대화 주제"
             subtitle="내담자가 많이 언급한 주제입니다"
@@ -177,7 +177,7 @@ const DailyReport = () => {
             style={{ minHeight: '400px' }}
           />
         </CCol>
-        <CCol lg={6} className="d-flex">
+        <CCol lg={6} className="d-flex mb-3 mb-lg-0">
           <CCard className="flex-fill" style={{ minHeight: '400px' }}>
             <CCardHeader>
               <Title title="감정 분석 결과" subtitle="대화를 통해 분석한 내담자의 감정입니다." />
@@ -239,7 +239,7 @@ const DailyReport = () => {
 
       {/* 두 번째 행: 오늘의 일기 & 내담자가 기록한 감정 */}
       <CRow className="mb-4">
-        <CCol lg={6} className="d-flex">
+        <CCol lg={6} className="d-flex mb-3 mb-lg-0">
           <ListCard
             title="오늘의 일기"
             subtitle="내담자가 작성한 일기입니다."
@@ -249,7 +249,7 @@ const DailyReport = () => {
             style={{ minHeight: '300px' }}
           />
         </CCol>
-        <CCol lg={6} className="d-flex">
+        <CCol lg={6} className="d-flex mb-3 mb-lg-0">
           <ListCard
             title="내담자가 기록한 감정"
             subtitle="내담자가 직접 선택한 감정 단어입니다."
