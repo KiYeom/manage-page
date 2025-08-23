@@ -63,7 +63,7 @@ const CardDropdown = ({
             highlight={2}
           />
           {/* props로 받은 값 사용 */}
-          <div>*기록 없음: {noRecordClients}명 포함</div>
+          {/*<div>*기록 없음: {noRecordClients}명 포함</div>*/}
         </CCol>
       </CRow>
     </div>

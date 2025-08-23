@@ -8,10 +8,11 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import palette from '../../assets/styles/theme'; // 팔레트 색상 가져오기
 
 const config = (pieData) => {
+  console.log('config', pieData);
   return {
     type: 'doughnut',
     data: {
-      //labels: pieData.labels,
+      labels: pieData.labels,
       datasets: [
         {
           backgroundColor: [
@@ -23,6 +24,14 @@ const config = (pieData) => {
             palette.graph[600],
           ],
           data: pieData.percent,
+          datalabels: {
+            color: '#2a2a2a',
+            formatter: (value, context) => {
+              console.log('value', value, 'context', context);
+              const label = context.chart.data.labels[context.dataIndex];
+              return `${label}`;
+            },
+          },
         },
       ],
     },
@@ -31,6 +40,13 @@ const config = (pieData) => {
       plugins: {
         legend: {
           display: false,
+          callbacks: {
+            label: function (context) {
+              const label = context.label || '';
+              const value = context.formattedValue || '';
+              return `${label}: ${value}%`;
+            },
+          },
         },
       },
     },
