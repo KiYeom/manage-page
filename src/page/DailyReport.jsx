@@ -16,6 +16,8 @@ import {
   CSpinner,
   CCard, // CCard import 추가
   CCardHeader, // CCardHeader import 추가
+  CCardBody,
+  CCardFooter,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilSync } from '@coreui/icons';
@@ -31,7 +33,7 @@ import { useDailyReportData } from '../hooks/useDailyReportData';
 import DailyDoughnutChart from '../components/dailyReport/DailyDoughnutChart';
 import { ResponsiveContainer } from 'recharts';
 //import DailyDangerScorePanel from '../components/dailyReport/DailyDangerScorePanel';
-
+import palette from '../assets/styles/theme';
 const DailyReport = () => {
   const { id } = useParams();
   const today = getServiceTodayDate().toString();
@@ -167,20 +169,57 @@ const DailyReport = () => {
               <Title title="감정 분석 결과" subtitle="대화를 통해 분석한 내담자의 감정입니다." />
             </CCardHeader>
             {dailyReportLoading ? (
-              <div className="d-flex justify-content-center align-items-center py-4">
-                <CSpinner color="primary" />
-              </div>
-            ) : pieData.labels.length === 0 ? (
-              <div style={{ padding: '20px', textAlign: 'center' }}>
-                <p>대화 양이 부족하여 감정 분석이 제공되지 않습니다.</p>
-                {isToday && (
-                  <CButton color="primary" onClick={() => setModalVisible(true)}>
-                    <CIcon icon={cilSync} /> 실시간 업데이트하기
-                  </CButton>
-                )}
-              </div>
+              // 1. 로딩 중일 때
+              <CCardBody className="d-flex justify-content-center align-items-center">
+                <CSpinner />
+              </CCardBody>
+            ) : pieData && pieData.labels.length > 0 ? (
+              // 2. 로딩이 끝났고, 데이터가 있을 때 (차트와 범례를 함께 렌더링)
+              <>
+                <CCardBody className="d-flex justify-content-center align-items-center">
+                  <div style={{ width: '280px', height: '280px' }}>
+                    <DailyDoughnutChart pieData={pieData} />
+                  </div>
+                </CCardBody>
+                <CCardFooter className="d-flex flex-wrap justify-content-center border-top-0 bg-transparent pt-0">
+                  {pieData.labels.map((label, index) => {
+                    const colors = [
+                      palette.graph[100],
+                      palette.graph[200],
+                      palette.graph[300],
+                      palette.graph[400],
+                      palette.graph[500],
+                      palette.graph[600],
+                    ];
+                    return (
+                      <div key={index} className="d-flex align-items-center me-4 mb-2">
+                        <div
+                          style={{
+                            width: '14px',
+                            height: '14px',
+                            backgroundColor: colors[index % colors.length],
+                            marginRight: '8px',
+                            borderRadius: '3px',
+                          }}
+                        ></div>
+                        <span>{label}</span>
+                      </div>
+                    );
+                  })}
+                </CCardFooter>
+              </>
             ) : (
-              <DailyDoughnutChart pieData={pieData} />
+              // 3. 로딩이 끝났지만, 데이터가 없을 때
+              <CCardBody className="d-flex justify-content-center align-items-center">
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <p>대화 양이 부족하여 감정 분석이 제공되지 않습니다.</p>
+                  {isToday && (
+                    <CButton color="primary" onClick={() => setModalVisible(true)}>
+                      <CIcon icon={cilSync} /> 실시간 업데이트하기
+                    </CButton>
+                  )}
+                </div>
+              </CCardBody>
             )}
           </CCard>
         </CCol>

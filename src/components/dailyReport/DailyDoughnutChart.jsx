@@ -11,7 +11,7 @@ const config = (pieData) => {
   return {
     type: 'doughnut',
     data: {
-      labels: pieData.labels,
+      //labels: pieData.labels,
       datasets: [
         {
           backgroundColor: [
@@ -28,6 +28,11 @@ const config = (pieData) => {
     },
     options: {
       /* ... 기존과 동일한 options ... */
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
     },
     plugins: [ChartDataLabels],
   };
@@ -36,11 +41,7 @@ const config = (pieData) => {
 const DailyDoughnutChart = ({ pieData }) => {
   console.log('piedata', pieData);
   if (!pieData || pieData.labels.length === 0) return null;
-  return (
-    <ResponsiveContainer width={200} height="100%">
-      <CChartDoughnut {...config(pieData)} />
-    </ResponsiveContainer>
-  );
+  return <CChartDoughnut {...config(pieData)} />;
 };
 
 export default DailyDoughnutChart;
