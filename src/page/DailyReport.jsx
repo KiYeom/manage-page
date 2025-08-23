@@ -1,4 +1,4 @@
-// src/views/report/DailyReport.js (수정)
+// src/views/report/DailyReport.js (높이 동일화 수정)
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
@@ -14,8 +14,8 @@ import {
   CModalTitle,
   CProgress,
   CSpinner,
-  CCard, // CCard import 추가
-  CCardHeader, // CCardHeader import 추가
+  CCard,
+  CCardHeader,
   CCardBody,
   CCardFooter,
 } from '@coreui/react';
@@ -32,8 +32,8 @@ import { useInitialData } from '../hooks/usePeriodReportData';
 import { useDailyReportData } from '../hooks/useDailyReportData';
 import DailyDoughnutChart from '../components/dailyReport/DailyDoughnutChart';
 import { ResponsiveContainer } from 'recharts';
-//import DailyDangerScorePanel from '../components/dailyReport/DailyDangerScorePanel';
 import palette from '../assets/styles/theme';
+
 const DailyReport = () => {
   const { id } = useParams();
   const today = getServiceTodayDate().toString();
@@ -99,10 +99,22 @@ const DailyReport = () => {
   );
 
   const renderItem = useCallback(
-    (item, index) => (
-      <CListGroupItem key={index} className="d-flex justify-content-between align-items-center">
-        <span>{item}</span>
-      </CListGroupItem>
+    (item, index, array) => (
+      <div key={index}>
+        <CListGroupItem className="d-flex justify-content-start align-items-center py-3 border-0">
+          <span className="text-start">{item}</span>
+        </CListGroupItem>
+        {index < array.length - 1 && (
+          <div
+            style={{
+              height: '1px',
+              backgroundColor: '#dee2e6',
+              marginLeft: '10px',
+              marginRight: '20px',
+            }}
+          />
+        )}
+      </div>
     ),
     []
   );
@@ -151,8 +163,9 @@ const DailyReport = () => {
         </CButton>
       </ReportHeader>
 
-      <CRow className="mb-4 align-items-center">
-        <CCol lg={6}>
+      {/* 첫 번째 행: 대화 주제 & 감정 분석 결과 */}
+      <CRow className="mb-4">
+        <CCol lg={6} className="d-flex">
           <ListCard
             title="대화 주제"
             subtitle="내담자가 많이 언급한 주제입니다"
@@ -160,23 +173,22 @@ const DailyReport = () => {
             data={dailyKeyword}
             emptyMessage="나눈 대화가 없습니다."
             renderItem={renderItem}
+            className="flex-fill"
+            style={{ minHeight: '400px' }}
           />
         </CCol>
-        <CCol lg={6}>
-          {/* **이 부분에 감정 차트 UI를 직접 구성** */}
-          <CCard className="h-100">
+        <CCol lg={6} className="d-flex">
+          <CCard className="flex-fill" style={{ minHeight: '400px' }}>
             <CCardHeader>
               <Title title="감정 분석 결과" subtitle="대화를 통해 분석한 내담자의 감정입니다." />
             </CCardHeader>
             {dailyReportLoading ? (
-              // 1. 로딩 중일 때
-              <CCardBody className="d-flex justify-content-center align-items-center">
+              <CCardBody className="d-flex justify-content-center align-items-center flex-fill">
                 <CSpinner />
               </CCardBody>
             ) : pieData && pieData.labels.length > 0 ? (
-              // 2. 로딩이 끝났고, 데이터가 있을 때 (차트와 범례를 함께 렌더링)
               <>
-                <CCardBody className="d-flex justify-content-center align-items-center">
+                <CCardBody className="d-flex justify-content-center align-items-center flex-fill">
                   <div style={{ width: '280px', height: '280px' }}>
                     <DailyDoughnutChart pieData={pieData} />
                   </div>
@@ -209,13 +221,13 @@ const DailyReport = () => {
                 </CCardFooter>
               </>
             ) : (
-              // 3. 로딩이 끝났지만, 데이터가 없을 때
-              <CCardBody className="d-flex justify-content-center align-items-center">
-                <div style={{ padding: '20px', textAlign: 'center' }}>
-                  <p>대화 양이 부족하여 감정 분석이 제공되지 않습니다.</p>
+              <CCardBody className="d-flex flex-column justify-content-center align-items-center flex-fill">
+                <div style={{ textAlign: 'center' }}>
+                  <p className="mb-3">대화 양이 부족하여 감정 분석이 제공되지 않습니다.</p>
                   {isToday && (
                     <CButton color="primary" onClick={() => setModalVisible(true)}>
-                      <CIcon icon={cilSync} /> 실시간 업데이트하기
+                      <CIcon icon={cilSync} className="me-2" />
+                      실시간 업데이트하기
                     </CButton>
                   )}
                 </div>
@@ -225,16 +237,19 @@ const DailyReport = () => {
         </CCol>
       </CRow>
 
-      <CRow className="mb-4 align-items-start">
-        <CCol lg={6}>
+      {/* 두 번째 행: 오늘의 일기 & 내담자가 기록한 감정 */}
+      <CRow className="mb-4">
+        <CCol lg={6} className="d-flex">
           <ListCard
             title="오늘의 일기"
             subtitle="내담자가 작성한 일기입니다."
             isLoading={dailyReportLoading}
             emptyMessage="이 날의 한 줄 기록이 없습니다."
-          ></ListCard>
+            className="flex-fill"
+            style={{ minHeight: '300px' }}
+          />
         </CCol>
-        <CCol lg={6}>
+        <CCol lg={6} className="d-flex">
           <ListCard
             title="내담자가 기록한 감정"
             subtitle="내담자가 직접 선택한 감정 단어입니다."
@@ -242,6 +257,8 @@ const DailyReport = () => {
             data={dailyRecordedEmotion}
             emptyMessage="기록한 감정이 없습니다."
             renderItem={renderItem}
+            className="flex-fill"
+            style={{ minHeight: '300px' }}
           />
         </CCol>
       </CRow>
