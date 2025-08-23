@@ -1,7 +1,7 @@
-import React, { useMemo, useCallback } from 'react'
-import PropTypes from 'prop-types'
-import UserTable from '../../../components/table/UserTable'
-import UserTableRow from '../../../components/table/UserTableRow'
+import React, { useMemo, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import UserTable from '../../../components/table/UserTable';
+import UserTableRow from '../../../components/table/UserTableRow';
 import { navigateToReport as navigateToReportUtil } from '../../../utils/tableUtils';
 
 /**
@@ -15,33 +15,33 @@ const CustomersTableContainer = ({ data, onNavigate }) => {
   const headers = useMemo(
     () => ['내담자', '위험 점수', '일일 리포트', '기간 리포트', '감정 분석', '상담 시작 날짜'],
     []
-  )
+  );
 
-  const items = useMemo(() => (Array.isArray(data) ? data : []), [data])
+  const items = useMemo(() => (Array.isArray(data) ? data : []), [data]);
 
   const handleNavigate = useCallback(
     (type, id) => {
       if (typeof onNavigate === 'function') {
-        onNavigate(type, id)
+        onNavigate(type, id);
       } else {
         // fallback to util
-        navigateToReportUtil(type, id)
+        navigateToReportUtil(type, id);
       }
     },
     [onNavigate]
-  )
+  );
 
   const renderRow = useCallback(
     (item) => <UserTableRow key={item.id} item={item} onNavigate={handleNavigate} />,
     [handleNavigate]
-  )
+  );
 
-  return <UserTable headers={headers} items={items} renderRow={renderRow} />
-}
+  return <UserTable headers={headers} items={items} renderRow={renderRow} />;
+};
 
 CustomersTableContainer.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   onNavigate: PropTypes.func,
-}
+};
 
-export default CustomersTableContainer
+export default CustomersTableContainer;

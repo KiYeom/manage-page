@@ -1,34 +1,30 @@
 //dangerLevel : 위험 점수 값에 따라 위험 수준을 문자열로 반환
 export const dangerLevel = (value) => {
-    if (value === null || value === undefined) {
-        return '정보 없음';
-    }
-    if (value <= 60) {
-        return '안전';
-    }
-    else if (value <= 85) {
-        return '위험';
-    }
-    else {
-        return '매우 위험';
-    }
-}
+  if (value === null || value === undefined) {
+    return '정보 없음';
+  }
+  if (value <= 60) {
+    return '안전';
+  } else if (value <= 85) {
+    return '위험';
+  } else {
+    return '매우 위험';
+  }
+};
 
 //getProgressColor : 위험 점수 값에 따라 진행 바 색상을 반환
 export const getProgressColor = (value) => {
-    if (value === null || value === undefined) {
-        return 'secondary';
-    }
-    if (value <= 60) {
-        return 'success';
-    }
-    else if (value <= 85) {
-        return 'warning';
-    }
-    else {
-        return 'danger';
-    }
-}
+  if (value === null || value === undefined) {
+    return 'secondary';
+  }
+  if (value <= 60) {
+    return 'success';
+  } else if (value <= 85) {
+    return 'warning';
+  } else {
+    return 'danger';
+  }
+};
 
 //navigateToReport : 리포트 페이지로 이동하는 함수
 export const navigateToReport = (type, id) => {

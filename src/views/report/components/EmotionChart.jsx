@@ -1,5 +1,5 @@
-import React from 'react'
-import { CButton, CButtonGroup, CCol, CRow } from '@coreui/react'
+import React from 'react';
+import { CButton, CButtonGroup, CCol, CRow } from '@coreui/react';
 import {
   AreaChart,
   Area,
@@ -8,20 +8,20 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts'
-import Card from '../../../components/card/Card'
-import palette from '../../../assets/styles/theme'
-import Title from '../../base/title/Title'
+} from 'recharts';
+import Card from '../../../components/card/Card';
+import palette from '../../../assets/styles/theme';
+import Title from '../../base/title/Title';
 
-const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy']
-const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨']
+const emotionList = ['all', 'anger', 'sadness', 'nerve', 'hurt', 'embarrassment', 'happy'];
+const emotionListKorean = ['전체', '분노', '슬픔', '불안', '상처', '당황', '기쁨'];
 
 const getValueKorean = (value) => {
-  return emotionListKorean[emotionList.indexOf(value)]
-}
+  return emotionListKorean[emotionList.indexOf(value)];
+};
 
 const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSelect }) => {
-  console.log('EmotionChart data:', periodEmotion)
+  console.log('EmotionChart data:', periodEmotion);
   const renderAreas = () => {
     if (selectedEmotion === 0) {
       return emotionList
@@ -35,7 +35,7 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
             fillOpacity={0.3}
             fill={palette.graph[(index + 1) * 100]}
           />
-        ))
+        ));
     } else {
       return (
         <Area
@@ -45,32 +45,28 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
           fill={palette.graph[selectedEmotion * 100]}
           fillOpacity={0.3}
         />
-      )
+      );
     }
-  }
+  };
 
   const headerContent = (
-    <CRow>
-      <CCol sm={5}>
-        <Title title="감정 변화 추이" subtitle={`${timeRange[0]}~${timeRange[1]}`} />
-      </CCol>
-      <CCol sm={7} className="d-none d-md-block">
-        <CButtonGroup role="group" className="float-end me-3">
-          {emotionList.map((value, index) => (
-            <CButton
-              color="outline-secondary"
-              key={value}
-              className="mx-0"
-              active={index === selectedEmotion}
-              onClick={() => onEmotionSelect(index)}
-            >
-              {getValueKorean(value)}
-            </CButton>
-          ))}
-        </CButtonGroup>
-      </CCol>
-    </CRow>
-  )
+    <>
+      <Title title="감정 변화 추이" subtitle={`${timeRange[0]}~${timeRange[1]}`} />
+      <CButtonGroup role="group" className="float-end me-3">
+        {emotionList.map((value, index) => (
+          <CButton
+            color="outline-secondary"
+            key={value}
+            className="mx-0"
+            active={index === selectedEmotion}
+            onClick={() => onEmotionSelect(index)}
+          >
+            {getValueKorean(value)}
+          </CButton>
+        ))}
+      </CButtonGroup>
+    </>
+  );
 
   const chartContent = (
     <CRow
@@ -102,17 +98,18 @@ const EmotionChart = ({ periodEmotion, timeRange, selectedEmotion, onEmotionSele
         </div>
       </div>
     </CRow>
-  )
+  );
 
   return (
     <Card
       title={null} // headerContent에서 직접 처리
       subtitle={null}
       header={headerContent}
+      noBodyPadding={true}
     >
       {chartContent}
     </Card>
-  )
-}
+  );
+};
 
-export default EmotionChart
+export default EmotionChart;

@@ -1,95 +1,55 @@
-import React, { useEffect, useRef } from 'react'
-import PropTypes from 'prop-types'
-import Warning from '../../warning/Warning'
-import EmotionContainer from '../../emotion/EmotionContainer'
-import {
-  CRow,
-  CCol,
-  CDropdown,
-  CDropdownMenu,
-  CDropdownItem,
-  CDropdownToggle,
-  CWidgetStatsA,
-} from '@coreui/react'
-import Card from './Card'
-import { getStyle } from '@coreui/utils'
-import { CChartBar, CChartLine } from '@coreui/react-chartjs'
-import CIcon from '@coreui/icons-react'
-import { cilArrowBottom, cilArrowTop, cilOptions } from '@coreui/icons'
-import FullPie from '../../full-panel/full-pie'
-import { ResponsiveContainer } from 'recharts'
-import FullPanel from '../../full-panel/full-panel'
+// /views/base/cards/CardDropdown.js
 
-const CardDropdown = ({ scores }) => {
-  const widgetChartRef1 = useRef(null)
-  const widgetChartRef2 = useRef(null)
+import React from 'react';
+import PropTypes from 'prop-types';
+import { CRow, CCol } from '@coreui/react';
+import FullPanel from '../../full-panel/full-panel';
 
-  useEffect(() => {
-    document.documentElement.addEventListener('ColorSchemeChange', () => {
-      if (widgetChartRef1.current) {
-        setTimeout(() => {
-          widgetChartRef1.current.data.datasets[0].pointBackgroundColor = getStyle('--cui-primary')
-          widgetChartRef1.current.update()
-        })
-      }
+// props로 scores 배열 대신 계산된 숫자들을 직접 받음
+const CardDropdown = ({
+  totalClients,
+  veryRiskClients,
+  riskClients,
+  safeClients,
+  noRecordClients,
+}) => {
+  // useEffect와 ref 관련 코드는 차트가 없으므로 제거 가능 (만약 FullPanel 내부에 차트가 없다면)
 
-      if (widgetChartRef2.current) {
-        setTimeout(() => {
-          widgetChartRef2.current.data.datasets[0].pointBackgroundColor = getStyle('--cui-info')
-          widgetChartRef2.current.update()
-        })
-      }
-    })
-  }, [widgetChartRef1, widgetChartRef2])
-
-  const veryRiskClients = scores.filter((score) => score >= 85).length
-  const riskClients = scores.filter((score) => score >= 60 && score < 85).length
-  const safeClients = scores.filter((score) => score < 60).length
-  const noRecordClients = scores.filter((score) => score === null).length
-  const totalClients = scores.length
+  // totalPieData는 여전히 필요
   const totalPieData = [
-    {
-      name: '매우 위험',
-      value: veryRiskClients,
-    },
-    {
-      name: '위험',
-      value: riskClients,
-    },
-    {
-      name: '안전',
-      value: safeClients,
-    },
-  ]
+    { name: '매우 위험', value: veryRiskClients },
+    { name: '위험', value: riskClients },
+    { name: '안전', value: safeClients },
+  ];
 
   return (
     <div style={{ padding: '10px' }}>
       <CRow sm={{ cols: 2 }}>
-        <CCol>
+        <CCol className="mb-3">
           <FullPanel
             subText={'전체 내담자'}
             mainText={'명'}
-            score={totalClients}
+            score={totalClients} // props로 받은 값 사용
             pieData={totalPieData}
             highlight={-1}
           />
         </CCol>
-        <CCol>
+        <CCol className="mb-3">
           <FullPanel
             subText={'긴급 내담자'}
             mainText={'명'}
-            score={veryRiskClients}
+            score={veryRiskClients} // props로 받은 값 사용
             pieData={totalPieData}
             highlight={0}
           />
         </CCol>
       </CRow>
-      <CRow sm={{ cols: 2 }} xs={{ cols: 1 }} gutter={{ row: 4, col: 4 }}>
-        <CCol>
+      <CRow sm={{ cols: 2 }}>
+        <CCol className="mb-3 mb-sm-0">
           <FullPanel
             subText={'위험 내담자'}
             mainText={'명'}
-            score={riskClients}
+            score={riskClients} // props로 받은 값 사용
             pieData={totalPieData}
             highlight={1}
           />
@@ -98,19 +58,24 @@ const CardDropdown = ({ scores }) => {
           <FullPanel
             subText={'일반 내담자'}
             mainText={'명'}
-            score={safeClients}
+            score={safeClients} // props로 받은 값 사용
             pieData={totalPieData}
             highlight={2}
           />
-          <div>*기록 없음: {noRecordClients}명 포함</div>
+          {/* props로 받은 값 사용 */}
+          {/*<div>*기록 없음: {noRecordClients}명 포함</div>*/}
         </CCol>
       </CRow>
     </div>
-  )
-}
+  );
+};
 
 CardDropdown.propTypes = {
-  scores: PropTypes.array,
-}
+  totalClients: PropTypes.number,
+  veryRiskClients: PropTypes.number,
+  riskClients: PropTypes.number,
+  safeClients: PropTypes.number,
+  noRecordClients: PropTypes.number,
+};
 
-export default CardDropdown
+export default CardDropdown;
